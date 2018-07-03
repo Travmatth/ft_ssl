@@ -1,47 +1,44 @@
-# project makefile
-
 DEBUG =
 ifdef TEST
-	DEBUG = -g -fsanitize=address -fsanitize=undefined
+        DEBUG = -g -fsanitize=address -fsanitize=undefined
 else
-	DEBUG =
+        DEBUG =
 endif
 
-FT_SSL = ft_ssl
-LIBFT = libftprintf.a
-CC = gcc
-MD5 = md5_hash/md5.o
+NAME = ft_ssl
+LIBFT = libftprintf
+CFLAGS += -Wall -Wextra -Werror -Wpedantic
+LDFLAGS := -Llibftprintf -lftprintf
+FT_MD5 := md5
+CORE := main
+FILES := $(addprefix md5_hash/, $(FT_MD5)) \
+	$(addprefix core/, $(CORE))
+SRC := $(addsuffix .c, $(FILES))
+OBJ := $(SRC:.c=.o)
 
-export CC
-export DEBUG
+.PHONY = all clean fclean re
 
-.DEFAULT_GOAL := all
-all: $(FT_SSL)
-
-.PHONY: $(LIBFT) $(MD5) $(FT_SSL) all
+all: $(NAME)
 
 $(LIBFT):
-	@echo "LIBFT here"
-	@$(MAKE) -C libftprintf 2>&1;
+	@$(MAKE) -C libftprintf
 
-$(MD5):
-	@echo "MD5 here"
-	@$(MAKE) -C md5_hash;
-	@cp md5_hash/*.o core/objs
+$(OBJ): %.o: %.c
+	@$(CC) -c $(DEBUG) -I. $(CFLAGS) $< -o $@
 
-$(FT_SSL): $(LIBFT) $(MD5)
-	@echo "FT_SSL here"
-	@$(MAKE) -C core;
+$(NAME): $(LIBFT) $(OBJ)
+	@echo -n 'Compiling ft_ssl... '
+	@$(CC) $(DEBUG) $(CFLAGS) $(LDFLAGS) $(OBJ) -o $@
+	@echo "\033[32mdone\033[0m"
 
 clean:
-	@$(MAKE) clean -C libftprintf;
-	@$(MAKE) clean -C md5_hash;
-	@$(MAKE) clean -C core;
+	@echo -n 'Cleaning ft_ssl object files... '
+	@rm -f $(OBJ) *.dSYM *.DS_Store
+	@echo "\033[32mdone\033[0m"
 
-fclean:
-	@$(MAKE) fclean -C libftprintf;
-	@$(MAKE) fclean -C md5_hash;
-	@$(MAKE) fclean -C core;
-	@rm -rf $(NAME) $(NAME).dSYM
+fclean: clean
+	@echo -n 'Cleaning ft_ssl executable... '
+	@rm -f $(NAME)
+	@echo "\033[32mdone\033[0m"
 
 re: fclean all
