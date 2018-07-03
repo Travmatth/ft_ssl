@@ -5,9 +5,10 @@ CFLAGS = -c -Wall -Wextra -Werror -Wpedantic
 SRCS = md5.c
 HEADER = ../ft_ssl.h
 
-all: $(MD5)
+all: md5.o
 
-$(MD5):
+md5.o: md5.c
+	@echo "md5 here"
 	@$(CC) $(HEADER) $(CFLAGS) $(SRCS)
 
 clean:

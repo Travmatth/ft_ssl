@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/30 20:18:19 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/07/01 12:35:38 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/07/01 14:42:17 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,5 +25,7 @@ void	ft_ssl_err(const char *message)
 
 int		main(void)
 {
+	ft_ssl_usage();
+	md5("asdf");
 	return (0);
 }
