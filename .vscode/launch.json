@@ -12,7 +12,10 @@
         "args": ["md5"],
         "stopAtEntry": false,
         "cwd": "${workspaceRoot}",
-        "environment": [],
+        "environment": [{
+			"name": "FT_SSL_TTY",
+			"value": "/dev/ttys001"
+		}],
         "preLaunchTask": "build",
         "externalConsole": false,
         "linux": {

@@ -3,5 +3,20 @@
 	"files.associations": {
 		"internal.h": "c",
 		"conversions.h": "c"
-	}
+	},
+    "vim.visualModeKeyBindings": [
+        {
+            "before": ["u","u"],
+            "after": ["<Esc>"]
+        }
+    ],
+    "vim.insertModeKeyBindings": [
+        {
+            "before": ["u","u"],
+            "after": ["<Esc>"]
+        }
+    ],
+    "editor.tabSize": 4,
+    "editor.insertSpaces": false,
+    "editor.detectIndentation": false
 }
