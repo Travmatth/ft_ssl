@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/03 18:50:26 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/07/07 16:08:07 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/07/07 19:11:04 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,10 @@ t_buf		*ft_bufaddspace(t_buf *b, size_t i)
 	tmp = ft_realloc(b->buf, b->total + i);
 	b->buf = tmp;
 	b->total += i;
+	return (b);
 }
 
-char	*ft_strnjoin(char const *s1, char const *s2, size_t i)
+char	*ft_strnjoin(char const *s1, char const *s2, size_t n)
 {
 	char	*u_str;
 	size_t	i;
@@ -43,37 +44,33 @@ char	*ft_strnjoin(char const *s1, char const *s2, size_t i)
 		return (NULL);
 	while (++i < s1_len)
 		*(u_str + i) = *(s1 + i);
-	while (++j < s2_len && j < i)
+	while (++j < s2_len && j < n)
 		*(u_str + i++) = *(s2 + j);
 	return (u_str);
 }
 
 char		*ft_str_from_fd(int fd)
 {
-	size_t	i;
 	size_t	bytes;
 	char	buf[BUFF_SIZE];
 	char	*string;
 	char	*tmp;
 
+	bytes = 0;
 	string = ft_memalloc(1);
 	while ((bytes = read(fd, buf, BUFF_SIZE)) != 0)
 	{
-		tmp = ft_strnjoin(string, buf, BUFF_SIZE);
+		tmp = ft_strnjoin(string, buf, bytes);
 		free(string);
 		string = tmp;
 	}
 	return (string);
 }
 
-static void	read_from_stdin(t_digest *input, t_msg digest, int file)
+static void	read_from_stdin(t_digest *input, t_msg digest)
 {
-	size_t	i;
-	char	*string;
 	char	*new_offset;
 
-	if (file && !GET_P(input->flags))
-		return ;
 	digest.msg = ft_str_from_fd(STDIN);
 	digest.type = FROM_STDIN;
 	input->digests = ft_bufaddspace(input->digests, sizeof(t_msg));
@@ -95,6 +92,7 @@ t_digest	*parse_opts(int argc, char **argv)
 	if (!(input = ft_memalloc(sizeof(t_digest)))
 		|| !(input->digests = ft_bufnew(ft_memalloc(1), 0, sizeof(t_msg))))
 		ft_ssl_err("error");
+	file = FALSE;
 	i = -1;
 	args = ft_strsplit(*argv, ' ');
 	while (++i < argc)
@@ -140,6 +138,7 @@ t_digest	*parse_opts(int argc, char **argv)
 		}
 	}
 	free(args);
-	read_from_stdin(input, digest, file)
+	if (!file || GET_P(input->flags))
+		read_from_stdin(input, digest);
 	return (input);
 }

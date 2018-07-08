@@ -12,12 +12,13 @@
         "args": ["md5"],
         "stopAtEntry": false,
         "cwd": "${workspaceRoot}",
-        "environment": [{
-			"name": "FT_SSL_TTY",
-			"value": "/dev/ttys001"
-		}],
         "preLaunchTask": "build",
-        "externalConsole": false,
+		"externalConsole": false,
+		"setupCommands": [
+			{
+				"text": "settings set target.input-path test"
+			}
+		],
         "linux": {
             "MIMode": "gdb",
             "setupCommands": [
