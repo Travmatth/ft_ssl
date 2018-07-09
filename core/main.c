@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/30 20:18:19 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/07/03 19:45:13 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/07/09 15:21:43 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,17 +29,19 @@ void	ft_ssl_err(const char *message)
 	exit(1);
 }
 
-t_f		get_function(int *argc, char **argv)
+t_f		get_function(int *argc, char ***argv)
 {
 	size_t	i;
 
 	i = 0;
+	*argc -= 1;
+	*argv = &argv[0][1];
 	while (i < FT_SSL_FUNCS)
 	{
-		if (ft_strequ(g_ptrs[i].cmd, argv[1]))
+		if (ft_strnequ(g_ptrs[i].cmd, argv[0][0], LEN(g_ptrs[i].cmd, 0)))
 		{
-			*argc -= 2;
-			*argv = argv[2];
+			*argc -= 1;
+			*argv = &argv[0][1];
 			return (g_ptrs[i].f);
 		}
 		i += 1;
@@ -53,7 +55,7 @@ int		main(int argc, char **argv)
 
 	if (argc == 1)
 		ft_ssl_usage();
-	else if ((f = get_function(&argc, argv)))
+	else if ((f = get_function(&argc, &argv)))
 		f(argc, argv);
 	return (0);
 }

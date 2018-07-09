@@ -9,14 +9,14 @@
         "type": "cppdbg",
         "request": "launch",
         "program": "${workspaceRoot}/ft_ssl",
-        "args": ["md5"],
+        "args": ["md5", "-p", "-q", "-r", "-s", "test"],
         "stopAtEntry": false,
         "cwd": "${workspaceRoot}",
         "preLaunchTask": "build",
 		"externalConsole": false,
 		"setupCommands": [
 			{
-				"text": "settings set target.input-path test"
+				"text": "settings set target.input-path in_test"
 			}
 		],
         "linux": {
