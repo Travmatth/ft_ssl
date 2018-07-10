@@ -6,15 +6,13 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/30 20:13:01 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/07/09 14:27:40 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/07/10 12:01:33 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../ft_ssl.h"
 
-void	md5(int argc, char **argv)
+void	md5(t_state	*state)
 {
-	t_digest	*input;
-
-	input = parse_opts(argc, argv);
+	(void)state;
 }
