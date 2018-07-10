@@ -9,7 +9,7 @@
         "type": "cppdbg",
         "request": "launch",
         "program": "${workspaceRoot}/ft_ssl",
-        "args": ["md5", "-p", "-q", "-r", "-s", "test"],
+        "args": ["md5", "-p", "-q", "-r", "-s", "test", "test", "in_test"],
         "stopAtEntry": false,
         "cwd": "${workspaceRoot}",
         "preLaunchTask": "build",
