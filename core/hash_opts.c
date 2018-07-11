@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/03 18:50:26 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/07/10 11:57:10 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/07/10 18:12:50 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,32 +86,32 @@ char		*ft_str_from_fd(int fd)
 ** attempt to read string from file given by user
 */
 
-static void	read_from_stdin(t_state *state, t_digest *digest)
+static void	read_from_stdin(t_md5_state *state, t_digest *digest)
 {
 	char	*new_offset;
 
-	digest->msg = ft_str_from_fd(STDIN);
+	digest->state = ft_str_from_fd(STDIN);
 	digest->type = FROM_STDIN;
 	state->digests = ft_bufaddspace(state->digests, DIGEST_SZ);
 	new_offset = (char*)state->digests->buf + DIGEST_SZ;
 	ft_memmove((void*)new_offset, state->digests->buf, state->digests->current);
-	ft_memcpy(state->digests, &digest, DIGEST_SZ);
+	ft_memcpy(state->digests, digest, DIGEST_SZ);
 }
 
 /*
 ** attempt to read string from file given by user
 */
 
-static void	read_from_file(t_digest *digest, char **argv, int *i)
+static void	*read_from_file(t_md5_state *state, t_digest *digest, char **argv, int *i)
 {
 	int			fd;
 
 	if (ERR((fd = open(argv[*i], O_RDONLY))))
 		ft_ssl_err(FT_MD5_NO_SUCH_FILE);
-	digest->msg = ft_str_from_fd(fd);
+	digest->state = ft_str_from_fd(fd);
 	close(fd);
 	digest->type = FROM_FILE;
-	SET_F(state->flags)
+	SET_F(state->flags);
 	return (digest);
 }
 
@@ -119,14 +119,11 @@ static void	read_from_file(t_digest *digest, char **argv, int *i)
 ** parses next option and modifies state with flag or string to be hashed
 */
 
-static void	parse_opts_handler(t_state *state
-								, t_digest *digest
-								, char **argv
-								, int &i)
+static void	parse_opts_handler(t_md5_state *state, t_digest *digest, char **argv, int *i)
 {
-	char	*str;
+	void	*message;
 
-	ft_bzero(&digest, DIGEST_SZ);
+	ft_bzero(digest, sizeof(t_digest));
 	if (ft_strequ("-p", argv[*i]))
 		SET_P(state->flags);
 	else if (ft_strequ("-q", argv[*i]))
@@ -137,15 +134,15 @@ static void	parse_opts_handler(t_state *state
 	{
 		if (!argv[*i + 1])
 			ft_ssl_err("error");
-		digest->msg = ft_strdup(argv[*i + 1]);
+		digest->state = ft_strdup(argv[*i + 1]);
 		digest->type = FROM_STRING;
 		ft_bufappend(state->digests, digest, DIGEST_SZ);
 		*i += 1;
 	}
 	else
 	{
-		str = read_from_file(digest, argv, file);
-		ft_bufappend(state->digests, str, DIGEST_SZ);
+		message = read_from_file(state, digest, argv, i);
+		ft_bufappend(state->digests, message, DIGEST_SZ);
 	}
 }
 
@@ -154,14 +151,13 @@ static void	parse_opts_handler(t_state *state
 ** a struct holding an array with every string to be hashed
 */
 
-t_state	*parse_opts(int argc, char **argv)
+t_md5_state	*parse_opts(int argc, char **argv)
 {
-	int			file;
 	int			i;
-	t_state	*state;
-	t_digest		digest;
+	t_digest	digest;
+	t_md5_state	*state;
 
-	if (!(state = ft_memalloc(sizeof(t_state)))
+	if (!(state = ft_memalloc(sizeof(t_md5_state)))
 		|| !(state->digests = ft_bufnew(ft_memalloc(DIGEST_SZ), 0, DIGEST_SZ)))
 		ft_ssl_err("error");
 	i = -1;

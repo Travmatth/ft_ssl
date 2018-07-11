@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/30 20:18:19 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/07/10 11:58:29 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/07/10 18:27:07 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 t_ptrs g_ptrs[] =
 {
-	{"md5", &md5},
+	{"md5", &make_md5_hash},
 };
 
 void	ft_ssl_usage(void)
@@ -51,11 +51,11 @@ t_f		get_function(int *argc, char ***argv)
 
 int		main(int argc, char **argv)
 {
-	t_f	f;
+	t_f		f;
 
 	if (argc == 1)
 		ft_ssl_usage();
 	else if ((f = get_function(&argc, &argv)))
-		f(parse_opts(argc, argv));
+		print_md5_state(f(parse_opts(argc, argv)));
 	return (0);
 }

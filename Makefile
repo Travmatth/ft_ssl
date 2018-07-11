@@ -10,7 +10,7 @@ LIBFT = libftprintf/libftprintf.a
 CFLAGS += -Wall -Wextra -Werror -Wpedantic
 LDFLAGS := -Llibftprintf -lftprintf
 FT_MD5 := md5
-CORE := hash_opts main
+CORE := formatting hash_opts main
 FILES := $(addprefix md5_hash/, $(FT_MD5)) \
 	$(addprefix core/, $(CORE))
 SRC := $(addsuffix .c, $(FILES))

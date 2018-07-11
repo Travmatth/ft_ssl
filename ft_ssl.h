@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/16 12:34:43 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/07/10 12:00:34 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/07/10 18:27:23 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@
 # define FROM_STRING 1
 # define FROM_STDIN 2
 # define FT_SSL_FUNCS 1
+# define MD5_HASH_SIZE 32
 # define FT_MD5_NO_SUCH_FILE "md5: no such file"
 
 # define SET_P(v) (BITSET(v, 0))
@@ -42,33 +43,32 @@
 # define GET_S(v) (BITTEST(v, 3))
 # define GET_F(v) (BITTEST(v, 4))
 
-typedef void	(*t_f)(t_state *state);
+typedef uint8_t		t_byte;
+typedef uint32_t	t_word;
 
-typedef struct	s_ptrs
+typedef struct		s_digest
 {
-	char		*cmd;
-	t_f			f;
-}				t_ptrs;
+	char			hash[MD5_HASH_SIZE];
+	char			*state;
+	char			type;
+}					t_digest;
 
-typedef struct	s_digest
+typedef struct		s_md5_state
 {
-	char		*msg;
-	char		type;
-}				t_digest;
+	char			flags[BITNSLOTS(5)];
+	t_buf			*digests;
+}					t_md5_state;
 
-typedef struct	s_state
+typedef t_md5_state	*(*t_f)(t_md5_state *state);
+
+typedef struct		s_ptrs
 {
-	char		flags[BITNSLOTS(5)];
-	t_buf		*digests;
-}				t_state;
+	char			*cmd;
+	t_f				f;
+}					t_ptrs;
 
-typedef struct	s_hash
-{
-	t_buf		*out;
-	t_state	*in;
-}				t_hash;
-
-void			ft_ssl_err(const char *message) __attribute__((noreturn));
-void			md5(t_state *state);
-t_state			*parse_opts(int argc, char **argv);
+void				ft_ssl_err(const char *message) __attribute__((noreturn));
+t_md5_state			*make_md5_hash(t_md5_state *state);
+t_md5_state			*parse_opts(int argc, char **argv);
+void				print_md5_state(t_md5_state *state);
 #endif
