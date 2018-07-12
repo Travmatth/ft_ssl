@@ -9,8 +9,8 @@ NAME = ft_ssl
 LIBFT = libftprintf/libftprintf.a
 CFLAGS += -Wall -Wextra -Werror -Wpedantic
 LDFLAGS := -Llibftprintf -lftprintf
-FT_MD5 := md5
-CORE := formatting hash_opts main
+FT_MD5 := md5 md5_formatting md5_parsing 
+CORE := main
 FILES := $(addprefix md5_hash/, $(FT_MD5)) \
 	$(addprefix core/, $(CORE))
 SRC := $(addsuffix .c, $(FILES))

@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/30 20:18:19 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/07/10 18:27:07 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/07/11 17:32:08 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 t_ptrs g_ptrs[] =
 {
-	{"md5", &make_md5_hash},
+	{"md5", &md5, &parse_md5_opts},
 };
 
 void	ft_ssl_usage(void)
@@ -29,7 +29,7 @@ void	ft_ssl_err(const char *message)
 	exit(1);
 }
 
-t_f		get_function(int *argc, char ***argv)
+int		get_function(int *argc, char ***argv, t_f *f, t_p *p)
 {
 	size_t	i;
 
@@ -42,20 +42,23 @@ t_f		get_function(int *argc, char ***argv)
 		{
 			*argc -= 1;
 			*argv = &argv[0][1];
-			return (g_ptrs[i].f);
+			*f = g_ptrs[i].f;
+			*p = g_ptrs[i].p;
+			return (1);
 		}
 		i += 1;
 	}
-	return (NULL);
+	return (0);
 }
 
 int		main(int argc, char **argv)
 {
 	t_f		f;
+	t_p		p;
 
 	if (argc == 1)
 		ft_ssl_usage();
-	else if ((f = get_function(&argc, &argv)))
-		print_md5_state(f(parse_opts(argc, argv)));
+	else if (get_function(&argc, &argv, &f, &p))
+		f(p(argc, argv));
 	return (0);
 }

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   hash_opts.c                                        :+:      :+:    :+:   */
+/*   md5_parsing.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/07/03 18:50:26 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/07/10 18:12:50 by tmatthew         ###   ########.fr       */
+/*   Created: 2018/07/11 16:54:53 by tmatthew          #+#    #+#             */
+/*   Updated: 2018/07/11 18:27:34 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,51 +33,33 @@ t_buf		*ft_bufaddspace(t_buf *b, size_t i)
 }
 
 /*
-** joins the second string with the first up to the first n bytes
-** and returns this in a freshly allocated string
-*/
-
-char	*ft_strnjoin(char const *s1, char const *s2, size_t n)
-{
-	char	*u_str;
-	size_t	i;
-	size_t	j;
-	size_t	s1_len;
-	size_t	s2_len;
-
-	if (!s1 || !s2)
-		return (NULL);
-	i = -1;
-	j = -1;
-	s1_len = LEN(s1, 0);
-	s2_len = LEN(s2, 0);
-	if (!(u_str = ft_strnew(s1_len + LESSER(n, s2_len))))
-		return (NULL);
-	while (++i < s1_len)
-		*(u_str + i) = *(s1 + i);
-	while (++j < s2_len && j < n)
-		*(u_str + i++) = *(s2 + j);
-	return (u_str);
-}
-
-/*
 ** reads a given fd and returns a string with its contents
 */
 
 char		*ft_str_from_fd(int fd)
 {
+	size_t	len;
 	size_t	bytes;
-	char	buf[BUFF_SIZE];
-	char	*string;
 	char	*tmp;
+	char	*string;
+	char	buf[BUFF_SIZE];
 
 	bytes = 0;
-	string = ft_memalloc(1);
+	string = NULL;
 	while ((bytes = read(fd, buf, BUFF_SIZE)) != 0)
 	{
-		tmp = ft_strnjoin(string, buf, bytes);
-		free(string);
-		string = tmp;
+		if (string)
+		{
+			len = LEN(string, 0);
+			if (!(tmp = ft_strnew(len + bytes)))
+				ft_ssl_err("error");
+			ft_memcpy(tmp, string, len);
+			ft_memcpy(tmp + len, buf, bytes);
+			free(string);
+			string = tmp;
+		}
+		else
+			string = ft_strndup(buf, bytes);
 	}
 	return (string);
 }
@@ -92,10 +74,10 @@ static void	read_from_stdin(t_md5_state *state, t_digest *digest)
 
 	digest->state = ft_str_from_fd(STDIN);
 	digest->type = FROM_STDIN;
-	state->digests = ft_bufaddspace(state->digests, DIGEST_SZ);
-	new_offset = (char*)state->digests->buf + DIGEST_SZ;
+	state->digests = ft_bufaddspace(state->digests, sizeof(t_digest));
+	new_offset = (char*)state->digests->buf + sizeof(t_digest);
 	ft_memmove((void*)new_offset, state->digests->buf, state->digests->current);
-	ft_memcpy(state->digests, digest, DIGEST_SZ);
+	ft_memcpy(state->digests->buf, (void*)digest, sizeof(t_digest));
 }
 
 /*
@@ -119,7 +101,7 @@ static void	*read_from_file(t_md5_state *state, t_digest *digest, char **argv, i
 ** parses next option and modifies state with flag or string to be hashed
 */
 
-static void	parse_opts_handler(t_md5_state *state, t_digest *digest, char **argv, int *i)
+static void	parse_md5_opts_handler(t_md5_state *state, t_digest *digest, char **argv, int *i)
 {
 	void	*message;
 
@@ -151,7 +133,7 @@ static void	parse_opts_handler(t_md5_state *state, t_digest *digest, char **argv
 ** a struct holding an array with every string to be hashed
 */
 
-t_md5_state	*parse_opts(int argc, char **argv)
+void		*parse_md5_opts(int argc, char **argv)
 {
 	int			i;
 	t_digest	digest;
@@ -162,8 +144,8 @@ t_md5_state	*parse_opts(int argc, char **argv)
 		ft_ssl_err("error");
 	i = -1;
 	while (++i < argc - 1)
-		parse_opts_handler(state, &digest, argv, &i);
+		parse_md5_opts_handler(state, &digest, argv, &i);
 	if (GET_F(state->flags) || GET_P(state->flags))
 		read_from_stdin(state, &digest);
-	return (state);
+	return ((void*)state);
 }

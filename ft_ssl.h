@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/16 12:34:43 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/07/10 18:27:23 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/07/11 19:01:18 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,8 @@ typedef uint32_t	t_word;
 
 typedef struct		s_digest
 {
-	char			hash[MD5_HASH_SIZE];
-	char			*state;
+	char			hash_value[MD5_HASH_SIZE];
+	char			*pre_image;
 	char			type;
 }					t_digest;
 
@@ -59,16 +59,18 @@ typedef struct		s_md5_state
 	t_buf			*digests;
 }					t_md5_state;
 
-typedef t_md5_state	*(*t_f)(t_md5_state *state);
+typedef void		(*t_f)(void *state);
+typedef void		*(*t_p)(int argc, char **argv);
 
 typedef struct		s_ptrs
 {
 	char			*cmd;
 	t_f				f;
+	t_p				p;
 }					t_ptrs;
 
-void				ft_ssl_err(const char *message) __attribute__((noreturn));
-t_md5_state			*make_md5_hash(t_md5_state *state);
-t_md5_state			*parse_opts(int argc, char **argv);
+void				md5(void *input);
+void				*parse_md5_opts(int argc, char **argv);
 void				print_md5_state(t_md5_state *state);
+void				ft_ssl_err(const char *message) __attribute__((noreturn));
 #endif
