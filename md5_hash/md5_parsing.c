@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/11 16:54:53 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/07/11 18:27:34 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/07/12 15:50:14 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ static void	read_from_stdin(t_md5_state *state, t_digest *digest)
 {
 	char	*new_offset;
 
-	digest->state = ft_str_from_fd(STDIN);
+	digest->pre_image = ft_str_from_fd(STDIN);
 	digest->type = FROM_STDIN;
 	state->digests = ft_bufaddspace(state->digests, sizeof(t_digest));
 	new_offset = (char*)state->digests->buf + sizeof(t_digest);
@@ -90,7 +90,7 @@ static void	*read_from_file(t_md5_state *state, t_digest *digest, char **argv, i
 
 	if (ERR((fd = open(argv[*i], O_RDONLY))))
 		ft_ssl_err(FT_MD5_NO_SUCH_FILE);
-	digest->state = ft_str_from_fd(fd);
+	digest->pre_image = ft_str_from_fd(fd);
 	close(fd);
 	digest->type = FROM_FILE;
 	SET_F(state->flags);
@@ -116,7 +116,7 @@ static void	parse_md5_opts_handler(t_md5_state *state, t_digest *digest, char **
 	{
 		if (!argv[*i + 1])
 			ft_ssl_err("error");
-		digest->state = ft_strdup(argv[*i + 1]);
+		digest->pre_image = ft_strdup(argv[*i + 1]);
 		digest->type = FROM_STRING;
 		ft_bufappend(state->digests, digest, DIGEST_SZ);
 		*i += 1;
