@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/30 20:13:01 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/07/13 13:48:28 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/07/13 18:08:24 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,25 +149,24 @@ size_t	get_md5_padding(size_t len)
 	return (a * 512 - 64 - 1 - len - 7);
 }
 
-# define FROM_BITS(x) (x / sizeof(char))
-# define TO_BITS(x) (x * sizeof(char))
+# define FROM_BITS(x) (x / 8)
+# define TO_BITS(x) (x * 8)
 
 char	*pad_pre_image(char *pre_image, size_t *len)
 {
 	size_t		orig_bit_len;
 	size_t		padding_bit_len;
 	char		*padded_pre_image;
-	t_cnv		f;
 
 	orig_bit_len = TO_BITS(LEN(pre_image, 0));
-	padding_bit_len = get_md5_padding(orig_bit_len);
+	padding_bit_len = TO_BITS(get_md5_padding(orig_bit_len));
 	*len = orig_bit_len + 1 + padding_bit_len + 64 - 7;
 	if (!(padded_pre_image = ft_strnew(FROM_BITS(*len))))
 		ft_ssl_err("error");
 	ft_memcpy(padded_pre_image, pre_image, FROM_BITS(orig_bit_len));
 	padded_pre_image[FROM_BITS(orig_bit_len)] = 0x80;
-	ft_bzero(FROM_BITS(padded_pre_image + orig_bit_len + 1), padding_bit_len);
-	ft_memcpy(pad_pre_image + orig_bit_len + 1 + padding_bit_len, (void*)&orig_bit_len, sizeof(size_t));
+	ft_bzero(padded_pre_image + orig_bit_len + 1, FROM_BITS(padding_bit_len));
+	ft_memcpy((void*)(padded_pre_image + FROM_BITS(orig_bit_len) + 1 + FROM_BITS(padding_bit_len)), (void*)&orig_bit_len, sizeof(size_t));
 	return (padded_pre_image);
 }
 
@@ -205,7 +204,6 @@ char	*md5_transform(t_digest *digest)
 	char		*padded_pre_image;
 	uint32_t	chaining_vars[4];
 	uint32_t	message[16];
-	size_t		round;
 	uint32_t	a;
 	uint32_t	b;
 	uint32_t	c;
