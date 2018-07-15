@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/30 20:13:01 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/07/13 18:08:24 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/07/15 10:56:34 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,7 +146,7 @@ size_t	get_md5_padding(size_t len)
 	a = 0;
 	while (a * 512 < (len + 64 + 1))
 		a += 1;
-	return (a * 512 - 64 - 1 - len - 7);
+	return (a * 512 - 64 - 1 - len);
 }
 
 # define FROM_BITS(x) (x / 8)
@@ -154,19 +154,24 @@ size_t	get_md5_padding(size_t len)
 
 char	*pad_pre_image(char *pre_image, size_t *len)
 {
+	t_cnv		f;
 	size_t		orig_bit_len;
 	size_t		padding_bit_len;
 	char		*padded_pre_image;
 
 	orig_bit_len = TO_BITS(LEN(pre_image, 0));
-	padding_bit_len = TO_BITS(get_md5_padding(orig_bit_len));
-	*len = orig_bit_len + 1 + padding_bit_len + 64 - 7;
+	padding_bit_len = get_md5_padding(orig_bit_len);
+	*len = orig_bit_len + 1 + padding_bit_len + 64;
 	if (!(padded_pre_image = ft_strnew(FROM_BITS(*len))))
 		ft_ssl_err("error");
 	ft_memcpy(padded_pre_image, pre_image, FROM_BITS(orig_bit_len));
-	padded_pre_image[FROM_BITS(orig_bit_len)] = 0x80;
-	ft_bzero(padded_pre_image + orig_bit_len + 1, FROM_BITS(padding_bit_len));
+	padded_pre_image[FROM_BITS(orig_bit_len)] = (unsigned char)128;
+	ft_bzero(padded_pre_image + FROM_BITS(orig_bit_len) + 1, FROM_BITS(padding_bit_len/* - 7*/));
+	
+	f = to_bin;
 	ft_memcpy((void*)(padded_pre_image + FROM_BITS(orig_bit_len) + 1 + FROM_BITS(padding_bit_len)), (void*)&orig_bit_len, sizeof(size_t));
+	if (!ft_snprintf(padded_pre_image + orig_bit_len + padding_bit_len, 65, "%0.64b", (void*)&orig_bit_len))
+		return (NULL);
 	return (padded_pre_image);
 }
 
@@ -216,6 +221,7 @@ char	*md5_transform(t_digest *digest)
 	chaining_vars[D] = 0x76543210;
 	padded_pre_image = pad_pre_image(digest->pre_image, &len);
 	ft_memcpy(message, padded_pre_image, sizeof(uint32_t) * 16);
+	len = FROM_BITS(len);
 
 	while (position < len)
 	{
@@ -300,11 +306,18 @@ char	*md5_transform(t_digest *digest)
 		chaining_vars[B] += b;
 		chaining_vars[C] += c;
 		chaining_vars[D] += d;
-		position += 512;
 		ft_memcpy(message, padded_pre_image + position, sizeof(uint32_t) * 16);
+		position += FROM_BITS(512);
 	}
-	ft_printf("%s", padded_pre_image);
 	return (ft_strndup((char*)chaining_vars, sizeof(uint32_t) * 4));
+}
+
+void	from_hex_hash(char *hash_value)
+{
+	for (size_t i = 0; i < 16; i++)
+	{
+		ft_printf("%02x", hash_value[i]);
+	}
 }
 
 void	md5(void *input)
@@ -312,7 +325,7 @@ void	md5(void *input)
 	size_t		i;
 	size_t		total;
 	t_digest	*digest;
-	char		*hash;
+	// char		*hash;
 	t_md5_state	*state;
 
 	i = 0;
@@ -321,8 +334,9 @@ void	md5(void *input)
 	while (i <= total - sizeof(t_digest))
 	{
 		digest = (t_digest*)&((char*)state->digests->buf)[i];
-		hash = md5_transform(digest);
-		ft_memcpy(digest->hash_value, hash, MD5_HASH_SIZE);
+		from_hex_hash(md5_transform(digest));
+		// hash = from_hex_hash(md5_transform(digest));
+		// ft_memcpy(digest->hash_value, hash, MD5_HASH_SIZE);
 		i += sizeof(t_digest);
 	}
 	print_md5_state(state);
