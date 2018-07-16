@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/30 20:13:01 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/07/15 16:51:41 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/07/16 14:53:17 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,48 +132,8 @@
 ** 	concatenation of A, B, C, and D.
 */
 
-void	to_bin(t_fmt *fmt)
-{
-	fmt->out = ft_uintmaxtoa_base(*(size_t*)fmt->type.void_ptr, 2, "01");
-	fmt->len.out = LEN(fmt->out, 0);
-	ftprintf_format_nbr(fmt);
-}
-
-size_t	get_md5_padding(size_t len)
-{
-	size_t a;
-
-	a = 0;
-	while (a * 512 < (len + 64 + 1))
-		a += 1;
-	return (a * 512 - 64 - 1 - len);
-}
-
 # define FROM_BITS(x) (x / 8)
 # define TO_BITS(x) (x * 8)
-
-char	*pad_pre_image(char *pre_image, size_t *len)
-{
-	// t_cnv		f;
-	size_t		orig_bit_len;
-	size_t		padding_bit_len;
-	char		*padded_pre_image;
-
-	orig_bit_len = TO_BITS(LEN(pre_image, 0));
-	padding_bit_len = get_md5_padding(orig_bit_len);
-	*len = orig_bit_len + 1 + padding_bit_len + 64;
-	if (!(padded_pre_image = ft_strnew(FROM_BITS(*len))))
-		ft_ssl_err("error");
-	ft_memcpy(padded_pre_image, pre_image, FROM_BITS(orig_bit_len));
-	padded_pre_image[FROM_BITS(orig_bit_len)] = 0x80;
-	ft_bzero(padded_pre_image + FROM_BITS(orig_bit_len) + 1, FROM_BITS(padding_bit_len/* - 7*/));
-	// f = to_bin;
-	ft_memcpy((void*)(padded_pre_image + FROM_BITS(orig_bit_len) + 1 + FROM_BITS(padding_bit_len)), (void*)&orig_bit_len, sizeof(size_t));
-	// if (!ft_snprintf(padded_pre_image + orig_bit_len + padding_bit_len, 65, "%0.64b", (void*)&orig_bit_len))
-	// 	return (NULL);
-	return (padded_pre_image);
-}
-
 # define A 0
 # define B 1
 # define C 2
@@ -201,11 +161,80 @@ char	*pad_pre_image(char *pre_image, size_t *len)
 # define HH(a, b, c, d, m_j, s, t_i) (a = b + ROTATE_LEFT((a + H(b, c, d) + m_j + t_i), s))
 # define II(a, b, c, d, m_j, s, t_i) (a = b + ROTATE_LEFT((a + I(b, c, d) + m_j + t_i), s))
 
-char	*md5_transform(t_digest *digest)
+void	to_bin(t_fmt *fmt)
+{
+	fmt->out = ft_uintmaxtoa_base(*(size_t*)fmt->type.void_ptr, 2, "01");
+	fmt->len.out = LEN(fmt->out, 0);
+	ftprintf_format_nbr(fmt);
+}
+
+size_t	get_md5_padding(size_t len)
+{
+	size_t a;
+
+	a = 0;
+	while (a * 512 < (len + 64 + 1))
+		a += 1;
+	return (a * 512 - 64 - 1 - len);
+}
+
+
+/* Encodes input (UINT4) into output (unsigned char). Assumes len is
+  a multiple of 4.
+ */
+static unsigned char *Encode(unsigned char *output, uint32_t *input, unsigned int len)
+{
+  unsigned int i, j;
+
+  for (i = 0, j = 0; j < len; i++, j += 4) {
+ output[j] = (unsigned char)(input[i] & 0xff);
+ output[j+1] = (unsigned char)((input[i] >> 8) & 0xff);
+ output[j+2] = (unsigned char)((input[i] >> 16) & 0xff);
+ output[j+3] = (unsigned char)((input[i] >> 24) & 0xff);
+  }
+  return (output);
+}
+
+/* Decodes input (unsigned char) into output (uint32_t). Assumes len is
+  a multiple of 4.
+ */
+static uint32_t *Decode (uint32_t *output, unsigned char *input, unsigned int len)
+{
+  unsigned int i, j;
+
+  for (i = 0, j = 0; j < len; i++, j += 4)
+ output[i] = ((uint32_t)input[j]) | (((uint32_t)input[j+1]) << 8) |
+   (((uint32_t)input[j+2]) << 16) | (((uint32_t)input[j+3]) << 24);
+   return (output);
+}
+
+unsigned char	*pad_pre_image(char *pre_image, size_t *len)
+{
+	// t_cnv		f;
+	size_t		orig_bit_len;
+	size_t		padding_bit_len;
+	unsigned char		*padded_pre_image;
+
+	orig_bit_len = TO_BITS(LEN(pre_image, 0));
+	padding_bit_len = get_md5_padding(orig_bit_len);
+	*len = orig_bit_len + 1 + padding_bit_len + 64;
+	if (!(padded_pre_image = (unsigned char*)ft_strnew(FROM_BITS(*len))))
+		ft_ssl_err("error");
+	ft_memcpy(padded_pre_image, pre_image, FROM_BITS(orig_bit_len));
+	padded_pre_image[FROM_BITS(orig_bit_len)] = 0x80;
+	ft_bzero(padded_pre_image + FROM_BITS(orig_bit_len) + 1, FROM_BITS(padding_bit_len/* - 7*/));
+	// f = to_bin;
+	ft_memcpy((void*)(padded_pre_image + FROM_BITS(orig_bit_len) + 1 + FROM_BITS(padding_bit_len)), (void*)&orig_bit_len, sizeof(size_t));
+	// if (!ft_snprintf(padded_pre_image + orig_bit_len + padding_bit_len, 65, "%0.64b", (void*)&orig_bit_len))
+	// 	return (NULL);
+	return (Encode((unsigned char*)ft_strnew(FROM_BITS(*len)), (uint32_t*)padded_pre_image, FROM_BITS(*len)));
+}
+
+unsigned char	*md5_transform(t_digest *digest)
 {
 	size_t		len;
 	size_t		position;
-	char		*padded_pre_image;
+	unsigned char		*padded_pre_image;
 	uint32_t	chaining_vars[4];
 	uint32_t	message[16];
 	uint32_t	a;
@@ -219,11 +248,11 @@ char	*md5_transform(t_digest *digest)
 	chaining_vars[C] = 0x98badcfe;
 	chaining_vars[D] = 0x10325476;
 	padded_pre_image = pad_pre_image(digest->pre_image, &len);
-	ft_memcpy(message, padded_pre_image, sizeof(uint32_t) * 16);
 	len = FROM_BITS(len);
 
 	while (position < len)
 	{
+		Decode((uint32_t*)message, padded_pre_image + position, sizeof(uint32_t) * 16);
 		a = chaining_vars[A];
 		b = chaining_vars[B];
 		c = chaining_vars[C];
@@ -305,17 +334,20 @@ char	*md5_transform(t_digest *digest)
 		chaining_vars[B] += b;
 		chaining_vars[C] += c;
 		chaining_vars[D] += d;
-		ft_memcpy(message, padded_pre_image + position, sizeof(uint32_t) * 16);
+		// ft_memcpy(message, padded_pre_image + position, sizeof(uint32_t) * 16);
+		// Encode((uint32_t*)message, padded_pre_image, sizeof(uint32_t) * 16);
+		Encode((unsigned char*)message, (uint32_t*)padded_pre_image + position, sizeof(uint32_t) * 16);
 		position += FROM_BITS(512);
 	}
-	return (ft_strndup((char*)chaining_vars, sizeof(uint32_t) * 4));
+	return Encode((unsigned char*)ft_strnew(len), (uint32_t*)chaining_vars, sizeof(uint32_t) * 4);
+	// return (ft_strndup((char*)chaining_vars, sizeof(uint32_t) * 4));
 }
 
-void	from_hex_hash(char *hash_value)
+void	from_hex_hash(unsigned char *hash_value)
 {
 	for (unsigned int i = 0; i < 16; i++)
 	{
-		printf("%02x", hash_value[i]);
+		printf("%02x\n", hash_value[i]);
 	}
 }
 

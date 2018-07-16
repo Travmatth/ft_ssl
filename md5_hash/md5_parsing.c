@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/11 16:54:53 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/07/12 15:50:14 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/07/16 13:25:03 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,7 @@ static void	read_from_stdin(t_md5_state *state, t_digest *digest)
 	new_offset = (char*)state->digests->buf + sizeof(t_digest);
 	ft_memmove((void*)new_offset, state->digests->buf, state->digests->current);
 	ft_memcpy(state->digests->buf, (void*)digest, sizeof(t_digest));
+	state->digests->current += sizeof(t_digest);
 }
 
 /*
@@ -145,7 +146,7 @@ void		*parse_md5_opts(int argc, char **argv)
 	i = -1;
 	while (++i < argc - 1)
 		parse_md5_opts_handler(state, &digest, argv, &i);
-	if (GET_F(state->flags) || GET_P(state->flags))
+	if (!GET_F(state->flags) || GET_P(state->flags))
 		read_from_stdin(state, &digest);
 	return ((void*)state);
 }
