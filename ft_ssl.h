@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/16 12:34:43 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/07/13 11:24:57 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/07/18 16:16:34 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,36 @@
 # define GET_S(v) (BITTEST(v, 3))
 # define GET_F(v) (BITTEST(v, 4))
 
+# define DIGEST(state, i) ((t_digest*)((char*)state->digests->buf + i))
+# define FROM_BITS(x) (x / 8)
+# define TO_BITS(x) (x * 8)
+# define A 0
+# define B 1
+# define C 2
+# define D 3
+
+# define F(x, y, z) (((x) & (y)) | ((~x) & (z)))
+# define G(x, y, z) (((x) & (z)) | ((y) & (~z)))
+# define H(x, y, z) ((x) ^ (y) ^ (z))
+# define I(x, y, z) ((y) ^ ((x) | (~z)))
+
+
+/*
+** ROTATE_LEFT rotates x left n bits.
+*/
+
+#define ROTATE_LEFT(x, n) (((x) << (n)) | ((x) >> (32-(n))))
+
+/*
+** FF, GG, HH, and II transformations for rounds 1, 2, 3, and 4.
+** Rotation is separate from addition to prevent recomputation.
+*/
+
+# define FF(a, b, c, d, m_j, s, t_i) (a = b + ROTATE_LEFT((a + F(b, c, d) + m_j + t_i), s))
+# define GG(a, b, c, d, m_j, s, t_i) (a = b + ROTATE_LEFT((a + G(b, c, d) + m_j + t_i), s))
+# define HH(a, b, c, d, m_j, s, t_i) (a = b + ROTATE_LEFT((a + H(b, c, d) + m_j + t_i), s))
+# define II(a, b, c, d, m_j, s, t_i) (a = b + ROTATE_LEFT((a + I(b, c, d) + m_j + t_i), s))
+
 typedef uint8_t		t_byte;
 typedef uint32_t	t_word;
 
@@ -50,7 +80,8 @@ typedef struct		s_digest
 {
 	char			hash_value[MD5_HASH_SIZE];
 	char			*pre_image;
-	char			type;
+	char			*file_name;
+	int				type;
 }					t_digest;
 
 typedef struct		s_md5_state

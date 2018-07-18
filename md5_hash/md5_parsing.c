@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/11 16:54:53 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/07/16 13:25:03 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/07/18 15:45:33 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,7 @@ static void	*read_from_file(t_md5_state *state, t_digest *digest, char **argv, i
 	digest->pre_image = ft_str_from_fd(fd);
 	close(fd);
 	digest->type = FROM_FILE;
+	digest->file_name = argv[*i];
 	SET_F(state->flags);
 	return (digest);
 }
