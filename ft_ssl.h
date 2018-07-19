@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/16 12:34:43 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/07/18 16:16:34 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/07/18 17:36:47 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@
 # define GET_S(v) (BITTEST(v, 3))
 # define GET_F(v) (BITTEST(v, 4))
 
-# define DIGEST(state, i) ((t_digest*)((char*)state->digests->buf + i))
+# define MD5_DIGEST(state, i) ((t_digest*)((char*)state->digests->buf + i))
 # define FROM_BITS(x) (x / 8)
 # define TO_BITS(x) (x * 8)
 # define A 0
