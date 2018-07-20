@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/11 16:54:53 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/07/19 20:33:17 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/07/20 14:36:01 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,7 @@ static void	read_from_stdin(t_md5_state *state, t_digest *digest)
 	ft_memcpy(state->digests->buf, (void*)digest, sizeof(t_digest));
 	ft_memcpy((char*)state->digests->buf + sizeof(t_digest), tmp, state->digests->current);
 	state->digests->current += sizeof(t_digest);
+	free(tmp);
 }
 
 /*
@@ -101,13 +102,16 @@ static void	*read_from_file(t_md5_state *state, t_digest *digest, char **argv, i
 {
 	int			fd;
 
+	SET_F(state->flags);
+	digest->file_name = argv[*i];
 	if (ERR((fd = open(argv[*i], O_RDONLY))))
-		ft_ssl_err(FT_MD5_NO_SUCH_FILE);
+	{
+		digest->type = NO_INPUT;
+		return (digest);
+	}
 	digest->pre_image = ft_str_from_fd(fd);
 	close(fd);
 	digest->type = FROM_FILE;
-	digest->file_name = argv[*i];
-	SET_F(state->flags);
 	return (digest);
 }
 
@@ -115,12 +119,18 @@ static void	*read_from_file(t_md5_state *state, t_digest *digest, char **argv, i
 ** parses next option and modifies state with flag or string to be hashed
 */
 
-static void	parse_md5_opts_handler(t_md5_state *state, t_digest *digest, char **argv, int *i)
+static void	parse_md5_opts_handler(t_md5_state *state
+	, t_digest *digest
+	, char **argv
+	, int *i)
 {
 	void	*message;
 
 	ft_bzero(digest, sizeof(t_digest));
-	if (ft_strequ("-p", argv[*i]))
+	if (GET_F(state->flags))
+		ft_bufappend(state->digests
+			, message = read_from_file(state, digest, argv, i), DIGEST_SZ);
+	else if (ft_strequ("-p", argv[*i]))
 		SET_P(state->flags);
 	else if (ft_strequ("-q", argv[*i]))
 		SET_Q(state->flags);
@@ -137,10 +147,8 @@ static void	parse_md5_opts_handler(t_md5_state *state, t_digest *digest, char **
 		SET_S(state->flags);
 	}
 	else
-	{
-		message = read_from_file(state, digest, argv, i);
-		ft_bufappend(state->digests, message, DIGEST_SZ);
-	}
+		ft_bufappend(state->digests
+			, message = read_from_file(state, digest, argv, i), DIGEST_SZ);
 }
 
 /*

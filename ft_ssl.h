@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/16 12:34:43 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/07/19 20:32:55 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/07/20 14:25:35 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,18 +18,20 @@
 
 
 // to libftprintf
-# define DIGEST_SZ sizeof(t_digest)
 # define LESSER(x, y) (x < y ? x : y)
 # define STDIN 0
 # define STDOUT 1
 # define STDERR 2
 
+# define DIGEST_SZ sizeof(t_digest)
 # define FROM_FILE 0
 # define FROM_STRING 1
 # define FROM_STDIN 2
+# define NO_INPUT 3
 # define FT_SSL_FUNCS 1
 # define MD5_HASH_SIZE 33
-# define FT_MD5_NO_SUCH_FILE "md5: no such file"
+# define FT_MD5_NO_SUCH_FILE "ft_ssl: %s: no such file or directory\n"
+# define MD5_DIGEST(state, i) ((t_digest*)((char*)state->digests->buf + i))
 
 # define SET_P(v) (BITSET(v, 0))
 # define SET_Q(v) (BITSET(v, 1))
@@ -60,17 +62,20 @@
 ** ROTATE_LEFT rotates x left n bits.
 */
 
-#define ROTATE_LEFT(x, n) (((x) << (n)) | ((x) >> (32-(n))))
+# define R_LEFT(x, n) (((x) << (n)) | ((x) >> (32-(n))))
+# define MD5_SUM() ()
+
 
 /*
 ** FF, GG, HH, and II transformations for rounds 1, 2, 3, and 4.
 ** Rotation is separate from addition to prevent recomputation.
 */
 
-# define FF(a, b, c, d, m_j, s, t_i) (a = b + ROTATE_LEFT((a + F(b, c, d) + m_j + t_i), s))
-# define GG(a, b, c, d, m_j, s, t_i) (a = b + ROTATE_LEFT((a + G(b, c, d) + m_j + t_i), s))
-# define HH(a, b, c, d, m_j, s, t_i) (a = b + ROTATE_LEFT((a + H(b, c, d) + m_j + t_i), s))
-# define II(a, b, c, d, m_j, s, t_i) (a = b + ROTATE_LEFT((a + I(b, c, d) + m_j + t_i), s))
+
+# define FF(a, b, c, d, m_j, s, t_i) (a = b + R_LEFT((a + F(b, c, d) + m_j + t_i), s))
+# define GG(a, b, c, d, m_j, s, t_i) (a = b + R_LEFT((a + G(b, c, d) + m_j + t_i), s))
+# define HH(a, b, c, d, m_j, s, t_i) (a = b + R_LEFT((a + H(b, c, d) + m_j + t_i), s))
+# define II(a, b, c, d, m_j, s, t_i) (a = b + R_LEFT((a + I(b, c, d) + m_j + t_i), s))
 
 typedef uint8_t		t_byte;
 typedef uint32_t	t_word;

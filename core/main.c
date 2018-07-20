@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/30 20:18:19 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/07/11 17:32:08 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/07/20 14:26:57 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,5 +60,7 @@ int		main(int argc, char **argv)
 		ft_ssl_usage();
 	else if (get_function(&argc, &argv, &f, &p))
 		f(p(argc, argv));
+	while (1)
+		;
 	return (0);
 }

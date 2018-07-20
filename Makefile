@@ -4,6 +4,9 @@ ifdef TEST
 else
         DEBUG =
 endif
+ifdef LEAKS
+        DEBUG = -g
+endif
 
 NAME = ft_ssl
 LIBFT = libftprintf/libftprintf.a

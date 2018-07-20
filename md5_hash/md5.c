@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/30 20:13:01 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/07/19 20:08:00 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/07/20 15:01:19 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,7 @@ unsigned char	*pad_pre_image(char *pre_image, size_t *len)
 	size_t			orig_bit_len;
 	size_t			padding_bit_len;
 	unsigned char	*padded_pre_image;
+	unsigned char	*out;
 
 	orig_bit_len = TO_BITS(LEN(pre_image, 0));
 	padding_bit_len = get_md5_padding(orig_bit_len);
@@ -98,9 +99,11 @@ unsigned char	*pad_pre_image(char *pre_image, size_t *len)
 		, FROM_BITS(padding_bit_len));
 	ft_memcpy((void*)(padded_pre_image + FROM_BITS(orig_bit_len) + 1
 		+ FROM_BITS(padding_bit_len)), (void*)&orig_bit_len, sizeof(size_t));
-	return (ft_uint32_to_chr((unsigned char*)ft_strnew(FROM_BITS(*len))
+	out = ft_uint32_to_chr((unsigned char*)ft_strnew(FROM_BITS(*len))
 		, (uint32_t*)padded_pre_image
-		, FROM_BITS(*len)));
+		, FROM_BITS(*len));
+	free(padded_pre_image);
+	return (out);
 }
 
 unsigned char	*md5_transform(char *pre_image)
@@ -210,6 +213,7 @@ unsigned char	*md5_transform(char *pre_image)
 			, sizeof(uint32_t) * 16);
 		position += FROM_BITS(512);
 	}
+	free(padded_pre_image);
 	return ft_uint32_to_chr((unsigned char*)ft_strnew(MD5_HASH_SIZE)
 		, (uint32_t*)chaining_vars
 		, sizeof(uint32_t) * 4);
@@ -226,6 +230,7 @@ char	*from_hex_hash(char *output, unsigned char *hash_value)
 		i += 1;
 	}
 	output[32] = '\0';
+	free(hash_value);
 	return (ft_strdup(output));
 }
 
@@ -243,9 +248,13 @@ void	md5(void *input)
 	while (i < total)
 	{
 		digest = (t_digest*)&((char*)state->digests->buf)[i];
-		digest->hash_value = from_hex_hash(output, md5_transform(digest->pre_image));
+		if (digest->type != NO_INPUT)
+			digest->hash_value = from_hex_hash(output
+				, md5_transform(digest->pre_image));
 		i += sizeof(t_digest);
-		// i += 1;
 	}
 	print_md5_state(state);
+	free(state->digests->buf);
+	free(state->digests);
+	free(state);
 }
