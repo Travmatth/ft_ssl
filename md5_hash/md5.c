@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/30 20:13:01 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/07/18 18:16:57 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/07/19 20:08:00 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -210,25 +210,23 @@ unsigned char	*md5_transform(char *pre_image)
 			, sizeof(uint32_t) * 16);
 		position += FROM_BITS(512);
 	}
-	return ft_uint32_to_chr((unsigned char*)ft_strnew(len)
+	return ft_uint32_to_chr((unsigned char*)ft_strnew(MD5_HASH_SIZE)
 		, (uint32_t*)chaining_vars
 		, sizeof(uint32_t) * 4);
 }
 
-void	from_hex_hash(char *output, unsigned char *hash_value)
+char	*from_hex_hash(char *output, unsigned char *hash_value)
 {
 	size_t	i;
-	// char	chars[3];
 
 	i = 0;
 	while (i < 16)
 	{
-		ft_snprintf(/*chars*/output + (i * 2), 3, "%02x\n", hash_value[i]);
+		ft_snprintf(output + (i * 2), 3, "%02x\n", hash_value[i]);
 		i += 1;
-		// output[i * 2] = chars[0];
-		// output[(i++ * 2) + 1] = chars[1];
 	}
 	output[32] = '\0';
+	return (ft_strdup(output));
 }
 
 void	md5(void *input)
@@ -237,15 +235,17 @@ void	md5(void *input)
 	size_t		total;
 	t_digest	*digest;
 	t_md5_state	*state;
+	char		output[33];
 
 	i = 0;
 	state = (t_md5_state*)input;
 	total = state->digests->current;
-	while (i < total - sizeof(t_digest))
+	while (i < total)
 	{
 		digest = (t_digest*)&((char*)state->digests->buf)[i];
-		from_hex_hash(digest->hash_value, md5_transform(digest->pre_image));
+		digest->hash_value = from_hex_hash(output, md5_transform(digest->pre_image));
 		i += sizeof(t_digest);
+		// i += 1;
 	}
 	print_md5_state(state);
 }

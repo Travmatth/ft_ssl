@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/11 16:54:53 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/07/18 15:45:33 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/07/19 20:33:17 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,16 +70,28 @@ char		*ft_str_from_fd(int fd)
 
 static void	read_from_stdin(t_md5_state *state, t_digest *digest)
 {
-	char	*new_offset;
+	void	*tmp;
 
 	digest->pre_image = ft_str_from_fd(STDIN);
 	digest->type = FROM_STDIN;
+	tmp = ft_memdup(state->digests->buf, state->digests->current);
 	state->digests = ft_bufaddspace(state->digests, sizeof(t_digest));
-	new_offset = (char*)state->digests->buf + sizeof(t_digest);
-	ft_memmove((void*)new_offset, state->digests->buf, state->digests->current);
 	ft_memcpy(state->digests->buf, (void*)digest, sizeof(t_digest));
+	ft_memcpy((char*)state->digests->buf + sizeof(t_digest), tmp, state->digests->current);
 	state->digests->current += sizeof(t_digest);
 }
+
+/*
+** char	*new_offset;
+**
+** digest->pre_image = ft_str_from_fd(STDIN);
+** digest->type = FROM_STDIN;
+** state->digests = ft_bufaddspace(state->digests, sizeof(t_digest));
+** new_offset = (char*)state->digests->buf + sizeof(t_digest);
+** ft_memmove((void*)new_offset, state->digests->buf, state->digests->current);
+** ft_memcpy(state->digests->buf, (void*)digest, sizeof(t_digest));
+** state->digests->current += sizeof(t_digest);
+*/
 
 /*
 ** attempt to read string from file given by user
@@ -122,6 +134,7 @@ static void	parse_md5_opts_handler(t_md5_state *state, t_digest *digest, char **
 		digest->type = FROM_STRING;
 		ft_bufappend(state->digests, digest, DIGEST_SZ);
 		*i += 1;
+		SET_S(state->flags);
 	}
 	else
 	{
@@ -145,9 +158,9 @@ void		*parse_md5_opts(int argc, char **argv)
 		|| !(state->digests = ft_bufnew(ft_memalloc(DIGEST_SZ), 0, DIGEST_SZ)))
 		ft_ssl_err("error");
 	i = -1;
-	while (++i < argc - 1)
+	while (++i < argc)
 		parse_md5_opts_handler(state, &digest, argv, &i);
-	if (!GET_F(state->flags) || GET_P(state->flags))
+	if ((!GET_F(state->flags) && !GET_S(state->flags)) || GET_P(state->flags))
 		read_from_stdin(state, &digest);
 	return ((void*)state);
 }

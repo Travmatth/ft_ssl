@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/16 12:34:43 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/07/18 17:36:47 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/07/19 20:32:55 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@
 # define FROM_STRING 1
 # define FROM_STDIN 2
 # define FT_SSL_FUNCS 1
-# define MD5_HASH_SIZE 32
+# define MD5_HASH_SIZE 33
 # define FT_MD5_NO_SUCH_FILE "md5: no such file"
 
 # define SET_P(v) (BITSET(v, 0))
@@ -43,7 +43,6 @@
 # define GET_S(v) (BITTEST(v, 3))
 # define GET_F(v) (BITTEST(v, 4))
 
-# define MD5_DIGEST(state, i) ((t_digest*)((char*)state->digests->buf + i))
 # define FROM_BITS(x) (x / 8)
 # define TO_BITS(x) (x * 8)
 # define A 0
@@ -78,10 +77,10 @@ typedef uint32_t	t_word;
 
 typedef struct		s_digest
 {
-	char			hash_value[MD5_HASH_SIZE];
 	char			*pre_image;
 	char			*file_name;
 	int				type;
+	char			*hash_value;
 }					t_digest;
 
 typedef struct		s_md5_state
