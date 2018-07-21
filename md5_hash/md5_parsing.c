@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/11 16:54:53 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/07/20 14:36:01 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/07/21 11:32:59 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,9 @@ static void	read_from_stdin(t_md5_state *state, t_digest *digest)
 	tmp = ft_memdup(state->digests->buf, state->digests->current);
 	state->digests = ft_bufaddspace(state->digests, sizeof(t_digest));
 	ft_memcpy(state->digests->buf, (void*)digest, sizeof(t_digest));
-	ft_memcpy((char*)state->digests->buf + sizeof(t_digest), tmp, state->digests->current);
+	ft_memcpy((char*)state->digests->buf + sizeof(t_digest)
+			, tmp
+			, state->digests->current);
 	state->digests->current += sizeof(t_digest);
 	free(tmp);
 }
@@ -98,7 +100,9 @@ static void	read_from_stdin(t_md5_state *state, t_digest *digest)
 ** attempt to read string from file given by user
 */
 
-static void	*read_from_file(t_md5_state *state, t_digest *digest, char **argv, int *i)
+static void	*read_from_file(t_md5_state *state
+							, t_digest *digest
+							, char **argv, int *i)
 {
 	int			fd;
 
