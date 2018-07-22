@@ -1,74 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   md5_parsing.c                                      :+:      :+:    :+:   */
+/*   hash_parsing.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/07/11 16:54:53 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/07/21 11:32:59 by tmatthew         ###   ########.fr       */
+/*   Created: 2018/07/21 20:14:53 by tmatthew          #+#    #+#             */
+/*   Updated: 2018/07/21 20:48:17 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../ft_ssl.h"
 
 /*
-** expand buf by given size, free previous buf
-*/
-
-t_buf		*ft_bufaddspace(t_buf *b, size_t i)
-{
-	char	*tmp;
-
-	if (!b)
-		return (NULL);
-	if (!i)
-		return (b);
-	tmp = ft_memalloc(b->total + i);
-	ft_memcpy(tmp, b->buf, b->current);
-	free(b->buf);
-	b->buf = tmp;
-	b->total += i;
-	return (b);
-}
-
-/*
-** reads a given fd and returns a string with its contents
-*/
-
-char		*ft_str_from_fd(int fd)
-{
-	size_t	len;
-	size_t	bytes;
-	char	*tmp;
-	char	*string;
-	char	buf[BUFF_SIZE];
-
-	bytes = 0;
-	string = NULL;
-	while ((bytes = read(fd, buf, BUFF_SIZE)) != 0)
-	{
-		if (string)
-		{
-			len = LEN(string, 0);
-			if (!(tmp = ft_strnew(len + bytes)))
-				ft_ssl_err("error");
-			ft_memcpy(tmp, string, len);
-			ft_memcpy(tmp + len, buf, bytes);
-			free(string);
-			string = tmp;
-		}
-		else
-			string = ft_strndup(buf, bytes);
-	}
-	return (string);
-}
-
-/*
 ** attempt to read string from file given by user
 */
 
-static void	read_from_stdin(t_md5_state *state, t_digest *digest)
+void	read_from_stdin(t_hash_state *state, t_digest *digest)
 {
 	void	*tmp;
 
@@ -85,22 +33,10 @@ static void	read_from_stdin(t_md5_state *state, t_digest *digest)
 }
 
 /*
-** char	*new_offset;
-**
-** digest->pre_image = ft_str_from_fd(STDIN);
-** digest->type = FROM_STDIN;
-** state->digests = ft_bufaddspace(state->digests, sizeof(t_digest));
-** new_offset = (char*)state->digests->buf + sizeof(t_digest);
-** ft_memmove((void*)new_offset, state->digests->buf, state->digests->current);
-** ft_memcpy(state->digests->buf, (void*)digest, sizeof(t_digest));
-** state->digests->current += sizeof(t_digest);
-*/
-
-/*
 ** attempt to read string from file given by user
 */
 
-static void	*read_from_file(t_md5_state *state
+void	*read_from_file(t_hash_state *state
 							, t_digest *digest
 							, char **argv, int *i)
 {
@@ -123,7 +59,7 @@ static void	*read_from_file(t_md5_state *state
 ** parses next option and modifies state with flag or string to be hashed
 */
 
-static void	parse_md5_opts_handler(t_md5_state *state
+static void	parse_hash_opts_handler(t_hash_state *state
 	, t_digest *digest
 	, char **argv
 	, int *i)
@@ -160,18 +96,18 @@ static void	parse_md5_opts_handler(t_md5_state *state
 ** a struct holding an array with every string to be hashed
 */
 
-void		*parse_md5_opts(int argc, char **argv)
+void		*parse_hash_opts(int argc, char **argv)
 {
 	int			i;
 	t_digest	digest;
-	t_md5_state	*state;
+	t_hash_state	*state;
 
-	if (!(state = ft_memalloc(sizeof(t_md5_state)))
+	if (!(state = ft_memalloc(sizeof(t_hash_state)))
 		|| !(state->digests = ft_bufnew(ft_memalloc(DIGEST_SZ), 0, DIGEST_SZ)))
 		ft_ssl_err("error");
 	i = -1;
 	while (++i < argc)
-		parse_md5_opts_handler(state, &digest, argv, &i);
+		parse_hash_opts_handler(state, &digest, argv, &i);
 	if ((!GET_F(state->flags) && !GET_S(state->flags)) || GET_P(state->flags))
 		read_from_stdin(state, &digest);
 	return ((void*)state);
