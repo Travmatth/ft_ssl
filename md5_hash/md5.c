@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/30 20:13:01 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/07/21 20:54:34 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/07/22 19:59:02 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,10 +51,7 @@ void			md5_rounds(uint32_t *message, uint32_t *chaining_vars)
 	vars[C] = chaining_vars[C];
 	vars[D] = chaining_vars[D];
 	while (i < 4)
-	{
-		md5_round(i, message, vars);
-		i += 1;
-	}
+		md5_round(i++, message, vars);
 	chaining_vars[A] += vars[A];
 	chaining_vars[B] += vars[B];
 	chaining_vars[C] += vars[C];
@@ -106,7 +103,7 @@ void			md5(void *input)
 		digest = (t_digest*)&((char*)state->digests->buf)[i];
 		if (digest->type != NO_INPUT)
 			digest->hash_value = from_hex_hash(output
-				, md5_transform(digest->pre_image));
+				, md5_transform(digest->pre_image), 16);
 		i += sizeof(t_digest);
 	}
 	print_hash_state("MD5", state);

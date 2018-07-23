@@ -13,8 +13,10 @@ LIBFT = libftprintf/libftprintf.a
 CFLAGS += -Wall -Wextra -Werror -Wpedantic
 LDFLAGS := -Llibftprintf -lftprintf -I./md5_hash
 FT_MD5 := md5 md5_hashing
+FT_SHA256 := sha256
 CORE := main hash_parsing hash_printing hash_padding
 FILES := $(addprefix md5_hash/, $(FT_MD5)) \
+	$(addprefix sha256_hash/, $(FT_SHA256)) \
 	$(addprefix core/, $(CORE))
 SRC := $(addsuffix .c, $(FILES))
 OBJ := $(SRC:.c=.o)
