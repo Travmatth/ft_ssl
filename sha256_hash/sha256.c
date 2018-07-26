@@ -6,12 +6,13 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/22 12:41:53 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/07/25 20:34:41 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/07/26 14:30:56 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../ft_ssl.h"
 #include "sha256.h"
+#include "sha256_constants.h"
 
 void			sha256_round(int i, uint32_t *message_schedule, uint32_t *vars)
 {

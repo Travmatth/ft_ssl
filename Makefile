@@ -11,9 +11,9 @@ endif
 NAME = ft_ssl
 LIBFT = libftprintf/libftprintf.a
 CFLAGS += -Wall -Wextra -Werror -Wpedantic
-LDFLAGS := -Llibftprintf -lftprintf -I./md5_hash
+LDFLAGS := -Llibftprintf -lftprintf -I./md5_hash -I./sha256_hash
 FT_MD5 := md5 md5_hashing
-FT_SHA256 := sha256
+FT_SHA256 := sha256 sha256_helpers
 CORE := main hash_parsing hash_printing hash_padding
 FILES := $(addprefix md5_hash/, $(FT_MD5)) \
 	$(addprefix sha256_hash/, $(FT_SHA256)) \
@@ -23,7 +23,11 @@ OBJ := $(SRC:.c=.o)
 
 .PHONY = all clean fclean re
 
-all: $(NAME)
+all: $(SUBMODULES) $(NAME)
+
+$(SUBMODULES):
+	@git submodule init
+	@git submodule update
 
 $(LIBFT):
 	@$(MAKE) -C libftprintf

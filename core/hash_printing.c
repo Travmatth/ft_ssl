@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/21 20:35:57 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/07/25 20:23:31 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/07/26 14:58:22 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,8 @@ void			hash_print_handler(char *hash
 		ft_printf("%s (%s) = %s\n", hash, d->file_name, d->hash_value);
 	else if (d->type == FROM_STRING)
 		ft_printf("%s (\"%s\") = %s\n", hash, d->pre_image, d->hash_value);
+	else if (d->type == FROM_STDIN)
+		ft_printf("%s\n", d->hash_value);
 	free(d->pre_image);
 	free(d->hash_value);
 	*i += sizeof(t_digest);

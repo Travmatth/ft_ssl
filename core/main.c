@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/30 20:18:19 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/07/22 19:38:02 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/07/26 15:08:51 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,23 @@ void	ft_ssl_err(const char *message)
 	exit(1);
 }
 
+void	ft_ssl_cmd_err(char *command)
+{
+	char	*err;
+
+	err = "ft_ssl: Error: '%s' is an invalid command\n";
+	ft_putendl((err = ft_swap(err, "%s", command)));
+	free(err);
+	ft_putendl("Standard commands:");
+	ft_putendl("");
+	ft_putendl("Message Digest commands:");
+	ft_putendl("md5");
+	ft_putendl("sha256");
+	ft_putendl("");
+	ft_putendl("Cipher commands:");
+	ft_ssl_err("");
+}
+
 int		get_function(int *argc, char ***argv, t_f *f, t_p *p)
 {
 	size_t	i;
@@ -49,6 +66,7 @@ int		get_function(int *argc, char ***argv, t_f *f, t_p *p)
 		}
 		i += 1;
 	}
+	ft_ssl_cmd_err((char*)argv[0][0]);
 	return (0);
 }
 
@@ -61,7 +79,5 @@ int		main(int argc, char **argv)
 		ft_ssl_usage();
 	else if (get_function(&argc, &argv, &f, &p))
 		f(p(argc, argv));
-	while (1)
-		;
 	return (0);
 }
