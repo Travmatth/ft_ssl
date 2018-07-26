@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/16 12:34:43 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/07/22 19:56:48 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/07/25 20:35:26 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,6 @@ typedef struct	s_ptrs
 	t_f			f;
 	t_p			p;
 }				t_ptrs;
-
 
 char			*from_hex_hash(char *output
 							, unsigned char *hash_value, size_t len);

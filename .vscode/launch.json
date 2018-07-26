@@ -10,7 +10,7 @@
         "request": "launch",
         "program": "${workspaceRoot}/ft_ssl",
         // "args": ["md5", "-p"/*, "-q", "-r", "-s", "string_test", "test"*/],
-        "args": ["sha256", "big_smoke_order_remix"/*"-r", "-p", "-s", "\"foo\"", "file", "-s", "\"bar\""*/],
+        "args": ["sha256", "-s", "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq"/*"-r", "-p", "-s", "\"foo\"", "file", "-s", "\"bar\""*/],
         "stopAtEntry": false,
         "cwd": "${workspaceRoot}",
         "preLaunchTask": "build",

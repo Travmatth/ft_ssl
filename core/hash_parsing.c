@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/21 20:14:53 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/07/21 20:48:17 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/07/25 20:24:27 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 ** attempt to read string from file given by user
 */
 
-void	read_from_stdin(t_hash_state *state, t_digest *digest)
+void		read_from_stdin(t_hash_state *state, t_digest *digest)
 {
 	void	*tmp;
 
@@ -36,7 +36,7 @@ void	read_from_stdin(t_hash_state *state, t_digest *digest)
 ** attempt to read string from file given by user
 */
 
-void	*read_from_file(t_hash_state *state
+void		*read_from_file(t_hash_state *state
 							, t_digest *digest
 							, char **argv, int *i)
 {
@@ -98,8 +98,8 @@ static void	parse_hash_opts_handler(t_hash_state *state
 
 void		*parse_hash_opts(int argc, char **argv)
 {
-	int			i;
-	t_digest	digest;
+	int				i;
+	t_digest		digest;
 	t_hash_state	*state;
 
 	if (!(state = ft_memalloc(sizeof(t_hash_state)))

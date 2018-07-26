@@ -6,14 +6,12 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/21 20:52:13 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/07/21 20:53:15 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/07/25 20:24:52 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MD5_CONSTANTS_H
 # define MD5_CONSTANTS_H
-
-// # include "md5.h"
 
 typedef struct	s_md5_round
 {

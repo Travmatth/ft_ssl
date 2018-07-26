@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/21 20:35:57 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/07/22 19:57:40 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/07/25 20:23:31 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,14 @@
 ** convert given hex values into into string
 */
 
-char			*from_hex_hash(char *output, unsigned char *hash_value, size_t len)
+char			*from_hex_hash(char *output
+							, unsigned char *hash_value
+							, size_t len)
 {
 	size_t	i;
 
 	i = 0;
-	while (i < len/*16*/)
+	while (i < len)
 	{
 		ft_snprintf(output + (i * 2), 3, "%02x\n", hash_value[i]);
 		i += 1;

@@ -6,13 +6,13 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/21 20:00:36 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/07/23 12:33:35 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/07/25 20:22:48 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../ft_ssl.h"
 
-size_t		get_hash_padding(size_t len)
+size_t			get_hash_padding(size_t len)
 {
 	size_t a;
 

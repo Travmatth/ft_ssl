@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/30 20:13:01 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/07/22 19:59:02 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/07/25 20:25:50 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 extern t_md5_round	g_md5_rounds[4][16];
 
-void			md5_round(short i, uint32_t *message, uint32_t *vars)
+void				md5_round(short i, uint32_t *message, uint32_t *vars)
 {
 	short		j;
 	t_md5_round	n;
@@ -40,7 +40,7 @@ void			md5_round(short i, uint32_t *message, uint32_t *vars)
 	}
 }
 
-void			md5_rounds(uint32_t *message, uint32_t *chaining_vars)
+void				md5_rounds(uint32_t *message, uint32_t *chaining_vars)
 {
 	short		i;
 	uint32_t	vars[4];
@@ -58,7 +58,7 @@ void			md5_rounds(uint32_t *message, uint32_t *chaining_vars)
 	chaining_vars[D] += vars[D];
 }
 
-unsigned char	*md5_transform(char *pre_image)
+unsigned char		*md5_transform(char *pre_image)
 {
 	size_t				len;
 	size_t				position;
@@ -87,13 +87,13 @@ unsigned char	*md5_transform(char *pre_image)
 		, (uint32_t*)chaining_vars, sizeof(uint32_t) * 4));
 }
 
-void			md5(void *input)
+void				md5(void *input)
 {
-	size_t		i;
-	size_t		total;
-	t_digest	*digest;
+	size_t			i;
+	size_t			total;
+	t_digest		*digest;
 	t_hash_state	*state;
-	char		output[33];
+	char			output[33];
 
 	i = 0;
 	state = (t_hash_state*)input;
