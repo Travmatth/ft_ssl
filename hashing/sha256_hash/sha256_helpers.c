@@ -6,12 +6,12 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/22 12:41:53 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/07/26 14:29:28 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/08/10 11:47:41 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../ft_ssl.h"
-#include "sha256.h"
+#include "../../includes/ft_ssl.h"
+#include "../../includes/sha256.h"
 
 void			prepare_message_schedule(unsigned char *message
 										, uint32_t *schedule)

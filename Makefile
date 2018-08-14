@@ -11,13 +11,19 @@ endif
 NAME = ft_ssl
 LIBFT = libftprintf/libftprintf.a
 CFLAGS += -Wall -Wextra -Werror -Wpedantic
-LDFLAGS := -Llibftprintf -lftprintf -I./md5_hash -I./sha256_hash
-FT_MD5 := md5 md5_hashing
-FT_SHA256 := sha256 sha256_helpers
-CORE := main hash_parsing hash_printing hash_padding
-FILES := $(addprefix md5_hash/, $(FT_MD5)) \
-	$(addprefix sha256_hash/, $(FT_SHA256)) \
-	$(addprefix core/, $(CORE))
+LDFLAGS := -Llibftprintf -lftprintf -I./includes
+MD5 := md5 md5_hashing
+DES := des des_parsing
+SHA256 := sha256 sha256_helpers
+BASE64 := base64_parsing base64
+HASHING := hash_padding hash_parsing hash_printing \
+	$(addprefix md5_hash/, $(MD5)) \
+	$(addprefix sha256_hash/, $(SHA256))
+CORE := main parsing printing
+FILES := $(addprefix core/, $(CORE)) \
+	$(addprefix hashing/, $(HASHING)) \
+	$(addprefix base64_encoding/, $(BASE64)) \
+	$(addprefix des/, $(DES))
 SRC := $(addsuffix .c, $(FILES))
 OBJ := $(SRC:.c=.o)
 

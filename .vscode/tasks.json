@@ -30,7 +30,6 @@
             "showOutput": "always",
             "isBuildCommand": false,
             "isShellCommand": true,
-            "isWatching": false
         }
     ]
 }

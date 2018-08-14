@@ -9,15 +9,14 @@
         "type": "cppdbg",
         "request": "launch",
         "program": "${workspaceRoot}/ft_ssl",
-        // "args": ["md5", "-p"/*, "-q", "-r", "-s", "string_test", "test"*/],
-        "args": ["sha256", "-s", "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq"/*"-r", "-p", "-s", "\"foo\"", "file", "-s", "\"bar\""*/],
+        "args": ["des", "-a", "-d", "-i", "test/in_test", "-k", "9ff", "-o", "in_test", "-p", "asdf", "-s", "9ff", "-v", "9ff"],
         "stopAtEntry": false,
         "cwd": "${workspaceRoot}",
         "preLaunchTask": "build",
 		"externalConsole": false,
 		"setupCommands": [
 			{
-				"text": "settings set target.input-path in_test"
+				"text": "settings set target.input-path test/in_test"
 			}
 		],
         "linux": {

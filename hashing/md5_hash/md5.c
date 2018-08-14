@@ -6,12 +6,12 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/30 20:13:01 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/07/25 20:25:50 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/08/10 11:45:42 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "md5.h"
-#include "md5_constants.h"
+#include "../../includes/md5.h"
+#include "../../includes/md5_constants.h"
 
 extern t_md5_round	g_md5_rounds[4][16];
 

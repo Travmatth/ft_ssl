@@ -6,11 +6,11 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/21 20:35:57 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/07/26 14:58:22 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/08/08 21:20:13 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../ft_ssl.h"
+#include "../includes/ft_ssl.h"
 
 /*
 ** convert given hex values into into string

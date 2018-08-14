@@ -6,16 +6,18 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/30 20:18:19 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/07/26 15:08:51 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/08/13 11:21:05 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../ft_ssl.h"
+#include "../includes/ft_ssl.h"
 
 t_ptrs g_ptrs[] =
 {
 	{"md5", &md5, &parse_hash_opts},
 	{"sha256", &sha256, &parse_hash_opts},
+	{"base64", &base64, &parse_base64_opts},
+	{"des", &des, &parse_des_opts}
 };
 
 void	ft_ssl_usage(void)
