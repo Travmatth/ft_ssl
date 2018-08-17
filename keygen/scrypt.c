@@ -1,0 +1,200 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   scrypt.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/08/15 19:22:59 by tmatthew          #+#    #+#             */
+/*   Updated: 2018/08/16 18:44:33 by tmatthew         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../includes/ft_ssl.h"
+
+# define SUCCESS 1
+# define ERROR 0
+
+void				verify_scrypt_params(unsigned *parallelization_param 
+	, unsigned block_size
+	, unsigned cost_param)
+{
+	if (parallelization_param < 1
+		|| (block_size < 1 || block_size >= (1UL << (31 - 7)) / block_size)
+		|| (cost_param < 2 || (cost_param & (cost_param - 1) != 0  || cost_param >=  (1UL << (31 - 7)) / cost_param)))
+		ft_ssl_err("error: incorrect scrypt configuration");
+}
+
+void				xor_word(uint32_t len, uint32_t *src, uint32_t *dst)
+{
+	while (len /= 8)
+	{
+		dst[0] ^= src[0];
+		dst[1] ^= src[1];
+		dst[2] ^= src[2];
+		dst[3] ^= src[3];
+		dst[4] ^= src[4];
+		dst[5] ^= src[5];
+		dst[6] ^= src[6];
+		dst[7] ^= src[7];
+		len -= 1;
+		dst += 8;
+		src += 8;
+	}
+}
+
+void				scryptBlockMix(uint32_t block_size
+	, uint32_t *blocks
+	, uint32_t *mixed)
+{
+	uint32_t	internal[16];
+	uint32_t	i;
+
+	block_size *= 2;
+		// #define movw(w, S, D)	memmove(D, S, (w)*4)
+	ft_memmove((void*)internal, &blocks[(block_size - 1) * 16], 16 * 4);
+	i = 0;
+	while (i < block_size)
+	{
+		xor_word(16, &blocks[i * 16], internal);
+		salsa_core(internal, internal, 8);
+		ft_memmove((void*)&mixed[i * 8], (void*)internal, 16);
+		xor_word(16, &blocks[(i + 1) * 16], internal);
+		salsa_core(internal, internal, 8);
+		ft_memmove((void*)&mixed[i * 8 + block_size * 8], (void*)internal, 16);
+		i += 2;
+	}
+}
+
+/*
+** The scryptROMix Algorithm
+**    The scryptROMix algorithm is the same as the ROMix algorithm
+**    described in [SCRYPT] but with scryptBlockMix used as the hash
+**    function H and the Integerify function explained inline.
+**    Algorithm scryptROMix
+** Input:
+** r       Block size parameter.
+** B       Input octet vector of length 128 * r octets.
+** N       CPU/Memory cost parameter, must be larger than 1,
+**         a power of 2, and less than 2^(128 * r / 8).
+** Output:
+** B’      Output octet vector of length 128 * r octets.
+*/
+
+unsigned char	*scryptROMix(unsigned block_size // r
+	, unsigned cost_param
+	, uint32_t *block_scratch_space
+	, uint32_t *cost_scratch_space
+	, unsigned char *blocks)
+{
+	uint32_t	len;
+	uint32_t	i;
+	uint32_t	desired;
+	uint32_t	*internal_scratch_space;
+
+	i = 0;
+	len = block_size * 32;
+	while (i < len)
+	{
+		cost_scratch_space[i] = blocks[0]
+			| (blocks[1] << 8)
+			| (blocks[2] << 16)
+			| (blocks[3] << 24);
+		blocks += 4;
+		i += 1;
+	}
+	internal_scratch_space = &cost_scratch_space[len];
+	i = 0;
+	while (i < cost_param)
+	{
+		ft_memmove(&block_scratch_space[i * len], cost_scratch_space, len * 4);
+		scryptBlockMix(block_size, cost_scratch_space, internal_scratch_space);
+		ft_memmove(&block_scratch_space[i * len], internal_scratch_space, len * 4);
+		scryptBlockMix(block_size, internal_scratch_space, cost_scratch_space);
+		i += 2;
+	}
+	i = 0;
+	while (i < cost_param)
+	{
+		// #define movw(w, S, D)	memmove(D, S, (w)*4)
+		xor_word(len, &internal_scratch_space[(cost_scratch_space[len - 16] & (cost_param - 1)) * len], cost_scratch_space);
+		scryptBlockMix(block_size, cost_scratch_space, internal_scratch_space);
+		xor_word(len, &block_scratch_space[(internal_scratch_space[len - 16] & (cost_param - 1)) * len], internal_scratch_space);
+		scryptBlockMix(block_size, internal_scratch_space, cost_scratch_space);
+		i += 2;
+	}
+	blocks -= len * 4;
+	i = 0;
+	while (i < len)
+	{
+		desired = cost_scratch_space[i];
+		blocks[0] = desired;
+		blocks[1] = desired >> 8;
+		blocks[2] = desired >> 16;
+		blocks[3] = desired >> 24;		
+		blocks += 4;
+		i += 1;
+	}
+}
+
+/*
+** http://www.tarsnap.com/scrypt/scrypt.pdf
+** P passphrase, an octet string
+** S Salt, an octet string
+** r blockSize specifies the block size.
+** N CPU/Memory cost param, must be larger than 1, a power of 2, and less than 2^(128 * r / 8).
+** p parallelization param, a positive integer less than or equal to ((2^32-1) * hLen) / MFLen
+** 		where hLen is 32 and MFlen is 128 * r.
+** dkLen, intended output length in octets of the derived key;
+**      a positive integer less than or equal to (2^32 - 1) * hLen where hLen is 32.
+** outputs: DK, derived key of length dkLen
+*/
+
+unsigned char		*scrypt(unsigned char *passphrase //p
+	, size_t passphrase_len //plen
+	, unsigned char *salt //s
+	, size_t salt_len //slen
+	, unsigned cost_param // N
+	, unsigned block_size //R
+	, unsigned parallelization_param //P
+	, unsigned char key //d
+	, size_t key_len) //dlen
+{
+	size_t			i;
+	size_t			block_len;
+	// |B| is an scrypt block (2 * |block_size| Salsa20 blocks) and is modified in-place.
+	unsigned char	*blocks;
+	// |T| and |V| are scratch space allocated by the caller.
+	// |T| must have space for one scrypt block (2 * |r| Salsa20 blocks). 
+	uint32_t		*block_scratch_space;
+	// |V| must have space for |N| scrypt blocks (2 * |r| * |N| Salsa20 blocks).
+	uint32_t		*cost_scratch_space;
+
+	verify_scrypt_params(parallelization_param, block_size, cost_param); 
+	// uses pbkdf2 with pseudorandom func PRF to generate p blocks
+	// of length MFLen octets from the provided password/salt
+	// (B0 . . . Bp−1) ← PBKDF2_PRF (P, S, 1, p · MF Len)
+	block_len = 128 * block_size;
+	// Need to pull these inits out into separate function
+	// if allocs fail, need to free prev
+	blocks = ft_memalloc(block_len * parallelization_param);
+	block_scratch_space = ft_memalloc(cost_param * block_len);
+	cost_scratch_space = ft_memalloc(cost_param * 2 * block_len);
+	blocks = pbkdf2_with_hmac(passphrase, passphrase_len, salt, salt_len, 1, blocks, parallelization_param * block_len, hmac_sha2_256, SHA2_256_DLEN);
+
+	// independently mixed using mixing func scryptROMix
+	i = 0;
+	while (i < parallelization_param)
+	{
+		scryptROMix(block_size, cost_param, block_scratch_space, cost_scratch_space, &blocks[i * block_len]);
+		i += 1;
+	}
+
+	// ft_ssl_clear_memory should 0 out len give, then free pointer
+	clear_memory(block_scratch_space, 2 * block_len);
+	clear_memory(cost_scratch_space, 2 * block_len);
+
+	// final output is generated by applying pbkdf2 again,
+	// using well-mixed blocks as salt. 
+	pbkdf2(passphrase, passphrase_len, blocks, parallelization_param * block_len, 1, key, key_len, hmac_sha2_256, SHA2_256_DLEN);
+}

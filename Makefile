@@ -14,16 +14,21 @@ CFLAGS += -Wall -Wextra -Werror -Wpedantic
 LDFLAGS := -Llibftprintf -lftprintf -I./includes
 MD5 := md5 md5_hashing
 DES := des des_parsing
+SALSA := salsa
 SHA256 := sha256 sha256_helpers
+KEYGEN := pbkdf2 scrypt
 BASE64 := base64_parsing base64
-HASHING := hash_padding hash_parsing hash_printing \
+CIPHERS := $(addprefix des/, $(DES)) \
+	$(addprefix salsa/, $(SALSA))
+HASHING := hmac hash_padding hash_parsing hash_printing \
 	$(addprefix md5_hash/, $(MD5)) \
 	$(addprefix sha256_hash/, $(SHA256))
 CORE := main parsing printing
 FILES := $(addprefix core/, $(CORE)) \
 	$(addprefix hashing/, $(HASHING)) \
 	$(addprefix base64_encoding/, $(BASE64)) \
-	$(addprefix des/, $(DES))
+	$(addprefix ciphers/, $(CIPHERS))
+	$(addprefix keygen/, $(KEYGEN))
 SRC := $(addsuffix .c, $(FILES))
 OBJ := $(SRC:.c=.o)
 

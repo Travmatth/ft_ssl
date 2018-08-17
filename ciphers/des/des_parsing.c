@@ -6,11 +6,11 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/13 11:01:23 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/08/13 20:20:09 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/08/16 18:42:16 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/ft_ssl.h"
+#include "../../includes/ft_ssl.h"
 
 /*
 ** You must include the following flags for DES:
@@ -107,27 +107,6 @@
 ** parses next option and modifies state with flag or string to be hashed
 */
 
-typedef struct	s_des_state
-{
-	uint64_t	key;
-	uint64_t	salt;
-	uint64_t	initialization_vector;
-	int			out_file;
-	char		*message;
-	char		*password;
-	char		flags[BITNSLOTS(4)];
-}				t_des_state;
-
-# define SET_DECRYPT(v) (BITSET(v, 0))
-# define SET_ENCRYPT(v) (BITSET(v, 1))
-# define SET_INPUT(v) (BITSET(v, 2))
-# define SET_A(v) (BITSET(v, 3))
-
-# define GET_DECRYPT(v) (BITTEST(v, 0))
-# define GET_ENCRYPT(v) (BITTEST(v, 1))
-# define GET_INPUT(v) (BITTEST(v, 2))
-# define GET_A(v) (BITTEST(v, 3))
-
 static void	parse_base64_opts_handler(t_des_state *state
 	, char **argv
 	, int *i)
@@ -176,7 +155,8 @@ static void	parse_base64_opts_handler(t_des_state *state
 	{
 		if (!argv[*i + 1])
 			ft_ssl_err("error");
-		state->salt = ft_htoi(argv[*i + 1]);
+		state->salt[0] = ft_htoi(argv[*i + 1]);
+		state->salt[1] = ft_htoi(argv[*i + 1 + sizeof(uint64_t) / sizeof(char)]);
 		*i += 1;
 	}
 	else if (ft_strequ("-s", argv[*i]))
@@ -186,6 +166,7 @@ static void	parse_base64_opts_handler(t_des_state *state
 		state->initialization_vector = ft_htoi(argv[*i + 1]);
 		*i += 1;
 	}
+	// Need to handle -P a la pdf section v.03
 }
 
 /*

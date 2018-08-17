@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/16 12:34:43 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/08/13 19:20:04 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/08/16 18:54:05 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@
 # include "hashing.h"
 # include "base64.h"
 # include "des.h"
+# include "salsa.h"
+# include "scrypt.h"
 
 # define FROM_FILE 0
 # define FROM_STRING 1
