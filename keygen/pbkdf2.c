@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/16 18:57:41 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/08/16 19:19:50 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/08/16 20:09:08 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,9 @@ typedef struct DigestState
 	char	malloced;
 	char	seeded;
 }				DigestState;
+
+// called with:
+//	pbkdf2_x(p, plen, s, slen, 1, B, P*rb, hmac_sha2_256, SHA2_256dlen);
 
 void	pbkdf2_x(unsigned char *p
 , uint32_t plen

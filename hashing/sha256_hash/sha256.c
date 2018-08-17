@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/22 12:41:53 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/08/10 11:47:57 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/08/16 19:57:32 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,12 @@ unsigned char	*sha256_transform(char *pre_image)
 	return (reverse_bytes(hash_value));
 }
 
-void			sha256(void *input)
+char			*sha256(char *output, char *pre_image)
+{
+	return (from_hex_hash(output, sha256_transform(pre_image), 32));
+}
+
+void			sha256_wrapper(void *input)
 {
 	size_t			i;
 	size_t			total;
@@ -90,8 +95,7 @@ void			sha256(void *input)
 	{
 		digest = (t_digest*)&((char*)state->digests->buf)[i];
 		if (digest->type != NO_INPUT)
-			digest->hash_value = from_hex_hash(output
-				, sha256_transform(digest->pre_image), 32);
+			digest->hash_value = sha256(output, digest->pre_image);
 		i += sizeof(t_digest);
 	}
 	print_hash_state("SHA256", state);

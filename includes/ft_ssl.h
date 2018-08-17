@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/16 12:34:43 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/08/16 18:54:05 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/08/16 19:59:23 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,8 @@
 
 typedef void	(*t_f)(void *state);
 typedef void	*(*t_p)(int argc, char **argv);
+
+typedef char	*(*t_h)(char *output, char *pre_image);
 
 typedef struct	s_ptrs
 {

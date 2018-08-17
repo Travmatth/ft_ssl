@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/08 12:51:28 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/08/09 21:08:17 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/08/16 19:58:31 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,5 +62,6 @@ unsigned char	*pad_pre_image(char *pre_image, size_t *len);
 size_t			get_hash_padding(size_t len);
 void			*parse_hash_opts(int argc, char **argv);
 void			md5(void *input);
-void			sha256(void *input);
+char			*sha256(char *output, char *pre_image);
+void			sha256_wrapper(void *input);
 #endif
