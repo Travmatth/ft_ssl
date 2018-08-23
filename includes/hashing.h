@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/08 12:51:28 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/08/16 19:58:31 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/08/22 17:14:27 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,16 @@
 # define HASHING_H
 
 # include "../libftprintf/srcs/includes/ft_printf.h"
+# include "ft_ssl.h"
 
 # define DIGEST_SZ sizeof(t_digest)
 # define MD5_HASH_SIZE 33
 # define FT_MD5_NO_SUCH_FILE "ft_ssl: %s: no such file or directory\n"
 # define MD5_DIGEST(state, i) ((t_digest*)((char*)state->digests->buf + i))
+
+# define HMAC_BLOCK_SIZE 64
+# define SHA256_BLOCK_LENGTH 64
+# define SHA256_DIGEST_LENGTH 32
 
 # define A 0
 # define B 1
@@ -56,12 +61,19 @@ typedef struct	s_hash_state
 }				t_hash_state;
 
 char			*from_hex_hash(char *output
-							, unsigned char *hash_value, size_t len);
+							, unsigned char *hash_value
+							, size_t len);
+unsigned char	*hmac_sha_256(const unsigned char *text
+							, size_t t_len
+							, const unsigned char *key
+							, size_t k_len
+							, unsigned char digest[SHA256_DIGEST_LENGTH]);
 void			print_hash_state(char *hash, t_hash_state *state);
 unsigned char	*pad_pre_image(char *pre_image, size_t *len);
 size_t			get_hash_padding(size_t len);
 void			*parse_hash_opts(int argc, char **argv);
 void			md5(void *input);
-char			*sha256(char *output, char *pre_image);
-void			sha256_wrapper(void *input);
+void			sha256_ssl_wrapper(void *input);
+char			*sha256_core(char *output, char *pre_image);
+char			*sha256_string(char *pre_image);
 #endif

@@ -6,69 +6,69 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/16 18:57:41 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/08/16 20:09:08 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/08/22 22:10:21 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-typedef struct DigestState
+#include "../includes/ft_ssl.h"
+
+/*
+** derive a key from the given password, salt, and iteration count
+** returns unsigned char string of key
+*/
+
+# define HASH_LEN 64
+# define SHA256_DIGEST_LENGTH 32
+# define CEIL (dividend, divisor) ((dividend + (divisor / 2)) / divisor)
+
+unsigned char	*pbkdf2(unsigned char *p
+						, size_t p_len
+						, unsigned char *s
+						, size_t s_len
+						, unsigned char *key
+						, size_t k_len
+						, unsigned int rounds)
 {
-	uint64_t	len;
-	union {
-		uint32_t	state[16];
-		uint64_t	bstate[8];
-	};
-	unsigned char	buf[256];
-	int	blen;
-	char	malloced;
-	char	seeded;
-}				DigestState;
+	unsigned char *asalt, obuf[SHA256_DIGEST_LENGTH];
+	unsigned char	d1[SHA256_DIGEST_LENGTH], d2[SHA256_DIGEST_LENGTH];
+	unsigned int i, j;
+	unsigned int count;
+	size_t	r;
 
-// called with:
-//	pbkdf2_x(p, plen, s, slen, 1, B, P*rb, hmac_sha2_256, SHA2_256dlen);
+	if ((rounds < 1 || k_len == 0)
+		|| (s_len == 0 || s_len > SIZE_MAX - 4)
+		|| ((asalt = malloc(s_len + 4)) == NULL))
+		ft_ssl_err("error");
 
-void	pbkdf2_x(unsigned char *p
-, uint32_t plen
-, unsigned char *s
-, uint32_t slen
-, uint32_t rounds
-, unsigned char *d
-, uint32_t dlen
-, DigestState* (*x)(unsigned char*, uint32_t, unsigned char*, uint32_t, unsigned char*, DigestState*)
-, int xlen)
-{
-	unsigned char block[256], tmp[256];
-	uint32_t		i;
-	uint32_t		j;
-	uint32_t		k;
-	uint32_t		n;
-	DigestState		*ds;
-
-	i = 1;
-	while (dlen)
+	count = 1;
+	ft_memcpy(asalt, s, s_len);
+	while (k_len)
 	{
-		tmp[3] = i;
-		tmp[2] = i >> 8;
-		tmp[1] = i >> 16;
-		tmp[0] = i >> 24;
-		ds = (*x)(s, slen, p, plen, nil, nil);
-		(*x)(tmp, 4, p, plen, block, ds);
-		ft_memmove(tmp, block, xlen);
-		j = 1;
-		while (j < rounds)
+		asalt[s_len + 0] = (count >> 24) & 0xff;
+		asalt[s_len + 1] = (count >> 16) & 0xff;
+		asalt[s_len + 2] = (count >> 8) & 0xff;
+		asalt[s_len + 2] = count & 0xff;
+		hmac_sha_256(asalt, s_len + 4, (const unsigned char *)p, p_len, d1);
+		ft_memcpy(obuf, d1, sizeof(obuf));
+		i = 1;
+		while (i < rounds)
 		{
-			(*x)(tmp, xlen, p, plen, tmp, nil);
-			k = 0;
-			while (k < xlen)
+			hmac_sha_256(d1, sizeof(d1), (const unsigned char *)p, p_len, d2);
+			ft_memcpy(d1, d2, sizeof(d1));
+			j = 0;
+			while (j < sizeof(obuf))
 			{
-				block[k] ^= tmp[k];
-				k += 1;
+				obuf[j] ^= d1[j];
+				j += 1;
 			}
-			j += 1;
+			i += 1;
 		}
-		n = dlen > xlen ? xlen : dlen;
-		ft_memmove(d, block, n); 
-		i += 1;
-		d += n;
-		dlen -= n;
+		r = k_len < SHA256_DIGEST_LENGTH ? k_len : SHA256_DIGEST_LENGTH;
+		ft_memcpy(key, obuf, r);
+		key += r;
+		k_len -= r;
+		count += 1;
 	}
+	free(asalt);
+	return (key);
 }

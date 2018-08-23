@@ -27,7 +27,7 @@ CORE := main parsing printing
 FILES := $(addprefix core/, $(CORE)) \
 	$(addprefix hashing/, $(HASHING)) \
 	$(addprefix base64_encoding/, $(BASE64)) \
-	$(addprefix ciphers/, $(CIPHERS))
+	$(addprefix ciphers/, $(CIPHERS)) \
 	$(addprefix keygen/, $(KEYGEN))
 SRC := $(addsuffix .c, $(FILES))
 OBJ := $(SRC:.c=.o)

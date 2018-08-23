@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/13 11:06:22 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/08/14 19:57:05 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/08/22 21:50:33 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,13 @@
 
 typedef struct	s_des_state
 {
-	uint64_t	key;
-	uint64_t	salt[2];
-	uint64_t	initialization_vector;
-	int			out_file;
-	char		*message;
-	char		*password;
-	char		flags[BITNSLOTS(4)];
+	unsigned char		*key;
+	unsigned char		*salt;
+	unsigned char		*initialization_vector;
+	int					out_file;
+	unsigned char		*message;
+	unsigned char		*password;
+	unsigned char		flags[BITNSLOTS(4)];
 }				t_des_state;
 
 # define SET_DECRYPT(v) (BITSET(v, 0))

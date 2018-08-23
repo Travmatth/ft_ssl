@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/13 11:01:23 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/08/16 18:42:16 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/08/22 22:02:24 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,7 @@ static void	parse_base64_opts_handler(t_des_state *state
 			ft_ssl_err("error");
 		if (!(fd = open(argv[*i + 1], O_RDONLY)))
 			ft_ssl_err("error: cannot find file");
-		state->message = ft_str_from_fd(fd);
+		state->message = (unsigned char*)ft_str_from_fd(fd);
 		*i += 1;
 		SET_INPUT(state->flags);
 	}
@@ -133,7 +133,7 @@ static void	parse_base64_opts_handler(t_des_state *state
 	{
 		if (!argv[*i + 1])
 			ft_ssl_err("error");
-		state->key = ft_htoi(argv[*i + 1]);
+		state->key = (unsigned char*)ft_strdup(argv[*i + 1]);
 		*i += 1;
 	}
 	else if (ft_strequ("-o", argv[*i]))
@@ -148,22 +148,21 @@ static void	parse_base64_opts_handler(t_des_state *state
 	{
 		if (!argv[*i + 1])
 			ft_ssl_err("error");
-		state->password = ft_strdup(argv[*i + 1]);
+		state->password = (unsigned char*)ft_strdup(argv[*i + 1]);
 		*i += 1;
 	}
 	else if (ft_strequ("-s", argv[*i]))
 	{
 		if (!argv[*i + 1])
 			ft_ssl_err("error");
-		state->salt[0] = ft_htoi(argv[*i + 1]);
-		state->salt[1] = ft_htoi(argv[*i + 1 + sizeof(uint64_t) / sizeof(char)]);
+		state->salt = (unsigned char*)ft_strdup(argv[*i + 1]);
 		*i += 1;
 	}
 	else if (ft_strequ("-s", argv[*i]))
 	{
 		if (!argv[*i + 1])
 			ft_ssl_err("error");
-		state->initialization_vector = ft_htoi(argv[*i + 1]);
+		state->initialization_vector = (unsigned char*)ft_strdup(argv[*i + 1]);
 		*i += 1;
 	}
 	// Need to handle -P a la pdf section v.03
@@ -184,7 +183,7 @@ void		*parse_des_opts(int argc, char **argv)
 	while (++i < argc)
 		parse_base64_opts_handler(&state, argv, &i);
 	if (!GET_INPUT(state.flags))
-		state.message = ft_str_from_fd(STDIN);
+		state.message = (unsigned char*)ft_str_from_fd(STDIN);
 	return (ft_memcpy(ft_memalloc(sizeof(t_des_state))
 		, &state
 		, sizeof(t_base64)));

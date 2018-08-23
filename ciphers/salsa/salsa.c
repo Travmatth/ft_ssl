@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/16 18:42:33 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/08/16 18:51:06 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/08/22 22:02:36 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static void	salsa_rounds(uint32_t state[16], int rounds)
 {
-	uint32_t	t;
+	// uint32_t	t;
 
 	while (rounds)
 	{

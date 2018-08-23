@@ -6,13 +6,13 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/13 11:01:21 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/08/16 18:42:21 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/08/22 22:01:11 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/ft_ssl.h"
 
-char		*prompt_for_password(void)
+unsigned char		*prompt_for_password(void)
 {
 	char	*password;
 	char	*verfication;
@@ -20,17 +20,17 @@ char		*prompt_for_password(void)
 	password = getpass("enter des encryption password:");
 	verfication = getpass("Verifying - enter des encryption password:");
 	if (ft_strequ(password, verfication))
-		return (password);
+		return ((unsigned char*)password);
 	else
 		ft_ssl_err("error: passwords do not match");
 }
 
-uint64_t	create_des_key(t_des_state *state)
+unsigned char		*create_des_key(t_des_state *state)
 {
 	int			fd;
-	uint64_t	key;
-	uint64_t	*result;
-	uint64_t	buf;
+	char		*key;
+	unsigned char		result[64];
+	uint64_t	buf[2];
 
 	if (!state->password)
 		state->password = prompt_for_password();
@@ -40,11 +40,19 @@ uint64_t	create_des_key(t_des_state *state)
 			ft_ssl_err("error: cannot open /dev/random");
 		if (!read(fd, buf, sizeof(uint64_t) * 2))
 			ft_ssl_err("error occurred while reading /dev/random");
-		ft_memcpy(state->salt, buf, sizeof(uint64_t));
+		ft_memcpy(state->salt, (void*)buf, sizeof(uint64_t));
 	}
-	result = scrypt();
+	scrypt(state->password
+		, LEN((char *)state->password, 0)
+		, state->salt
+		, LEN((char *)state->salt, 0)
+		, 16
+		, 1
+		, 1
+		, result
+		, 64);
 	ft_memcpy((void*)&key, (void*)result, sizeof(uint64_t));
-	return (key);
+	return ((unsigned char*)key);
 }
 
 void		des(void *input)

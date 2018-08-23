@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/16 12:34:43 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/08/16 19:59:23 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/08/22 22:09:21 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include "../libftprintf/srcs/includes/ft_printf.h"
 # include "hashing.h"
 # include "base64.h"
+# include "pbkdf2.h"
 # include "des.h"
 # include "salsa.h"
 # include "scrypt.h"
@@ -27,6 +28,7 @@
 # define NO_INPUT 3
 
 # define FT_SSL_FUNCS 4
+# define SHA2_256_DLEN 32
 
 # define FROM_BITS(x) (x / 8)
 # define TO_BITS(x) (x * 8)
