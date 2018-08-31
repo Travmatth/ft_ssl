@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/13 11:01:23 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/08/22 22:02:24 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/08/31 14:20:40 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,43 +104,42 @@
 */
 
 /*
-** parses next option and modifies state with flag or string to be hashed
+** parses next option and modifies ctx with flag or string to be hashed
 */
 
-static void	parse_base64_opts_handler(t_des_state *state
-	, char **argv
-	, int *i)
+void	parse_base64_opts_handler(t_desctx *ctx, char **argv, int *i)
 {
 	int		fd;
 
 	if (ft_strequ("-a", argv[*i]))
-		SET_A(state->flags);
+		SET_A(ctx->flags);
 	else if (ft_strequ("-d", argv[*i]))
-		SET_DECRYPT(state->flags);
+		SET_DECRYPT(ctx->flags);
 	else if (ft_strequ("-e", argv[*i]))
-		SET_ENCRYPT(state->flags);
+		SET_ENCRYPT(ctx->flags);
 	else if (ft_strequ("-i", argv[*i]))
 	{
 		if (!argv[*i + 1])
 			ft_ssl_err("error");
 		if (!(fd = open(argv[*i + 1], O_RDONLY)))
 			ft_ssl_err("error: cannot find file");
-		state->message = (unsigned char*)ft_str_from_fd(fd);
+		ctx->plaintext = (unsigned char*)ft_str_from_fd(fd);
+		ctx->plen = LEN(ctx->plaintext, 0);
 		*i += 1;
-		SET_INPUT(state->flags);
+		SET_INPUT(ctx->flags);
 	}
 	else if (ft_strequ("-k", argv[*i]))
 	{
 		if (!argv[*i + 1])
 			ft_ssl_err("error");
-		state->key = (unsigned char*)ft_strdup(argv[*i + 1]);
+		ctx->key = (unsigned char*)ft_strdup(argv[*i + 1]);
+		ctx->klen = LEN(ctx->key, 0);
 		*i += 1;
 	}
 	else if (ft_strequ("-o", argv[*i]))
 	{
-		if (!argv[*i + 1])
-			ft_ssl_err("error");
-		if (!(state->out_file = open(argv[*i + 1], O_WRONLY)))
+		if (!argv[*i + 1]
+			|| ERR(ctx->out_file = open(argv[*i + 1], O_WRONLY)))
 			ft_ssl_err("error");
 		*i += 1;
 	}
@@ -148,21 +147,24 @@ static void	parse_base64_opts_handler(t_des_state *state
 	{
 		if (!argv[*i + 1])
 			ft_ssl_err("error");
-		state->password = (unsigned char*)ft_strdup(argv[*i + 1]);
+		ctx->password = (unsigned char*)ft_strdup(argv[*i + 1]);
+		ctx->plen = LEN(ctx->password, 0);
 		*i += 1;
 	}
 	else if (ft_strequ("-s", argv[*i]))
 	{
 		if (!argv[*i + 1])
 			ft_ssl_err("error");
-		state->salt = (unsigned char*)ft_strdup(argv[*i + 1]);
+		ctx->salt = (unsigned char*)ft_strdup(argv[*i + 1]);
+		ctx->slen = LEN(ctx->salt, 0);
 		*i += 1;
 	}
-	else if (ft_strequ("-s", argv[*i]))
+	else if (ft_strequ("-v", argv[*i]))
 	{
 		if (!argv[*i + 1])
 			ft_ssl_err("error");
-		state->initialization_vector = (unsigned char*)ft_strdup(argv[*i + 1]);
+		ctx->init_vector = (unsigned char*)ft_strdup(argv[*i + 1]);
+		ctx->ivlen = LEN(ctx->init_vector, 0);
 		*i += 1;
 	}
 	// Need to handle -P a la pdf section v.03
@@ -176,15 +178,16 @@ static void	parse_base64_opts_handler(t_des_state *state
 void		*parse_des_opts(int argc, char **argv)
 {
 	int			i;
-	t_des_state	state;
+	t_desctx	ctx;
+	void		*new;
 
 	i = -1;
-	ft_bzero(&state, sizeof(t_des_state));
+	ft_bzero(&ctx, sizeof(t_desctx));
 	while (++i < argc)
-		parse_base64_opts_handler(&state, argv, &i);
-	if (!GET_INPUT(state.flags))
-		state.message = (unsigned char*)ft_str_from_fd(STDIN);
-	return (ft_memcpy(ft_memalloc(sizeof(t_des_state))
-		, &state
-		, sizeof(t_base64)));
+		parse_base64_opts_handler(&ctx, argv, &i);
+	if (!GET_INPUT(ctx.flags))
+		ctx.plaintext = (uint8_t*)ft_str_from_fd(STDIN);
+	if (!(new = ft_memalloc(sizeof(t_desctx))))
+		ft_ssl_err("error");
+	return (ft_memcpy(new, &ctx, sizeof(t_desctx)));
 }

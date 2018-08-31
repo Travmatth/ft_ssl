@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/13 11:06:22 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/08/22 21:50:33 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/08/31 14:18:48 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,16 +15,22 @@
 
 # include "ft_ssl.h"
 
-typedef struct	s_des_state
+typedef struct		s_desctx
 {
-	unsigned char		*key;
-	unsigned char		*salt;
-	unsigned char		*initialization_vector;
-	int					out_file;
-	unsigned char		*message;
-	unsigned char		*password;
-	unsigned char		flags[BITNSLOTS(4)];
-}				t_des_state;
+	uint8_t			*key;
+	uint8_t			*salt;
+	uint8_t			*plaintext;
+	uint8_t			*ciphertext;
+	uint8_t			*password;
+	uint8_t			*init_vector;
+	size_t			klen;
+	size_t			slen;
+	size_t			plen;
+	size_t			clen;
+	size_t			ivlen;
+	int				out_file;
+	unsigned char	flags[BITNSLOTS(4)];
+}					t_desctx;
 
 # define SET_DECRYPT(v) (BITSET(v, 0))
 # define SET_ENCRYPT(v) (BITSET(v, 1))
