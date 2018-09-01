@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/13 11:06:22 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/08/31 14:18:48 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/08/31 20:31:14 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,10 @@ typedef struct		s_desctx
 	size_t			slen;
 	size_t			plen;
 	size_t			clen;
+	size_t			passlen;
 	size_t			ivlen;
+	void			(*pre_permute_chaining)(t_desctx *ctx, uint64_t *block, uint8_t *plaintext, uint64_t keyschedule[16]);
+	void			(*post_permute_chaining)(t_desctx *ctx, uint64_t *block, uint8_t *plaintext, uint64_t keyschedule[16]);
 	int				out_file;
 	unsigned char	flags[BITNSLOTS(4)];
 }					t_desctx;

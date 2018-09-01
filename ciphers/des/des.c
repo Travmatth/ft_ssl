@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/13 11:01:21 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/08/31 15:51:20 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/08/31 21:45:18 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,10 +84,62 @@ uint64_t	ft_uint8to64(uint8_t *block)
 	return (new);
 }
 
+uint64_t	ft_uint64to8(uint8_t block, uint8_t *out)
+{
+	uint8_t		i;
+
+	i = 0;
+	while (i < 8)
+	{
+		out[i] = (uint8_t)(block >> (8 * (8 (i + 1))));
+		i += 1;
+	}
+}
+
 uint64_t	permute_block(uint8_t *map, uint64_t block)
 {
 	(void)map;
 	(void)block;
+}
+
+uint64_t	des_f(uint64_t	block, uint64_t key)
+{
+	int		i;
+	uint64_t	permuted;
+	uint8_t		inner;
+	uint8_t		outer;
+
+	permuted = 0;
+	block = permute_block(g_des_exp, block);
+	block ^= key;
+	i = 0;
+	while (i < 8)
+	{
+		outer = (((block >> (64 - (6 * i + 1))) & 1) << 1) | ((block >> (64 - (6 * i + 6)) & 1));
+		inner = (block << (6 * i + 1)) >> 60;
+		permuted |= (uint64_t)g_des_sboxes[i][outer][inner] << (60 - (4 * i));
+		i += 1;
+	}
+	return (permute_block(g_des_pbox, permuted));
+}
+
+void		des_permute(t_desctx *ctx, uint64_t block, uint64_t keyschedule[16])
+{
+	uint8_t		i;
+	uint64_t	left;
+	uint64_t	right;
+
+	i = 0;
+	block = permute_block(g_init_perm, block);
+	while (i < 16)
+	{
+		left = block << 32; 
+		right = block >> 32; 
+		right ^= (des_f(left, keyschedule) >> 32);
+		block = left | right;
+	}
+	block = (block << 32) | (block >> 32);
+	return (permute_block(g_des_final_perm, block));
 }
 
 int			des_init(t_desctx *ctx, uint64_t keyschedule[16])
@@ -114,35 +166,111 @@ int			des_init(t_desctx *ctx, uint64_t keyschedule[16])
 	// set enc/ dec here
 }
 
-int			des_update(t_desctx *ctx, uint64_t keyschedule[16])
-{
-	uint64_t	block;
 
-	block = ft_uint8to64(ctx->plaintext);
-	//for cbc/ofb/etc
-	//block = ctx->block_mode(ctx, block);
+/*
+** In cbc mode, we xor the translated 64bit block with the iv
+** we also xor the permuted_block with the iv
+** and also set as the newly created block the iv
+*/
+
+void		des_cbc_pre_permute_hook(t_desctx *ctx
+	, uint64_t *block
+	, uint8_t *plaintext
+	, uint64_t keyschedule[16])
+{
+	(void)plaintext;
+	(void)keyschedule;
+	*block ^= ctx->init_vector;
 }
 
-int			des_final(t_desctx *ctx, uint64_t keyschedule[16])
+void		des_cbc_post_permute_hook(t_desctx *ctx
+	, uint64_t *block
+	, uint8_t *plaintext
+	, uint64_t keyschedule[16])
 {
+	(void)plaintext;
+	(void)keyschedule;
+	*block ^= ctx->init_vector;
+	ctx->init_vector = *block; 
+}
+
+void		des_ecb_pre_permute_hook(t_desctx *ctx
+	, uint64_t *block
+	, uint8_t *plaintext
+	, uint64_t keyschedule[16])
+{
+	(void)ctx;
+	(void)block;
+	(void)plaintext;
+	(void)keyschedule;
+}
+
+void		des_ecb_post_permute_hook(t_desctx *ctx
+	, uint64_t *block
+	, uint8_t *plaintext
+	, uint64_t keyschedule[16])
+{
+	(void)ctx;
+	(void)block;
+	(void)plaintext;
+	(void)keyschedule;
+}
+
+int			des_update(t_desctx *ctx
+					, uint8_t *plaintext
+					, uint64_t keyschedule[16])
+{
+	uint64_t	block;
+	uint64_t	permuted_block;
+
+	block = ft_uint8to64(ctx->plaintext);
+	ctx->pre_permute_chaining(ctx, &block, plaintext, keyschedule);
+	permuted_block = des_permute(ctx, block, plaintext, keyschedule);
+	ctx->post_permute_chaining(ctx, &permute_block, keyschedule);
+	ft_uint64to8(permute_block, ctx->ciphertext + ctx->clen);
+	ctx->clen += 8;
+	return (1);
+}
+
+int			des_final(t_desctx *ctx
+					, uint8_t *plaintext
+					, uint64_t keyschedule[16]
+					, size_t plen)
+{
+	uint8_t	tmp[8];
+	uint8_t	pad;
+	ssize_t	rem;
+
+	rem = ctx->plen % 8;
+	if (rem && GET_NP(ctx->flags))
+		ft_ssl_err("error");
+	else if (rem)
+	{
+		ft_memcpy((void*)tmp, plaintext, rem * sizeof(uint8_t));
+		pad = (uint8_t)(8 - rem);
+		ft_czero(tmp + rem * sizeof(uint8_t), pad, pad);
+		des_update(ctx, tmp, keyschedule);
+	}
 }
 
 void		des_wrapper(void *input)
 {
 	t_desctx	*ctx;
-	uint8_t		*orig;
+	uint8_t		*plaintext;
 	uint64_t	keyschedule[16];
 
-	ctx = (t_desctx*)input;
+	state = (t_desctx*)input;
+	ctx = state->ctx;
 	ctx->key = ctx->key ? ctx->key : create_des_key(ctx);
-	orig = ctx->plaintext;
+	plaintext = state->plaintext;
 	des_init(ctx, keyschedule);
-	while (ctx->plen > 8)
+	while (state->plen >= 8)
 	{
-		des_update(ctx, keyschedule);
-		ctx->plaintext += 8;
-		ctx->plen -= 8;
+		des_update(ctx, plaintext, keyschedule);
+		plaintext += 8;
+		state->plen -= 8;
 	}
-	des_final(ctx, keyschedule);
-	free(orig);
+	des_final(ctx, plaintext, keyschedule, state->plen);
+	free(state->plaintext);
+	free(state);
 }

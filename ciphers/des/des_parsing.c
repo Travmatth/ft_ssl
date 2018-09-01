@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/13 11:01:23 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/08/31 14:20:40 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/08/31 20:35:47 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@
 ** • -o, output file for message
 ** • -p, password in ascii is the next argument.
 ** (Behave like a modifiedd openssl des -pass not like openssl des -p or -P)
-** (A verbose explanation is given in the next section)
 ** • -s, the salt in hex is the next argument.
 ** (Behave like openssl des -S)
 ** • -v, initialization vector in hex is the next argument.
@@ -64,43 +63,8 @@
 ** Another hint: re-creating OpenSSL’s PBKDF will not be very hard:
 ** it’s not really secure. Really.
 **
-** The DES algorithm works by splitting the plaintext into blocks of 64 bits (8 chars) in
-** length, and performing a set of operations on those blocks with a 64-bit key. The process
-** it performs on each block is the same, and by itself this is simply called ECB mode.
-** The requirements of ECB mode are:
 ** • A 64-bit long key. If a key is too short, pad it with zeros.
-** For example, hex key FF12CD becomes FF12CD0000000000.
-** Hex key FF1 becomes FF10000000000000.
 ** Longer keys are truncated with the remainder discarded.
-** • A 64-bit long block. If a block is too short, pad it with the size difference byte
-** padding scheme, the same as OpenSSL.
-** To avoid all that password nonsense, you can input a key directly
-** with the -k flag.
-** > ./ft_ssl des-ecb -k 01020304FEFDFCFB
-** You may use the -nopad flag with OpenSSL while testing to make sure
-** your algorithm is correct before checking the padding.
-** > echo "foo bar" | openssl des-ecb -K 6162636461626364 -a -nopad
-** YZF3QKaabXU=
-** Initialization Vector is not used for ECB mode, but can still be
-** taken and not used.
-** 11
-** ft_ssl [base64] [des] The real fun: symmetric encoding and encryption
-** V.0.5 Correcting Broken Ciphers
-** The previous exercise had your DES algorithm operate in ECB mode, meaning each encrypted
-** block was concatenated to the end of the block before it. For this next part, you
-** must implement BC mode, or Cipher Block Chaining. Rather than simply concatenating
-** the next block, each block is also XOR’d with the block before it.
-** This is where the -v flag comes in for the Initialization Vector.
-** > echo "one deep secret" | ./ft_ssl des-cbc -a -k 6162636461626364 -v 0011223344556677
-** zqYWONX68rWNxl7msIdGC67Uh2HfVEBo
-** >
-** > echo "zqYWONX68rWNxl7msIdGC67Uh2HfVEBo" | openssl des-cbc -d -a -K 6162636461626364 -iv
-** 0011223344556677
-** one deep secret
-** Your DES-CBC must operate in the real CBC mode, where the IV is
-** modified after each block.
-** You must be able to encrypt and decrypt all modes with excecutables
-** made by other students and the OpenSSL executable.
 */
 
 /*
