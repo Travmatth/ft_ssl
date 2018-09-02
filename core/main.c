@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/30 20:18:19 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/08/22 16:31:31 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/01 13:28:45 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,8 @@ t_ptrs g_ptrs[] =
 	{"md5", &md5, &parse_hash_opts},
 	{"sha256", &sha256_ssl_wrapper, &parse_hash_opts},
 	{"base64", &base64, &parse_base64_opts},
-	{"des", &des, &parse_des_opts}
+	{"des-ecb", &des, &parse_des_opts},
+	{"des-cbc", &des, &parse_des_opts}
 };
 
 void	ft_ssl_usage(void)
@@ -60,8 +61,11 @@ int		get_function(int *argc, char ***argv, t_f *f, t_p *p)
 	{
 		if (ft_strnequ(g_ptrs[i].cmd, argv[0][0], LEN(g_ptrs[i].cmd, 0)))
 		{
-			*argc -= 1;
-			*argv = &argv[0][1];
+			if (!ft_strnequ(argv[0][0], "des", 3))
+			{
+				*argc -= 1;
+				*argv = &argv[0][1];
+			}
 			*f = g_ptrs[i].f;
 			*p = g_ptrs[i].p;
 			return (1);

@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/13 11:01:23 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/08/31 20:35:47 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/01 13:35:29 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,17 @@ void	parse_base64_opts_handler(t_desctx *ctx, char **argv, int *i)
 {
 	int		fd;
 
-	if (ft_strequ("-a", argv[*i]))
+	if (ft_strequ("des-ecb", argv[*i]))
+	{
+		ctx->pre_permute_chaining = des_ecb_permute_hook;
+		ctx->post_permute_chaining = des_ecb_permute_hook;
+	}
+	else if (ft_strequ("des-cbc", argv[*i]))
+	{
+		ctx->pre_permute_chaining = des_cbc_pre_permute_hook;
+		ctx->post_permute_chaining = des_cbc_post_permute_hook;
+	}
+	else if (ft_strequ("-a", argv[*i]))
 		SET_A(ctx->flags);
 	else if (ft_strequ("-d", argv[*i]))
 		SET_DECRYPT(ctx->flags);
@@ -87,7 +97,7 @@ void	parse_base64_opts_handler(t_desctx *ctx, char **argv, int *i)
 			ft_ssl_err("error");
 		if (!(fd = open(argv[*i + 1], O_RDONLY)))
 			ft_ssl_err("error: cannot find file");
-		ctx->plaintext = (unsigned char*)ft_str_from_fd(fd);
+		ctx->plaintext = (uint8_t*)ft_str_from_fd(fd);
 		ctx->plen = LEN(ctx->plaintext, 0);
 		*i += 1;
 		SET_INPUT(ctx->flags);
@@ -96,7 +106,7 @@ void	parse_base64_opts_handler(t_desctx *ctx, char **argv, int *i)
 	{
 		if (!argv[*i + 1])
 			ft_ssl_err("error");
-		ctx->key = (unsigned char*)ft_strdup(argv[*i + 1]);
+		ctx->key = (uint8_t*)ft_strdup(argv[*i + 1]);
 		ctx->klen = LEN(ctx->key, 0);
 		*i += 1;
 	}
@@ -111,7 +121,7 @@ void	parse_base64_opts_handler(t_desctx *ctx, char **argv, int *i)
 	{
 		if (!argv[*i + 1])
 			ft_ssl_err("error");
-		ctx->password = (unsigned char*)ft_strdup(argv[*i + 1]);
+		ctx->password = (uint8_t*)ft_strdup(argv[*i + 1]);
 		ctx->plen = LEN(ctx->password, 0);
 		*i += 1;
 	}
@@ -119,7 +129,7 @@ void	parse_base64_opts_handler(t_desctx *ctx, char **argv, int *i)
 	{
 		if (!argv[*i + 1])
 			ft_ssl_err("error");
-		ctx->salt = (unsigned char*)ft_strdup(argv[*i + 1]);
+		ctx->salt = (uint8_t*)ft_strdup(argv[*i + 1]);
 		ctx->slen = LEN(ctx->salt, 0);
 		*i += 1;
 	}
@@ -127,7 +137,7 @@ void	parse_base64_opts_handler(t_desctx *ctx, char **argv, int *i)
 	{
 		if (!argv[*i + 1])
 			ft_ssl_err("error");
-		ctx->init_vector = (unsigned char*)ft_strdup(argv[*i + 1]);
+		ctx->init_vector = (uint8_t*)ft_strdup(argv[*i + 1]);
 		ctx->ivlen = LEN(ctx->init_vector, 0);
 		*i += 1;
 	}

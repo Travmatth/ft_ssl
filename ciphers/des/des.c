@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/13 11:01:21 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/08/31 21:45:18 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/01 13:33:24 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,6 +142,23 @@ void		des_permute(t_desctx *ctx, uint64_t block, uint64_t keyschedule[16])
 	return (permute_block(g_des_final_perm, block));
 }
 
+void		key_operation_mode(int decrypt, uint64_t keyschedule[16])
+{
+	int			i;
+	uint64_t	tmp;
+
+	if (!decrypt)
+		return ;
+	i = 0;
+	while (i < 16)
+	{
+		tmp = keyschedule[i];
+		keyschedule[i] = keyschedule[15 - i];
+		keyschedule[15 - i] = tmp;
+		i += 1;
+	}
+}
+
 int			des_init(t_desctx *ctx, uint64_t keyschedule[16])
 {
 	uint8_t		i;
@@ -156,6 +173,11 @@ int			des_init(t_desctx *ctx, uint64_t keyschedule[16])
 	left[0] = key;
 	right[0] = key << 28;
 	keyshift = GET_DECRYPT(ctx->flags) ? g_des_key_dec : g_des_key_enc;
+	if (GET_DECRYPT(ctx->flags) && GET_A(ctx->flags))
+	{
+		ctx->plaintext = base64_decode((char*)ctx->plaintext, ctx->plen);
+		ctx->plen = LEN(ctx->plaintext, 0);
+	}
 	while (i < 16)
 	{
 		left[i] = R_LEFT(left[i - 1], keyshift[i]);
@@ -163,7 +185,7 @@ int			des_init(t_desctx *ctx, uint64_t keyschedule[16])
 		key = ((uint64_t)left << sizeof(uint32_t)) | (uint64_t)right;
 		keyschedule[i++] = permute_block(g_key_perm, key);
 	}
-	// set enc/ dec here
+	key_operation_mode(GET_DECRYPT(ctx->flags), keyschedule);
 }
 
 
@@ -194,18 +216,7 @@ void		des_cbc_post_permute_hook(t_desctx *ctx
 	ctx->init_vector = *block; 
 }
 
-void		des_ecb_pre_permute_hook(t_desctx *ctx
-	, uint64_t *block
-	, uint8_t *plaintext
-	, uint64_t keyschedule[16])
-{
-	(void)ctx;
-	(void)block;
-	(void)plaintext;
-	(void)keyschedule;
-}
-
-void		des_ecb_post_permute_hook(t_desctx *ctx
+void		des_ecb_permute_hook(t_desctx *ctx
 	, uint64_t *block
 	, uint8_t *plaintext
 	, uint64_t keyschedule[16])
@@ -251,6 +262,11 @@ int			des_final(t_desctx *ctx
 		ft_czero(tmp + rem * sizeof(uint8_t), pad, pad);
 		des_update(ctx, tmp, keyschedule);
 	}
+	if (GET_ENCRYPT(ctx->flags) && GET_A(ctx->flags))
+	{
+		ctx->ciphertext = base64_encode(ctx->ciphertext, ctx->clen);
+		ctx->clen = LEN(ctx->ciphertext, 0);
+	}
 }
 
 void		des_wrapper(void *input)
@@ -259,18 +275,17 @@ void		des_wrapper(void *input)
 	uint8_t		*plaintext;
 	uint64_t	keyschedule[16];
 
-	state = (t_desctx*)input;
-	ctx = state->ctx;
+	ctx  = (t_desctx*)input;
 	ctx->key = ctx->key ? ctx->key : create_des_key(ctx);
-	plaintext = state->plaintext;
+	plaintext = ctx->plaintext;
 	des_init(ctx, keyschedule);
-	while (state->plen >= 8)
+	while (ctx->plen >= 8)
 	{
 		des_update(ctx, plaintext, keyschedule);
 		plaintext += 8;
-		state->plen -= 8;
+		ctx->plen -= 8;
 	}
-	des_final(ctx, plaintext, keyschedule, state->plen);
-	free(state->plaintext);
-	free(state);
+	des_final(ctx, plaintext, keyschedule, ctx->plen);
+	free(ctx->plaintext);
+	free(ctx);
 }

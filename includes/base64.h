@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/08 21:10:12 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/08/10 15:23:59 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/01 13:02:32 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,5 +40,7 @@ typedef struct	s_base64
 }				t_base64;
 
 void			*parse_base64_opts(int argc, char **argv);
+char			*base64_decode(char *message, size_t len);
+char			*base64_encode(char *message, size_t base_len);
 void			base64(void *input);
 #endif
