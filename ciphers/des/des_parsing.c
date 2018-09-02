@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/13 11:01:23 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/01 13:35:29 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/02 12:39:01 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,8 +77,8 @@ void	parse_base64_opts_handler(t_desctx *ctx, char **argv, int *i)
 
 	if (ft_strequ("des-ecb", argv[*i]))
 	{
-		ctx->pre_permute_chaining = des_ecb_permute_hook;
-		ctx->post_permute_chaining = des_ecb_permute_hook;
+		ctx->pre_permute_chaining = des_null_permute_hook;
+		ctx->post_permute_chaining = des_null_permute_hook;
 	}
 	else if (ft_strequ("des-cbc", argv[*i]))
 	{
@@ -159,6 +159,8 @@ void		*parse_des_opts(int argc, char **argv)
 	ft_bzero(&ctx, sizeof(t_desctx));
 	while (++i < argc)
 		parse_base64_opts_handler(&ctx, argv, &i);
+	if (!GET_DECRYPT(ctx.flags) && !GET_ENCRYPT(ctx.flags))
+		SET_ENCRYPT(ctx.flags);
 	if (!GET_INPUT(ctx.flags))
 		ctx.plaintext = (uint8_t*)ft_str_from_fd(STDIN);
 	if (!(new = ft_memalloc(sizeof(t_desctx))))
