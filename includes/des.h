@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/13 11:06:22 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/03 10:31:21 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/03 14:42:03 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ typedef struct		s_desctx
 	unsigned char	flags[BITNSLOTS(4)];
 }					t_desctx;
 
-typedef 
 # define SET_DECRYPT(v) (BITSET(v, 0))
 # define SET_ENCRYPT(v) (BITSET(v, 1))
 # define SET_INPUT(v) (BITSET(v, 2))
@@ -51,7 +50,7 @@ typedef
 uint8_t			*create_des_key(t_desctx *ctx);
 uint64_t		permute_block(uint8_t *map, uint64_t block);
 uint64_t		des_f(uint64_t	block, uint64_t key);
-uint64_t		des_permute(t_desctx *ctx, uint64_t block, uint64_t keyschedule[16]);
+uint64_t		des_permute(uint64_t block, uint64_t keyschedule[16]);
 void			key_operation_mode(int decrypt, uint64_t keyschedule[16]);
 void			des_cbc_pre_permute_hook(t_desctx *ctx
 						, uint64_t *block

@@ -9,7 +9,7 @@
         "type": "cppdbg",
         "request": "launch",
         "program": "${workspaceRoot}/ft_ssl",
-        "args": ["des", "-a", "-d", "-i", "test/in_test", "-k", "9ff", "-o", "in_test", "-p", "asdf", "-s", "9ff", "-v", "9ff"],
+        "args": ["des-ecb", "-i", "test/in_test", "-k", "6162636461626364"],
         "stopAtEntry": false,
         "cwd": "${workspaceRoot}",
         "preLaunchTask": "build",

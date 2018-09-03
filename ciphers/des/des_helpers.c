@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/02 12:56:53 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/03 10:38:30 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/03 14:28:15 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,8 @@ uint8_t		*create_des_key(t_desctx *ctx)
 		ft_memcpy(ctx->salt, (void*)buf, sizeof(uint64_t));
 	}
 	scrypt(ctx->password, ctx->plen, ctx->salt, ctx->slen, 16, 1, 1, result, 64);
+	if (!(key = ft_memalloc(ctx->klen)))
+		ft_ssl_err("error");
 	ft_memcpy((void*)&key, (void*)result, sizeof(uint64_t));
 	return (key);
 }

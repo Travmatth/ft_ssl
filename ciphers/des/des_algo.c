@@ -6,13 +6,13 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/02 12:55:44 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/03 10:21:15 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/03 16:01:33 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/ft_ssl.h"
 
-static const uint8_t	g_init_perm[64] =
+static uint8_t	g_init_perm[64] =
 {
 	58, 50, 42, 34, 26, 18, 10, 2,
 	60, 52, 44, 36, 28, 20, 12, 4,
@@ -24,7 +24,7 @@ static const uint8_t	g_init_perm[64] =
 	63, 55, 47, 39, 31, 23, 15, 7
 };
 
-static const uint8_t	g_des_exp[64] = 
+static uint8_t	g_des_exp[64] = 
 {
 	32, 1, 2, 3, 4, 5,
 	4, 5, 6, 7, 8, 9,
@@ -38,7 +38,7 @@ static const uint8_t	g_des_exp[64] =
 	0, 0, 0, 0, 0, 0, 0, 0
 };
 
-static const uint8_t	g_des_sboxes[8][4][16] = 
+static uint8_t	g_des_sboxes[8][4][16] = 
 {
 	{
 		{14, 4, 13, 1, 2, 15, 11, 8, 3, 10, 6, 12, 5, 9, 0, 7},
@@ -90,7 +90,7 @@ static const uint8_t	g_des_sboxes[8][4][16] =
 	}
 };
 
-static const uint8_t	g_des_pbox[64] =
+static uint8_t	g_des_pbox[64] =
 {
 	16, 7, 20, 21, 29, 12, 28, 17,
 	1, 15, 23, 26, 5, 18, 31, 10,
@@ -98,7 +98,7 @@ static const uint8_t	g_des_pbox[64] =
 	19, 13, 30, 6, 22, 11, 4, 25
 };
 
-static const uint8_t	g_des_final_perm[64] =
+static uint8_t	g_des_final_perm[64] =
 {
 	40, 8, 48, 16, 56, 24, 64, 32,
 	39, 7, 47, 15, 55, 23, 63, 31,
@@ -147,7 +147,7 @@ uint64_t	des_f(uint64_t	block, uint64_t key)
 	return (permute_block(g_des_pbox, permuted));
 }
 
-uint64_t		des_permute(t_desctx *ctx, uint64_t block, uint64_t keyschedule[16])
+uint64_t		des_permute(uint64_t block, uint64_t keyschedule[16])
 {
 	uint8_t		i;
 	uint64_t	left;
@@ -159,7 +159,7 @@ uint64_t		des_permute(t_desctx *ctx, uint64_t block, uint64_t keyschedule[16])
 	{
 		left = block << 32; 
 		right = block >> 32; 
-		right ^= (des_f(left, keyschedule) >> 32);
+		right ^= (des_f(left, keyschedule[i++]) >> 32);
 		block = left | right;
 	}
 	block = (block << 32) | (block >> 32);

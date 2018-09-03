@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/13 11:01:23 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/03 10:25:22 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/03 14:31:08 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ void	parse_base64_opts_handler(t_desctx *ctx, char **argv, int *i)
 		if (!(fd = open(argv[*i + 1], O_RDONLY)))
 			ft_ssl_err("error: cannot find file");
 		ctx->plaintext = (uint8_t*)ft_str_from_fd(fd);
-		ctx->plen = LEN(ctx->plaintext, 0);
+		ctx->plen = LEN((char*)ctx->plaintext, 0);
 		*i += 1;
 		SET_INPUT(ctx->flags);
 	}
@@ -109,7 +109,7 @@ void	parse_base64_opts_handler(t_desctx *ctx, char **argv, int *i)
 		if (!argv[*i + 1])
 			ft_ssl_err("error");
 		ctx->key = (uint8_t*)ft_strdup(argv[*i + 1]);
-		ctx->klen = LEN(ctx->key, 0);
+		ctx->klen = LEN((char*)ctx->key, 0);
 		*i += 1;
 	}
 	else if (ft_strequ("-o", argv[*i]))
@@ -124,7 +124,7 @@ void	parse_base64_opts_handler(t_desctx *ctx, char **argv, int *i)
 		if (!argv[*i + 1])
 			ft_ssl_err("error");
 		ctx->password = (uint8_t*)ft_strdup(argv[*i + 1]);
-		ctx->plen = LEN(ctx->password, 0);
+		ctx->plen = LEN((char*)ctx->password, 0);
 		*i += 1;
 	}
 	else if (ft_strequ("-s", argv[*i]))
@@ -132,7 +132,7 @@ void	parse_base64_opts_handler(t_desctx *ctx, char **argv, int *i)
 		if (!argv[*i + 1])
 			ft_ssl_err("error");
 		ctx->salt = (uint8_t*)ft_strdup(argv[*i + 1]);
-		ctx->slen = LEN(ctx->salt, 0);
+		ctx->slen = LEN((char*)ctx->salt, 0);
 		*i += 1;
 	}
 	else if (ft_strequ("-v", argv[*i]))
@@ -140,7 +140,7 @@ void	parse_base64_opts_handler(t_desctx *ctx, char **argv, int *i)
 		if (!argv[*i + 1])
 			ft_ssl_err("error");
 		ctx->init_vector = (uint8_t*)ft_strdup(argv[*i + 1]);
-		ctx->ivlen = LEN(ctx->init_vector, 0);
+		ctx->ivlen = LEN((char*)ctx->init_vector, 0);
 		*i += 1;
 	}
 	// Need to handle -P a la pdf section v.03

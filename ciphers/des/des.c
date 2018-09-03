@@ -6,38 +6,40 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/13 11:01:21 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/03 10:40:40 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/03 15:55:02 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/ft_ssl.h"
 #include "../../includes/des_constants.h"
 
+# define ROTL(x, y) (x << (36 + y) >> 36) | (x >> (28 - y))
+
 void			des_init(t_desctx *ctx, uint64_t keyschedule[16])
 {
-	uint8_t		i;
+	int			i;
 	uint64_t	key;
-	uint32_t	left[16];
-	uint32_t	right[16];
-	uint8_t		*keyshift;
+	uint64_t	left[16];
+	uint64_t	right[16];
+	int			*keyshift;
 
 	if (!ft_htouint64(ctx->key, &key))
 		ft_ssl_err("error: invalid key");
 	i = 0;
-	left[0] = key;
-	right[0] = key << 28;
+	key = permute_block(g_des_init_key_perm, key);
+	left[0] = key >> 28;
+	right[0] = (key << 36) >> 36;
 	keyshift = GET_DECRYPT(ctx->flags) ? g_des_key_dec : g_des_key_enc;
-	if (GET_DECRYPT(ctx->flags) && GET_A(ctx->flags))
+	while (++i < 16)
 	{
-		ctx->plaintext = (uint8_t*)base64_decode((char*)ctx->plaintext, ctx->plen);
-		ctx->plen = LEN((char*)ctx->plaintext, 0);
+		left[i] = ROTL(left[i - 1], keyshift[i - 1]);
+		right[i] = ROTL(right[i - 1], keyshift[i - 1]);
 	}
+	i = 0;
 	while (i < 16)
 	{
-		left[i] = R_LEFT(left[i - 1], keyshift[i]);
-		right[i] = R_LEFT(right[i - 1], keyshift[i]);
-		key = ((uint64_t)left << 32) | (uint64_t)right;
-		keyschedule[i++] = permute_block(g_key_perm, key);
+		keyschedule[i] = permute_block(g_key_perm, (left[i] << 28) | right[i]);
+		i += 1;
 	}
 	key_operation_mode(GET_DECRYPT(ctx->flags), keyschedule);
 }
@@ -51,7 +53,7 @@ void			des_update(t_desctx *ctx
 
 	block = ft_uint8to64(ctx->plaintext);
 	ctx->pre_permute_chaining(ctx, &block, plaintext, keyschedule);
-	permuted_block = des_permute(ctx, block, keyschedule);
+	permuted_block = des_permute(block, keyschedule);
 	ctx->post_permute_chaining(ctx, &permuted_block, plaintext, keyschedule);
 	ft_uint64to8(permuted_block, ctx->ciphertext + ctx->clen);
 	ctx->clen += 8;
@@ -63,7 +65,7 @@ void			des_final(t_desctx *ctx
 					, size_t plen)
 {
 	uint8_t	tmp[8];
-	uint8_t	pad;
+	// uint8_t	pad;
 	ssize_t	rem;
 
 	rem = plen % 8;
@@ -73,8 +75,8 @@ void			des_final(t_desctx *ctx
 	if (rem)
 	{
 		ft_memcpy((void*)tmp, plaintext, rem * sizeof(uint8_t));
-		pad = (uint8_t)(8 - rem);
-		ft_czero(tmp + rem * sizeof(uint8_t), pad, pad);
+		// pad = (uint8_t)(8 - rem);
+		// ft_czero(tmp + rem * sizeof(uint8_t), pad, pad);
 		des_update(ctx, tmp, keyschedule);
 	}
 }
@@ -108,7 +110,16 @@ void		des_wrapper(void *input)
 		? ctx->plen / 3 * 4 : ctx->plen;
 	if (!(ctx->ciphertext = ft_memalloc(clen)))
 		ft_ssl_err("error");
-	ctx->key = ctx->key ? ctx->key : create_des_key(ctx);
+	if (!ctx->key)
+	{
+		ctx->klen = 8;
+		ctx->key = create_des_key(ctx);
+	}
+	if (GET_DECRYPT(ctx->flags) && GET_A(ctx->flags))
+	{
+		ctx->plaintext = (uint8_t*)base64_decode((char*)ctx->plaintext, ctx->plen);
+		ctx->plen = LEN((char*)ctx->plaintext, 0);
+	}
 	plaintext = ctx->plaintext;
 	des_init(ctx, keyschedule);
 	while (ctx->plen >= 8)
