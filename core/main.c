@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/30 20:18:19 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/01 13:28:45 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/03 09:42:07 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@ t_ptrs g_ptrs[] =
 	{"md5", &md5, &parse_hash_opts},
 	{"sha256", &sha256_ssl_wrapper, &parse_hash_opts},
 	{"base64", &base64, &parse_base64_opts},
-	{"des-ecb", &des, &parse_des_opts},
-	{"des-cbc", &des, &parse_des_opts}
+	{"des-ecb", &des_wrapper, &parse_des_opts},
+	{"des-cbc", &des_wrapper, &parse_des_opts}
 };
 
 void	ft_ssl_usage(void)

@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/02 12:52:40 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/02 12:55:23 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/03 09:29:35 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,11 @@ void		des_cbc_pre_permute_hook(t_desctx *ctx
 	, uint8_t *plaintext
 	, uint64_t keyschedule[16])
 {
+	uint64_t	iv;
+
 	(void)plaintext;
 	(void)keyschedule;
-	*block ^= ctx->init_vector;
+	*block ^= ft_uint8to64(ctx->init_vector);
 }
 
 /*
@@ -38,8 +40,8 @@ void		des_cbc_post_permute_hook(t_desctx *ctx
 {
 	(void)plaintext;
 	(void)keyschedule;
-	*block ^= ctx->init_vector;
-	ctx->init_vector = *block; 
+	*block ^= ft_uint8to64(ctx->init_vector);
+	ctx->init_vector = ft_uint64to8(*block); 
 }
 
 /*
