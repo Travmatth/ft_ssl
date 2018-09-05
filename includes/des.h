@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/13 11:06:22 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/03 14:42:03 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/04 20:53:17 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ typedef struct		s_desctx
 // # define GET_NP(v) (BITTEST(v, 4))
 
 uint8_t			*create_des_key(t_desctx *ctx);
-uint64_t		permute_block(uint8_t *map, uint64_t block);
+uint64_t		permute_block(uint8_t *map, uint64_t block, size_t limit);
 uint64_t		des_f(uint64_t	block, uint64_t key);
 uint64_t		des_permute(uint64_t block, uint64_t keyschedule[16]);
 void			key_operation_mode(int decrypt, uint64_t keyschedule[16]);

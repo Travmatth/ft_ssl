@@ -6,7 +6,7 @@
 #    By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/05/17 18:33:21 by tmatthew          #+#    #+#              #
-#    Updated: 2018/06/30 16:37:22 by tmatthew         ###   ########.fr        #
+#    Updated: 2018/09/04 15:06:14 by tmatthew         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,6 @@ endif
 
 LIBFT = libft
 FT_PRINTF = srcs
-TEST = test
 CC = gcc
 
 export CC
@@ -29,7 +28,7 @@ export DEBUG
 .DEFAULT_GOAL := all
 all: $(LIBFT) $(FT_PRINTF)
 
-test: $(TEST)
+#test: $(TEST)
 
 .PHONY: $(LIBFT) $(FT_PRINTF) $(TEST) all
 
@@ -39,20 +38,13 @@ $(LIBFT):
 $(FT_PRINTF):
 	@$(MAKE) -C srcs;
 
-$(TEST): $(LIBFT) $(FT_PRINTF)
-	@$(MAKE) -C test;
-
-test: $(TEST)
-
 clean:
 	@$(MAKE) clean -C libft;
 	@$(MAKE) clean -C srcs;
-	@$(MAKE) clean -C test;
 
 fclean:
 	@$(MAKE) fclean -C libft
 	@$(MAKE) fclean -C srcs;
-	@$(MAKE) fclean -C test;
 	@rm -rf libftprintf.a
 
 re: fclean all

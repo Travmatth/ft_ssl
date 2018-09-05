@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/02 12:55:44 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/03 16:01:33 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/04 20:46:11 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ static uint8_t	g_des_final_perm[64] =
 	33, 1, 41, 9, 49, 17, 57, 25
 };
 
-uint64_t	permute_block(uint8_t *map, uint64_t block)
+uint64_t	permute_block(uint8_t *map, uint64_t block, size_t limit)
 {
 	uint64_t	permuted;
 	uint64_t	bit;
@@ -118,7 +118,7 @@ uint64_t	permute_block(uint8_t *map, uint64_t block)
 
 	i = 0;
 	permuted = 0;
-	while (i < 64)
+	while (i < limit)
 	{
 		bit = ((block >> (64 - map[i])) & 1);
 		permuted |= (bit << (64 - (i++ + 1)));
@@ -134,7 +134,7 @@ uint64_t	des_f(uint64_t	block, uint64_t key)
 	uint8_t		outer;
 
 	permuted = 0;
-	block = permute_block(g_des_exp, block);
+	block = permute_block(g_des_exp, block, 48);
 	block ^= key;
 	i = 0;
 	while (i < 8)
@@ -144,7 +144,7 @@ uint64_t	des_f(uint64_t	block, uint64_t key)
 		permuted |= (uint64_t)g_des_sboxes[i][outer][inner] << (60 - (4 * i));
 		i += 1;
 	}
-	return (permute_block(g_des_pbox, permuted));
+	return (permute_block(g_des_pbox, permuted, 36));
 }
 
 uint64_t		des_permute(uint64_t block, uint64_t keyschedule[16])
@@ -154,7 +154,7 @@ uint64_t		des_permute(uint64_t block, uint64_t keyschedule[16])
 	uint64_t	right;
 
 	i = 0;
-	block = permute_block(g_init_perm, block);
+	block = permute_block(g_init_perm, block, 64);
 	while (i < 16)
 	{
 		left = block << 32; 
@@ -163,7 +163,7 @@ uint64_t		des_permute(uint64_t block, uint64_t keyschedule[16])
 		block = left | right;
 	}
 	block = (block << 32) | (block >> 32);
-	return (permute_block(g_des_final_perm, block));
+	return (permute_block(g_des_final_perm, block, 64));
 }
 
 void		key_operation_mode(int decrypt, uint64_t keyschedule[16])
