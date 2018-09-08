@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/02 12:55:44 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/04 20:46:11 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/06 14:27:52 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,7 +144,7 @@ uint64_t	des_f(uint64_t	block, uint64_t key)
 		permuted |= (uint64_t)g_des_sboxes[i][outer][inner] << (60 - (4 * i));
 		i += 1;
 	}
-	return (permute_block(g_des_pbox, permuted, 36));
+	return (permute_block(g_des_pbox, permuted, 32));
 }
 
 uint64_t		des_permute(uint64_t block, uint64_t keyschedule[16])

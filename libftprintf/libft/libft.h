@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/16 12:34:43 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/03 09:56:39 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/06 15:34:32 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -397,7 +397,7 @@ int						ft_count_digits_base(int number, int base);
 uint32_t				*ft_chr_to_uint32(uint32_t *output
 							, unsigned char *input
 							, unsigned int len);
-uint8_t					*ft_uint64to8(uint8_t block, uint8_t *out);
+uint8_t					*ft_uint64to8(uint64_t block, uint8_t *out);
 uint64_t				ft_uint8to64(uint8_t *block);
 int						ft_htouint64(uint8_t *hex, uint64_t *val);
 
