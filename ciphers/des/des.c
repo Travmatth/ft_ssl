@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/13 11:01:21 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/08 12:46:39 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/09 21:05:49 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,13 +78,13 @@ void			des_final(t_desctx *ctx
 
 void		des_wrapper_print(t_desctx *ctx)
 {
-	char	*out;
+	unsigned char	*out;
 
-	if (!(out = ft_strnew(ctx->clen)))
+	if (!(out = (unsigned char *)ft_strnew(ctx->clen)))
 		ft_ssl_err("error");
 	if (GET_ENCRYPT(ctx->flags) && GET_A(ctx->flags))
 	{
-		out = base64_encode((char*)ctx->ciphertext, ctx->clen);
+		out = b64_full((unsigned char*)ctx->ciphertext, &ctx->clen, 1);
 		ctx->clen = ctx->clen / 3 * 4;
 	}
 	write(ctx->out_file, out, ctx->clen);
@@ -106,7 +106,7 @@ void		configure_des_params(t_desctx *ctx)
 	}
 	if (GET_DECRYPT(ctx->flags) && GET_A(ctx->flags))
 	{
-		ctx->plaintext = (uint8_t*)base64_decode((char*)ctx->plaintext, ctx->plen);
+		ctx->plaintext = (uint8_t*)b64_full((unsigned char*)ctx->plaintext, &ctx->plen, 0);
 		ctx->plen = LEN((char*)ctx->plaintext, 0);
 	}
 }

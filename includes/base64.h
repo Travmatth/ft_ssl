@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/08 21:10:12 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/01 13:02:32 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/09 21:31:31 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,22 +25,38 @@
 # define GET_I(v) (BITTEST(v, 2))
 # define GET_O(v) (BITTEST(v, 3))
 
+# define IS_LOWER(x) (x >= 'a' || x <= 'z')
+# define IS_UPPER(x) (x >= 'A' || x <= 'Z')
+# define IS_NUMBER(x) (x >= '0' || x <= '9')
+# define IS_ALNUM(x) (IS_LOWER(x) || IS_UPPER(x) || IS_NUMBER(x))
+# define IS_B64(x) (IS_ALNUM(x) || x == '+' || x == '/')
+
+# define LEN_TO64(x) (((x * 4) / 3) + ((x % 3) ? (3 - (x % 3)) : 0))
+# define LEN_FROM64(x) ((3 * x) / 4)
+
 /*
 ** table to look up base64 equivalent chars
 */
 
-# define CHRS "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+# define B64_CHARS "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
 
-typedef struct	s_base64
+typedef struct			s_base64
 {
-	char		mode[BITNSLOTS(1)];
-	char		*message;
-	char		*input;
-	char		*output;
-}				t_base64;
+	unsigned char		*in;
+	unsigned char		*out;
+	size_t				in_len;
+	size_t				out_len;
+	int					fd;
+	char				mode[BITNSLOTS(4)];
+}						t_base64;
 
-void			*parse_base64_opts(int argc, char **argv);
-char			*base64_decode(char *message, size_t len);
-char			*base64_encode(char *message, size_t base_len);
-void			base64(void *input);
+void			*b64_normalize(void *final, char elem, size_t i, int *stop);
+void			b64_encode(t_base64 *ctx, unsigned char *in, unsigned char *out);
+void			b64_decode(t_base64 *ctx, unsigned char *in, unsigned char *out);
+void			*parse_b64_opts(int argc, char **argv);
+void			b64_init(t_base64 *ctx, unsigned char *in, size_t *len);
+void			b64_update(t_base64 *ctx, unsigned char *in, unsigned char *out);
+void			b64_final(t_base64 *ctx, unsigned char *in, unsigned char *out);
+unsigned char	*b64_full(unsigned char *in, size_t *len, int encoding);
+void			b64_wrapper(void *input);
 #endif

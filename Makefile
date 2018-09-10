@@ -17,7 +17,7 @@ DES := des_algo des_helpers des_modes des des_parsing
 SALSA := salsa
 SHA256 := sha256 sha256_helpers
 KEYGEN := pbkdf2 scrypt
-BASE64 := base64_parsing base64
+BASE64 := b64_parsing b64 b64_algo
 CIPHERS := $(addprefix des/, $(DES)) \
 	$(addprefix salsa/, $(SALSA))
 HASHING := hmac hash_padding hash_parsing hash_printing \
@@ -26,7 +26,7 @@ HASHING := hmac hash_padding hash_parsing hash_printing \
 CORE := main parsing printing
 FILES := $(addprefix core/, $(CORE)) \
 	$(addprefix hashing/, $(HASHING)) \
-	$(addprefix base64_encoding/, $(BASE64)) \
+	$(addprefix b64/, $(BASE64)) \
 	$(addprefix ciphers/, $(CIPHERS)) \
 	$(addprefix keygen/, $(KEYGEN))
 SRC := $(addsuffix .c, $(FILES))

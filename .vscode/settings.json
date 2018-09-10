@@ -3,7 +3,8 @@
 	"files.associations": {
 		"internal.h": "c",
 		"conversions.h": "c",
-		"libft.h": "c"
+		"libft.h": "c",
+		"ft_ssl.h": "c"
 	},
     "vim.visualModeKeyBindings": [
         {
