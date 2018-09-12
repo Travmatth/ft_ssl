@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/08 21:12:21 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/09 20:58:33 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/11 13:18:09 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@
 ** parses next option and modifies state with flag or string to be hashed
 */
 
-static void	parse_b64_opts_handler(t_base64 *ctx, char **argv, int *i)
+static void	parse_b64_opts_handler(t_b64 *ctx, char **argv, int *i)
 {
 	int			fd;
 
@@ -77,17 +77,22 @@ static void	parse_b64_opts_handler(t_base64 *ctx, char **argv, int *i)
 void		*parse_b64_opts(int argc, char **argv)
 {
 	int			i;
-	t_base64	ctx;
-	t_base64	*new;
+	t_b64	ctx;
+	t_b64	*new;
 
 
 	i = -1;
-	ft_bzero(&ctx, sizeof(t_base64));
+	ft_bzero(&ctx, sizeof(t_b64));
 	while (++i < argc)
 		parse_b64_opts_handler(&ctx, argv, &i);
 	if (!GET_I(ctx.mode))
+	{
 		ctx.in = (unsigned char*)ft_str_from_fd(STDIN);
-	if (!(new = ft_memalloc(sizeof(t_base64))))
+		ctx.in_len = LEN((char*)ctx.in, 0);
+	}
+	if (!GET_E(ctx.mode) && !GET_D(ctx.mode))
+		SET_E(ctx.mode);
+	if (!(new = ft_memalloc(sizeof(t_b64))))
 		ft_ssl_err("error");
-	return (ft_memcpy(new, &ctx, sizeof(t_base64)));
+	return (ft_memcpy(new, &ctx, sizeof(t_b64)));
 }

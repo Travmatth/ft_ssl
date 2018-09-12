@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/02 12:52:40 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/03 14:43:17 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/11 22:04:37 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,18 @@
 */
 
 void		des_cbc_pre_permute_hook(t_desctx *ctx
-	, uint64_t *block
-	, uint8_t *plaintext
-	, uint64_t keyschedule[16])
+									, uint64_t *block
+									, uint64_t *permuted_block
+									, uint64_t *iv)
 {
-	(void)plaintext;
-	(void)keyschedule;
-	*block ^= ft_uint8to64(ctx->init_vector);
+	(void)permuted_block;
+	(void)iv;
+	if (GET_E(ctx->flags))
+	{
+		*block ^= ctx->init_vector;
+		return ;
+	}
+	*iv = *block;
 }
 
 /*
@@ -32,26 +37,31 @@ void		des_cbc_pre_permute_hook(t_desctx *ctx
 */
 
 void		des_cbc_post_permute_hook(t_desctx *ctx
-	, uint64_t *block
-	, uint8_t *plaintext
-	, uint64_t keyschedule[16])
+									, uint64_t *block
+									, uint64_t *permuted_block
+									, uint64_t *iv)
 {
-	(void)plaintext;
-	(void)keyschedule;
-	*block ^= ft_uint8to64(ctx->init_vector);
-	ft_uint64to8(*block, ctx->init_vector);
+	(void)permuted_block;
+	(void)iv;
+	if (GET_E(ctx->flags))
+	{
+		ctx->init_vector = *permuted_block;
+		return ;
+	}
+	*permuted_block ^= ctx->init_vector;
+	ctx->init_vector = *block;
 }
 
 /*
 ** In ecb mode, no xor'ing of the block or iv occurs
 */
 void		des_null_permute_hook(t_desctx *ctx
-	, uint64_t *block
-	, uint8_t *plaintext
-	, uint64_t keyschedule[16])
+									, uint64_t *block
+									, uint64_t *permuted_block
+									, uint64_t *iv)
 {
 	(void)ctx;
 	(void)block;
-	(void)plaintext;
-	(void)keyschedule;
+	(void)permuted_block;
+	(void)iv;
 }

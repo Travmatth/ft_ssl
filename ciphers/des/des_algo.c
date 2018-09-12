@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/02 12:55:44 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/06 14:27:52 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/11 21:49:58 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,9 +147,10 @@ uint64_t	des_f(uint64_t	block, uint64_t key)
 	return (permute_block(g_des_pbox, permuted, 32));
 }
 
-uint64_t		des_permute(uint64_t block, uint64_t keyschedule[16])
+uint64_t		des_permute(uint64_t block, uint64_t keyschedule[16], int encipher)
 {
-	uint8_t		i;
+	int		i;
+	uint8_t		next;
 	uint64_t	left;
 	uint64_t	right;
 
@@ -159,7 +160,8 @@ uint64_t		des_permute(uint64_t block, uint64_t keyschedule[16])
 	{
 		left = block << 32; 
 		right = block >> 32; 
-		right ^= (des_f(left, keyschedule[i++]) >> 32);
+		next = encipher ? i++ : 15 - i++;
+		right ^= (des_f(left, keyschedule[next]) >> 32);
 		block = left | right;
 	}
 	block = (block << 32) | (block >> 32);

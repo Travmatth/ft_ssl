@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/13 11:01:23 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/03 14:31:08 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/11 19:11:14 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,8 +139,8 @@ void	parse_base64_opts_handler(t_desctx *ctx, char **argv, int *i)
 	{
 		if (!argv[*i + 1])
 			ft_ssl_err("error");
-		ctx->init_vector = (uint8_t*)ft_strdup(argv[*i + 1]);
-		ctx->ivlen = LEN((char*)ctx->init_vector, 0);
+		if (!(ft_htouint64((uint8_t*)(argv[*i + 1]), &ctx->init_vector)))
+			ft_ssl_err("error: invalid init vector");
 		*i += 1;
 	}
 	// Need to handle -P a la pdf section v.03
@@ -166,7 +166,10 @@ void		*parse_des_opts(int argc, char **argv)
 	if (!ctx.out_file)
 		ctx.out_file = STDOUT;
 	if (!GET_INPUT(ctx.flags))
+	{
 		ctx.plaintext = (uint8_t*)ft_str_from_fd(STDIN);
+		ctx.plen = LEN((char*)ctx.plaintext, 0);
+	}
 	if (!(new = ft_memalloc(sizeof(t_desctx))))
 		ft_ssl_err("error");
 	return (ft_memcpy(new, &ctx, sizeof(t_desctx)));

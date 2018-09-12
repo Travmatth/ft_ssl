@@ -4,7 +4,8 @@
 		"internal.h": "c",
 		"conversions.h": "c",
 		"libft.h": "c",
-		"ft_ssl.h": "c"
+		"ft_ssl.h": "c",
+		"pbkdf2.h": "c"
 	},
     "vim.visualModeKeyBindings": [
         {

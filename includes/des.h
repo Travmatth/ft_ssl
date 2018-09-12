@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/13 11:06:22 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/04 20:53:17 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/11 21:02:07 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,17 +22,16 @@ typedef struct		s_desctx
 	uint8_t			*plaintext;
 	uint8_t			*ciphertext;
 	uint8_t			*password;
-	uint8_t			*init_vector;
 	size_t			klen;
 	size_t			slen;
 	size_t			plen;
 	size_t			clen;
 	size_t			passlen;
-	size_t			ivlen;
-	void			(*pre_permute_chaining)(struct s_desctx *ctx, uint64_t *block, uint8_t *plaintext, uint64_t keyschedule[16]);
-	void			(*post_permute_chaining)(struct s_desctx *ctx, uint64_t *block, uint8_t *plaintext, uint64_t keyschedule[16]);
+	void			(*pre_permute_chaining)(struct s_desctx *ctx, uint64_t *block, uint64_t *permuted_block, uint64_t *iv);
+	void			(*post_permute_chaining)(struct s_desctx *ctx, uint64_t *block, uint64_t *permuted_block, uint64_t *iv);
 	int				out_file;
 	unsigned char	flags[BITNSLOTS(4)];
+	uint64_t		init_vector;
 }					t_desctx;
 
 # define SET_DECRYPT(v) (BITSET(v, 0))
@@ -50,20 +49,20 @@ typedef struct		s_desctx
 uint8_t			*create_des_key(t_desctx *ctx);
 uint64_t		permute_block(uint8_t *map, uint64_t block, size_t limit);
 uint64_t		des_f(uint64_t	block, uint64_t key);
-uint64_t		des_permute(uint64_t block, uint64_t keyschedule[16]);
+uint64_t		des_permute(uint64_t block, uint64_t keyschedule[16], int encipher);
 void			key_operation_mode(int decrypt, uint64_t keyschedule[16]);
 void			des_cbc_pre_permute_hook(t_desctx *ctx
 						, uint64_t *block
-						, uint8_t *plaintext
-						, uint64_t keyschedule[16]);
+						, uint64_t *permuted_block
+						, uint64_t *iv);
 void			des_cbc_post_permute_hook(t_desctx *ctx
 						, uint64_t *block
-						, uint8_t *plaintext
-						, uint64_t keyschedule[16]);
+						, uint64_t *permuted_block
+						, uint64_t *iv);
 void			des_null_permute_hook(t_desctx *ctx
 						, uint64_t *block
-						, uint8_t *plaintext
-						, uint64_t keyschedule[16]);
+						, uint64_t *permuted_block
+						, uint64_t *iv);
 void			*parse_des_opts(int argc, char **argv);
 void			des_init(t_desctx *ctx, uint64_t keyschedule[16]);
 void			des_update(t_desctx *ctx

@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/13 11:01:21 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/09 21:05:49 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/11 21:59:24 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void			des_init(t_desctx *ctx, uint64_t keyschedule[16])
 	left[0] = (key >> 36) << 36;
 	right[0] = key << 28;
 	// keyschedule[0] = permute_block(g_key_perm, left[0] | (right[0] >> 28), 48);
-	keyshift = GET_DECRYPT(ctx->flags) ? g_des_key_dec : g_des_key_enc;
+	keyshift = g_des_key_enc;
 	while (i < 16)
 	{
 		left[i] = (((left[i ? i - 1 : 0] | (left[i ? i - 1 : 0] >> 28)) << keyshift[i]) >> 36) << 36;
@@ -37,7 +37,7 @@ void			des_init(t_desctx *ctx, uint64_t keyschedule[16])
 		keyschedule[i] = permute_block(g_key_perm, left[i] | (right[i] >> 28), 48);
 		i += 1;
 	}
-	key_operation_mode(GET_DECRYPT(ctx->flags), keyschedule);
+	// key_operation_mode(GET_DECRYPT(ctx->flags), keyschedule);
 }
 
 void			des_update(t_desctx *ctx
@@ -46,11 +46,12 @@ void			des_update(t_desctx *ctx
 {
 	uint64_t	block;
 	uint64_t	permuted_block;
+	uint64_t	iv;
 
 	block = ft_uint8to64(plaintext);
-	ctx->pre_permute_chaining(ctx, &block, plaintext, keyschedule);
-	permuted_block = des_permute(block, keyschedule);
-	ctx->post_permute_chaining(ctx, &permuted_block, plaintext, keyschedule);
+	ctx->pre_permute_chaining(ctx, &block, &permuted_block, &iv);
+	permuted_block = des_permute(block, keyschedule, GET_ENCRYPT(ctx->flags));
+	ctx->post_permute_chaining(ctx, &block, &permuted_block, &iv);
 	ft_uint64to8(permuted_block, ctx->ciphertext + ctx->clen);
 	ctx->clen += 8;
 }
@@ -74,6 +75,12 @@ void			des_final(t_desctx *ctx
 	else
 		ft_czero(tmp, 8, 8);
 	des_update(ctx, tmp, keyschedule);
+	if (GET_D(ctx->flags))
+	{
+		// pad = ctx->ciphertext[ctx->clen - 1];
+		// while (pad)
+		// 	ctx->ciphertext[ctx->clen - 1 - pad--] = '\0';
+	}
 }
 
 void		des_wrapper_print(t_desctx *ctx)
@@ -83,11 +90,9 @@ void		des_wrapper_print(t_desctx *ctx)
 	if (!(out = (unsigned char *)ft_strnew(ctx->clen)))
 		ft_ssl_err("error");
 	if (GET_ENCRYPT(ctx->flags) && GET_A(ctx->flags))
-	{
 		out = b64_full((unsigned char*)ctx->ciphertext, &ctx->clen, 1);
-		ctx->clen = ctx->clen / 3 * 4;
-	}
 	write(ctx->out_file, out, ctx->clen);
+	write(ctx->out_file, "\n", 1);
 	free(ctx->plaintext);
 	free(ctx);
 }
@@ -107,7 +112,7 @@ void		configure_des_params(t_desctx *ctx)
 	if (GET_DECRYPT(ctx->flags) && GET_A(ctx->flags))
 	{
 		ctx->plaintext = (uint8_t*)b64_full((unsigned char*)ctx->plaintext, &ctx->plen, 0);
-		ctx->plen = LEN((char*)ctx->plaintext, 0);
+		// ctx->plen = LEN((char*)ctx->plaintext, 0);
 	}
 }
 
