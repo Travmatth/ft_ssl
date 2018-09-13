@@ -6,13 +6,14 @@
 #    By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/05/17 18:33:21 by tmatthew          #+#    #+#              #
-#    Updated: 2018/09/04 15:06:14 by tmatthew         ###   ########.fr        #
+#    Updated: 2018/09/12 18:54:45 by tmatthew         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 
 DEBUG =
-ifdef TEST
+
+ifeq "$(TEST)" "FULL"
 	DEBUG = -g -fsanitize=address -fsanitize=undefined
 else
 	DEBUG =

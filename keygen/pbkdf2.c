@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/16 18:57:41 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/08/22 22:10:21 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/12 22:50:21 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,13 @@ unsigned char	*pbkdf2(unsigned char *p
 	unsigned int count;
 	size_t	r;
 
-	if ((rounds < 1 || k_len == 0)
-		|| (s_len == 0 || s_len > SIZE_MAX - 4)
-		|| ((asalt = malloc(s_len + 4)) == NULL))
-		ft_ssl_err("error");
+	// TEST SHIM
+	// if ((rounds < 1 || k_len == 0)
+	// 	|| (s_len == 0 || s_len > SIZE_MAX - 4)
+	// 	|| ((asalt = malloc(s_len + 4)) == NULL))
+	// 	ft_ssl_err("error");
+	asalt = ft_memalloc(s_len + 4);
+	// TEST SHIM
 
 	count = 1;
 	ft_memcpy(asalt, s, s_len);

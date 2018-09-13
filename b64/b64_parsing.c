@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/08 21:12:21 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/11 13:18:09 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/12 18:12:29 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,9 +50,7 @@ static void	parse_b64_opts_handler(t_b64 *ctx, char **argv, int *i)
 	else if (ft_strequ("-i", argv[*i]))
 	{
 		SET_I(ctx->mode);
-		if (!argv[*i + 1])
-			ft_ssl_err("error");
-		if (ERR((fd = open(argv[*i++ + 1], O_RDONLY))))
+		if (!argv[*i + 1] || ERR((fd = open(argv[*i++ + 1], O_RDONLY))))
 			ft_ssl_err("base64: no such file found");
 		ctx->in = (unsigned char*)ft_str_from_fd(fd);
 		ctx->in_len = LEN((char*)ctx->in, 0);
@@ -77,9 +75,8 @@ static void	parse_b64_opts_handler(t_b64 *ctx, char **argv, int *i)
 void		*parse_b64_opts(int argc, char **argv)
 {
 	int			i;
-	t_b64	ctx;
-	t_b64	*new;
-
+	t_b64		ctx;
+	t_b64		*new;
 
 	i = -1;
 	ft_bzero(&ctx, sizeof(t_b64));

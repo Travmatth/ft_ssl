@@ -13,7 +13,7 @@
         // "args": ["base64", "-d", "-i", "test/in_test"],
 		// "args": ["des-ecb", "-i", "test/in_test", "-k", "0011223344556677", "-a"],
 		// "args": ["des-cbc", "-i", "test/in_test", "-k", "0011223344556677", "-a", "-v", "0011223344556677"],
-		"args": ["des-cbc", "-d", "-a", "-k", "6162636461626364", "-v", "0011223344556677", "-i", "test/in_test"],
+		"args": ["des-cbc", "-a", "-k", "6162636461626364", "-v", "0011223344556677", "-i", "test/test"],
         "stopAtEntry": false,
         "cwd": "${workspaceRoot}",
         "preLaunchTask": "build",

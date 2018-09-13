@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/02 12:55:44 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/11 21:49:58 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/12 17:31:07 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static uint8_t	g_init_perm[64] =
 	63, 55, 47, 39, 31, 23, 15, 7
 };
 
-static uint8_t	g_des_exp[64] = 
+static uint8_t	g_des_exp[64] =
 {
 	32, 1, 2, 3, 4, 5,
 	4, 5, 6, 7, 8, 9,
@@ -38,7 +38,7 @@ static uint8_t	g_des_exp[64] =
 	0, 0, 0, 0, 0, 0, 0, 0
 };
 
-static uint8_t	g_des_sboxes[8][4][16] = 
+static uint8_t	g_des_sboxes[8][4][16] =
 {
 	{
 		{14, 4, 13, 1, 2, 15, 11, 8, 3, 10, 6, 12, 5, 9, 0, 7},
@@ -110,7 +110,7 @@ static uint8_t	g_des_final_perm[64] =
 	33, 1, 41, 9, 49, 17, 57, 25
 };
 
-uint64_t	permute_block(uint8_t *map, uint64_t block, size_t limit)
+uint64_t		permute_block(uint8_t *map, uint64_t block, size_t limit)
 {
 	uint64_t	permuted;
 	uint64_t	bit;
@@ -126,9 +126,20 @@ uint64_t	permute_block(uint8_t *map, uint64_t block, size_t limit)
 	return (permuted);
 }
 
-uint64_t	des_f(uint64_t	block, uint64_t key)
+/*
+** The fiestel cipher operates on 32 bits at a time, undergoing four stages:
+** 1: expansion: from 32 -> 48 bits
+** 2: key mixing: xor'ing the in_text with given subkey
+** 3: substitution: s-boxes replaces given bit patterns
+** 4: permutation: p-boxes spreads info across next rounds s-boxes
+** These steps provide the confusion and diffusion
+** needed in a cryptographic cipher
+** en.wikipedia.org/wiki/Data_Encryption_Standard#The_Feistel_(F)_function
+*/
+
+uint64_t		feistel_cipher(uint64_t block, uint64_t key)
 {
-	int		i;
+	int			i;
 	uint64_t	permuted;
 	uint8_t		inner;
 	uint8_t		outer;
@@ -139,7 +150,8 @@ uint64_t	des_f(uint64_t	block, uint64_t key)
 	i = 0;
 	while (i < 8)
 	{
-		outer = (((block >> (64 - (6 * i + 1))) & 1) << 1) | ((block >> (64 - (6 * i + 6)) & 1));
+		outer = (((block >> (64 - (6 * i + 1))) & 1) << 1)
+				| ((block >> (64 - (6 * i + 6)) & 1));
 		inner = (block << (6 * i + 1)) >> 60;
 		permuted |= (uint64_t)g_des_sboxes[i][outer][inner] << (60 - (4 * i));
 		i += 1;
@@ -147,9 +159,11 @@ uint64_t	des_f(uint64_t	block, uint64_t key)
 	return (permute_block(g_des_pbox, permuted, 32));
 }
 
-uint64_t		des_permute(uint64_t block, uint64_t keyschedule[16], int encipher)
+uint64_t		des_permute(uint64_t block
+							, uint64_t keyschedule[16]
+							, int encipher)
 {
-	int		i;
+	int			i;
 	uint8_t		next;
 	uint64_t	left;
 	uint64_t	right;
@@ -158,17 +172,17 @@ uint64_t		des_permute(uint64_t block, uint64_t keyschedule[16], int encipher)
 	block = permute_block(g_init_perm, block, 64);
 	while (i < 16)
 	{
-		left = block << 32; 
-		right = block >> 32; 
+		left = block << 32;
+		right = block >> 32;
 		next = encipher ? i++ : 15 - i++;
-		right ^= (des_f(left, keyschedule[next]) >> 32);
+		right ^= (feistel_cipher(left, keyschedule[next]) >> 32);
 		block = left | right;
 	}
 	block = (block << 32) | (block >> 32);
 	return (permute_block(g_des_final_perm, block, 64));
 }
 
-void		key_operation_mode(int decrypt, uint64_t keyschedule[16])
+void			key_operation_mode(int decrypt, uint64_t keyschedule[16])
 {
 	int			i;
 	uint64_t	tmp;

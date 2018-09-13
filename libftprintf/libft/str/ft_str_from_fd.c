@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_count_by_delim.c                                :+:      :+:    :+:   */
+/*   ft_str_from_fd.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/23 16:15:17 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/07/21 18:35:19 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/12 19:27:38 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,8 @@ char		*ft_str_from_fd(int fd)
 		}
 		else
 			string = ft_strndup(buf, bytes);
+		if (bytes < BUFF_SIZE)
+			break ;
 	}
 	return (string);
 }

@@ -6,38 +6,39 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/09 20:21:29 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/11 20:15:10 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/12 20:12:45 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/ft_ssl.h"
 
-void	b64_init(t_base64 *ctx, unsigned char *in, size_t *len, int encoding)
+void			b64_init(t_base64 *ctx
+						, unsigned char *in
+						, size_t in_len
+						, int encoding)
 {
+	size_t	len;
+	t_buf	*b;
+
 	ctx->in = in;
-	int t1 = 4 * (*len / 3) + (*len % 3 != 0 ? 4 : 0);
-	int t2 = ((4 * *len / 3) + 3) & ~3;
-	int t3 = ((*len + 3 - 1) / 3) * 4;
-	(void)t1;
-	// (void)t2;
-	(void)t3;
-	ctx->in_len = *len;
-	if (!encoding)
-	{
-		ctx->in = (unsigned char*)((t_buf*)ft_strfoldl(b64_normalize, *len, (char*)in))->buf;
-		ctx->in_len = LEN((char*)ctx->in, 0);
-	}
-	// *len = GET_E(ctx->mode) ? LEN_FROM64(*len) : LEN_TO64(*len); 
+	ctx->in_len = in_len;
 	if (encoding)
-		*len = t2;
-		// *len = LEN_TO64(*len); 
+		len = ((4 * in_len / 3) + 3) & ~3;
 	else
-		*len = LEN_FROM64(*len); 
-	if (!(ctx->out = (unsigned char*)ft_strnew(*len)))
+	{
+		b = (t_buf*)ft_strfoldl(b64_normalize, in_len, (char*)in);
+		ctx->in = (unsigned char*)b->buf;
+		ctx->in_len = LEN((char*)ctx->in, 0);
+		len = LEN_FROM64(ctx->in_len);
+	}
+	if (!(ctx->out = (unsigned char*)ft_strnew(len)))
 		ft_ssl_err("error");
 }
 
-void	b64_update(t_base64 *ctx, unsigned char *in, unsigned char *out, int encoding)
+void			b64_update(t_base64 *ctx
+						, unsigned char *in
+						, unsigned char *out
+						, int encoding)
 {
 	if (encoding)
 		b64_encode(ctx, in, out);
@@ -45,7 +46,10 @@ void	b64_update(t_base64 *ctx, unsigned char *in, unsigned char *out, int encodi
 		b64_decode(ctx, in, out);
 }
 
-void	b64_final(t_base64 *ctx, unsigned char *in, unsigned char *out, int encoding)
+void			b64_final(t_base64 *ctx
+						, unsigned char *in
+						, unsigned char *out
+						, int encoding)
 {
 	ptrdiff_t		rem;
 	unsigned char	tmp[4];
@@ -57,22 +61,23 @@ void	b64_final(t_base64 *ctx, unsigned char *in, unsigned char *out, int encodin
 	ft_bzero((void*)(tmp + ctx->in_len), rem);
 	if (encoding)
 	{
-		b64_encode(ctx, tmp, out + ctx->out_len);
+		b64_encode(ctx, tmp, out);
 		while (rem)
-			*(ctx->out - rem--) = '=';
+			*(ctx->out + ctx->out_len - rem--) = '=';
 	}
 	else
-		b64_decode(ctx, tmp, out + ctx->out_len);
+		b64_decode(ctx, tmp, out);
 }
 
-unsigned char			*b64_full(unsigned char *in, size_t *len, int encoding)
+unsigned char	*b64_full(unsigned char *in, size_t *len, int encoding)
 {
 	t_base64		*ctx;
 	size_t			inc;
 	unsigned char	*out;
 
-	ctx = (t_base64*)ft_memalloc(sizeof(t_base64));
-	b64_init(ctx, in, len, encoding);
+	if (!(ctx = (t_base64*)ft_memalloc(sizeof(t_base64))))
+		ft_ssl_err("error");
+	b64_init(ctx, in, *len, encoding);
 	inc = encoding ? 3 : 4;
 	out = ctx->out;
 	while (ctx->in_len >= inc)
@@ -81,11 +86,12 @@ unsigned char			*b64_full(unsigned char *in, size_t *len, int encoding)
 		ctx->in += inc;
 		ctx->in_len -= inc;
 	}
-	b64_final(ctx, ctx->in, ctx->out, encoding);
+	b64_final(ctx, ctx->in, ctx->out + ctx->out_len, encoding);
+	*len = ctx->out_len;
 	return (out);
 }
 
-void	b64_wrapper(void *input)
+void			b64_wrapper(void *input)
 {
 	t_b64			*ctx;
 	unsigned char	*out;

@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/16 12:34:43 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/11 14:02:08 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/12 17:27:03 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 # define FROM_STDIN 2
 # define NO_INPUT 3
 
-# define FT_SSL_FUNCS 5
+# define FT_SSL_FUNCS 6
 # define SHA2_256_DLEN 32
 
 # define FROM_BITS(x) (x / 8)
@@ -59,6 +59,7 @@ typedef struct	s_ptrs
 
 void			*read_from_file(t_hash_state *state
 							, t_digest *digest, char **argv, int *i);
+void			ft_ssl_cmd_err(char *command);
 void			read_from_stdin(t_hash_state *state, t_digest *digest);
 void			ft_ssl_err(const char *message) __attribute__((noreturn));
 #endif
