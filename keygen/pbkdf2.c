@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/16 18:57:41 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/14 21:46:50 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/15 11:10:44 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ void	pbkdf2_rounds(t_hmac *hmac
 , unsigned char *s
 , size_t s_len
 , unsigned char *key
-// , size_t k_len
 , size_t *tmp
 , unsigned int rounds)
 {
