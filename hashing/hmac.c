@@ -6,62 +6,76 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/16 19:20:35 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/08/22 21:13:21 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/14 21:54:47 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/ft_ssl.h"
 
-unsigned char		*hmac_sha_256(const unsigned char *text
-								, size_t t_len
-								, const unsigned char *key
-								, size_t k_len
-								, unsigned char digest[SHA256_DIGEST_LENGTH])
+static const size_t g_diff = SHA256_BLOCK_LEN - SHA256_DIGEST_LEN;
+
+void	xor_hmac(t_hmac *ctx, uint32_t *key, uint32_t pad)
 {
-	unsigned char k_pad[SHA256_BLOCK_LENGTH];
-	unsigned char tk[SHA256_DIGEST_LENGTH];
-	unsigned char	*tmp[2];
-	char	*out;
-	int i;
+	uint32_t	i;
 
-	if (k_len > SHA256_BLOCK_LENGTH) {
-		// SHA1Init(&ctx);
-		// SHA1Update(&ctx, key, k_len);
-		// SHA1Final(tk, &ctx);
-		sha256_core((char*)tk, (char*)key);
-		k_len = SHA256_DIGEST_LENGTH;
+	i = 0;
+	while (i < SHA256_BLOCK_LEN)
+	{
+		ctx->sha256.buf[i] = ctx->sha256.buf[i] ^ pad;
+		i += 1;
 	}
+	sha256_init(&ctx->sha256);
+	sha256_update(&ctx->sha256, ctx->sha256.buf, SHA256_BLOCK_LEN);
+	ft_memcpy(key, ctx->sha256.state, SHA256_DIGEST_LEN);
+}
 
-	ft_memmove(k_pad, key, k_len);
+void	hmac_sha256_init(t_hmac *ctx, uint8_t *key, size_t len)
+{
+	if (len <= SHA256_BLOCK_LEN)
+	{
+		ft_memcpy(ctx->sha256.buf, key, len);
+		ft_memset(ctx->sha256.buf + len, 0, SHA256_BLOCK_LEN - len);
+	}
+	else
+	{
+		sha256_init(&ctx->sha256);
+		sha256_update(&ctx->sha256, key, len);
+		sha256_final(&ctx->sha256, ctx->sha256.buf);
+		ft_memset(ctx->sha256.buf + SHA256_DIGEST_LEN, 0, g_diff);
+	}
+	uint32_t	i;
 	i = 0;
-	while (i < SHA256_BLOCK_LENGTH)
-		k_pad[i++] ^= 0x36;
-
-	// SHA1Init(&ctx);
-	// SHA1Update(&ctx, k_pad, SHA1_BLOCK_LENGTH);
-	// SHA1Update(&ctx, text, t_len);
-	// SHA1Final(digest, &ctx);
-	if (!(tmp[0] = ft_memalloc(SHA256_BLOCK_LENGTH + t_len)))
-		ft_ssl_err("error");
-	ft_memcpy(tmp[0], k_pad, SHA256_BLOCK_LENGTH);
-	ft_memcpy(tmp[0] + SHA256_BLOCK_LENGTH, text, t_len);
-	sha256_core((char*)digest, (char*)tmp[0]);
-
-	ft_memmove(k_pad, key, k_len);
+	while (i < SHA256_BLOCK_LEN)
+	{
+		ctx->sha256.buf[i] = ctx->sha256.buf[i] ^ OUTER_PAD;
+		i += 1;
+	}
+	sha256_init(&ctx->sha256);
+	sha256_update(&ctx->sha256, ctx->sha256.buf, SHA256_BLOCK_LEN);
+	ft_memcpy(ctx->outer, ctx->sha256.state, SHA256_DIGEST_LEN);
 	i = 0;
-	while (i < SHA256_BLOCK_LENGTH)
-		k_pad[i++] ^= 0x5c;
+	while (i < SHA256_BLOCK_LEN)
+	{
+		ctx->sha256.buf[i] = (ctx->sha256.buf[i] ^ OUTER_PAD) ^ INNER_PAD;
+		i += 1;
+	}
+	sha256_init(&ctx->sha256);
+	sha256_update(&ctx->sha256, ctx->sha256.buf, SHA256_BLOCK_LEN);
+	ft_memcpy(ctx->inner, ctx->sha256.state, SHA256_DIGEST_LEN);
+}
 
-	// SHA1Init(&ctx);
-	// SHA1Update(&ctx, k_pad, SHA1_BLOCK_LENGTH);
-	// SHA1Update(&ctx, digest, SHA256_DIGEST_LENGTH);
-	// SHA1Final(digest, &ctx);
-	if (!(tmp[1] = ft_memalloc(SHA256_BLOCK_LENGTH + SHA256_DIGEST_LENGTH)))
-		ft_ssl_err("error");
-	ft_memcpy(tmp[1], k_pad, SHA256_BLOCK_LENGTH);
-	ft_memcpy(tmp[1] + SHA256_BLOCK_LENGTH, digest, SHA256_DIGEST_LENGTH);
-	if (!(out = ft_memalloc(SHA256_DIGEST_LENGTH)))
-		ft_ssl_err("error");
-	sha256_core((char*)out, (char*)digest);
-	return ((unsigned char*)out);
+void	hmac_sha256_update(t_hmac *ctx, uint8_t *in, size_t len)
+{
+	sha256_update(&ctx->sha256, in, len);
+}
+
+void	hmac_sha256_final(t_hmac *ctx, uint8_t *digest)
+{
+	sha256_final(&ctx->sha256, digest);
+	ctx->sha256.len = SHA256_BLOCK_LEN;
+	ft_memcpy(ctx->sha256.state, ctx->outer, SHA256_BLOCK_LEN);
+	sha256_update(&ctx->sha256, digest, SHA256_DIGEST_LEN);
+	sha256_final(&ctx->sha256, digest);
+	ctx->sha256.len = SHA256_BLOCK_LEN;
+	ft_memcpy(ctx->sha256.state, ctx->inner, SHA256_BLOCK_LEN);
 }

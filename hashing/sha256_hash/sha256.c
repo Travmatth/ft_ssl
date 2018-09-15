@@ -6,89 +6,82 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/22 12:41:53 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/08/22 21:14:02 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/14 14:19:33 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/ft_ssl.h"
-#include "../../includes/sha256.h"
-#include "../../includes/sha256_constants.h"
 
-void			sha256_round(int i, uint32_t *message_schedule, uint32_t *vars)
+void	sha256_init(t_sha256 *ctx)
 {
-	uint32_t	tmp[2];
-
-	tmp[0] = vars[H]
-		+ EP1(vars[E])
-		+ CH(vars[E], vars[F], vars[G])
-		+ K[i]
-		+ W[i];
-	tmp[1] = EP0(vars[A]) + MAJ(vars[A], vars[B], vars[C]);
-	vars[H] = vars[G];
-	vars[G] = vars[F];
-	vars[F] = vars[E];
-	vars[E] = vars[D] + tmp[0];
-	vars[D] = vars[C];
-	vars[C] = vars[B];
-	vars[B] = vars[A];
-	vars[A] = tmp[0] + tmp[1];
+	ctx->len = 0;
+	ctx->state[0] = 0x6a09e667;
+	ctx->state[1] = 0xbb67ae85;
+	ctx->state[2] = 0x3c6ef372;
+	ctx->state[3] = 0xa54ff53a;
+	ctx->state[4] = 0x510e527f;
+	ctx->state[5] = 0x9b05688c;
+	ctx->state[6] = 0x1f83d9ab;
+	ctx->state[7] = 0x5be0cd19;
 }
 
-void			sha256_rounds(uint32_t hash_value[8], unsigned char *message)
+void	sha256_update(t_sha256 *ctx, uint8_t *message, size_t len)
 {
-	int			i;
-	uint32_t	message_schedule[64];
-	uint32_t	working_variables[8];
+	uint8_t	*ptr;
+	size_t	rem;
 
-	i = -1;
-	while (++i < 8)
-		working_variables[i] = hash_value[i];
-	prepare_message_schedule(message, message_schedule);
-	i = 0;
-	while (i < 64)
-		sha256_round(i++, message_schedule, working_variables);
-	i = -1;
-	while (++i < 8)
-		hash_value[i] += working_variables[i];
-}
-
-unsigned char	*sha256_transform(char *pre_image)
-{
-	size_t			len;
-	size_t			position;
-	unsigned char	*padded_pre_image;
-	uint32_t		hash_value[8];
-	unsigned char	message[64];
-
-	position = 0;
-	sha256_hash_init(hash_value);
-	padded_pre_image = sha256_preprocessing(pre_image, &len);
-	while (position < FROM_BITS(len))
+	ptr = message;
+	rem = ctx->len % SHA256_BLOCK_LEN;
+	ctx->len += len;
+	if (rem)
 	{
-		ft_memcpy((void*)message
-				, (void*)(padded_pre_image + position)
-				, sizeof(uint32_t) * 16);
-		sha256_rounds(hash_value, message);
-		position += FROM_BITS(512);
+		if (len < SHA256_BLOCK_LEN - rem)
+		{
+			ft_memcpy(ctx->buf + rem, ptr, len);
+			return ;
+		}
+		ft_memcpy(ctx->buf + rem, ptr, SHA256_BLOCK_LEN - rem);
+		len -= SHA256_BLOCK_LEN - rem;
+		ptr += SHA256_BLOCK_LEN - rem;
+		sha256_rounds(ctx->state, ctx->buf);
 	}
-	free(padded_pre_image);
-	return (reverse_bytes(hash_value));
+	while (len >= SHA256_BLOCK_LEN)
+	{
+		sha256_rounds(ctx->state, ptr);
+		len -= SHA256_BLOCK_LEN;
+		ptr += SHA256_BLOCK_LEN;
+	}
+	ft_memcpy(ctx->buf, ptr, len);
 }
 
-char			*sha256_core(char *output, char *pre_image)
+void	sha256_final(t_sha256 *ctx, uint8_t *digest)
 {
-	return (from_hex_hash(output, sha256_transform(pre_image), 32));
+	int		i;
+
+	sha256_pad_plaintext(ctx);
+	i = -1;
+	while (++i < SHA256_DIGEST_INT)
+	{
+		digest[4 * i] = ctx->state[i] >> 24;
+		digest[4 * i + 1] = ctx->state[i] >> 16;
+		digest[4 * i + 2] = ctx->state[i] >> 8;
+		digest[4 * i + 3] = ctx->state[i];
+	}
+	sha256_init(ctx);
 }
 
-char			*sha256_string(char *pre_image)
+char	*sha256_full(uint8_t *in, size_t len)
 {
-	char	output[65];
+	t_sha256	ctx;
+	uint8_t		digest[SHA256_BLOCK_LEN];
 
-	sha256_core(output, pre_image);
-	return (ft_strdup(output));
+	sha256_init(&ctx);
+	sha256_update(&ctx, in, len);
+	sha256_final(&ctx, digest);
+	return (ft_strdup((char*)digest));
 }
 
-void			sha256_ssl_wrapper(void *input)
+void	sha256_ssl_wrapper(void *input)
 {
 	size_t			i;
 	size_t			total;
@@ -102,7 +95,7 @@ void			sha256_ssl_wrapper(void *input)
 	{
 		digest = (t_digest*)&((char*)state->digests->buf)[i];
 		if (digest->type != NO_INPUT)
-			digest->hash_value = sha256_string(digest->pre_image);
+			digest->hash_value = sha256_full((uint8_t*)digest->pre_image, LEN(digest->pre_image, 0));
 		i += sizeof(t_digest);
 	}
 	print_hash_state("SHA256", state);

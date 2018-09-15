@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/15 19:22:59 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/12 22:45:15 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/14 21:47:50 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -181,7 +181,11 @@ void		scrypt(unsigned char *passphrase //p
 	block_scratch_space = ft_memalloc(256 * block_size);
 	cost_scratch_space = ft_memalloc(128 * block_size * cost_param);
 	// TEST SHIM
-	blocks = pbkdf2(passphrase, passphrase_len, salt, salt_len, key, key_len, 1);
+	(void)salt;
+	(void)salt_len;
+	(void)key;
+	uint8_t	k[32];
+	pbkdf2((uint8_t*)"password", 8, (uint8_t*)"salt", 4, k, 32, 1);
 	// blocks = pbkdf2(passphrase, passphrase_len, salt, salt_len, key, key_len, 1);
 	// TEST SHIM
 

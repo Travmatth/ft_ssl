@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/08 12:51:28 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/08/22 17:14:27 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/14 19:28:57 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,6 @@
 # define MD5_DIGEST(state, i) ((t_digest*)((char*)state->digests->buf + i))
 
 # define HMAC_BLOCK_SIZE 64
-# define SHA256_BLOCK_LENGTH 64
-# define SHA256_DIGEST_LENGTH 32
 
 # define A 0
 # define B 1
@@ -60,6 +58,16 @@ typedef struct	s_hash_state
 	t_buf		*digests;
 }				t_hash_state;
 
+typedef struct	s_hmac
+{
+	uint32_t	outer[SHA256_DIGEST_INT];
+	uint32_t	inner[SHA256_DIGEST_INT];
+	t_sha256	sha256;
+}				t_hmac;
+
+# define INNER_PAD '\x36'
+# define OUTER_PAD '\x5c'
+
 char			*from_hex_hash(char *output
 							, unsigned char *hash_value
 							, size_t len);
@@ -67,13 +75,16 @@ unsigned char	*hmac_sha_256(const unsigned char *text
 							, size_t t_len
 							, const unsigned char *key
 							, size_t k_len
-							, unsigned char digest[SHA256_DIGEST_LENGTH]);
+							, unsigned char digest[SHA256_DIGEST_LEN]);
 void			print_hash_state(char *hash, t_hash_state *state);
 unsigned char	*pad_pre_image(char *pre_image, size_t *len);
 size_t			get_hash_padding(size_t len);
 void			*parse_hash_opts(int argc, char **argv);
 void			md5(void *input);
 void			sha256_ssl_wrapper(void *input);
-char			*sha256_core(char *output, char *pre_image);
+char			*sha256_full(uint8_t *in, size_t len);
 char			*sha256_string(char *pre_image);
+void			hmac_sha256_init(t_hmac *ctx, uint8_t *key, size_t len);
+void			hmac_sha256_update(t_hmac *ctx, uint8_t *in, size_t len);
+void			hmac_sha256_final(t_hmac *ctx, uint8_t *digest);
 #endif

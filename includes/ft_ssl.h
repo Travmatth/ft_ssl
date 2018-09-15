@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/16 12:34:43 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/12 17:27:03 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/14 19:27:34 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include <fcntl.h>
 # include "../libftprintf/srcs/includes/ft_printf.h"
+# include "sha256.h"
 # include "hashing.h"
 # include "base64.h"
 # include "pbkdf2.h"
