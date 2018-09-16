@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/08 21:12:21 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/12 18:12:29 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/15 16:03:38 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,8 @@ void		*parse_b64_opts(int argc, char **argv)
 	}
 	if (!GET_E(ctx.mode) && !GET_D(ctx.mode))
 		SET_E(ctx.mode);
+	if (!ctx.fd)
+		ctx.fd = STDOUT;
 	if (!(new = ft_memalloc(sizeof(t_b64))))
 		ft_ssl_err("error");
 	return (ft_memcpy(new, &ctx, sizeof(t_b64)));

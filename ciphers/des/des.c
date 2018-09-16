@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/13 11:01:21 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/12 19:48:54 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/15 20:33:43 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,6 @@ uint8_t g_key_perm[64] =
 ** des_init processes des params to initialize the cipher's state
 ** generates 16 element key schedule from given uint8_t* key
 ** original transformations
-** l[i] = (((l[i ? i-1 : 0] | (l[i ? i-1 : 0] >> 28)) << ks[i]) >> 36) << 36;
-** r[i] = (((r[i ? i-1 : 0] | (r[i ? i-1 : 0] >> 28)) << ks[i]) >> 36) << 36;
 */
 
 void		des_init(t_desctx *ctx, uint64_t keyschedule[16])
@@ -98,6 +96,20 @@ void		des_update(t_desctx *ctx
 	ctx->o_len += 8;
 }
 
+void		des_decode_trim_padding(t_desctx *ctx)
+{
+	uint8_t	pad;
+	ssize_t	rem;
+
+	if ((pad = ctx->out_text[ctx->o_len - 1]) <= 8)
+	{
+		rem = (ssize_t)pad;
+		while (pad)
+			ctx->out_text[ctx->o_len - pad--] = '\0';
+		ctx->o_len -= (size_t)rem;
+	}
+}
+
 /*
 ** des_final finishes the des algorithm by
 ** alternatively padding the final block of in_text when encrypting
@@ -125,40 +137,8 @@ void		des_final(t_desctx *ctx
 			ft_czero(tmp, 8, 8);
 		des_update(ctx, tmp, keyschedule);
 	}
-	else if (GET_D(ctx->flags))
-	{
-		if ((pad = ctx->out_text[ctx->o_len - 1]) <= 8)
-		{
-			rem = (ssize_t)pad;
-			while (pad)
-				ctx->out_text[ctx->o_len - pad--] = '\0';
-			ctx->o_len -= (size_t)rem;
-		}
-	}
-}
-
-/*
-** des_wrapper_print manages the decoding of the given out_text
-** as well as the formmatting of the output
-*/
-
-void		des_wrapper_print(t_desctx *ctx)
-{
-	unsigned char	*out;
-
-	if (GET_E(ctx->flags))
-	{
-		if (!(out = (unsigned char *)ft_strnew(ctx->o_len)))
-			ft_ssl_err("error");
-		if (GET_ENCRYPT(ctx->flags) && GET_A(ctx->flags))
-			out = b64_full((unsigned char*)ctx->out_text, &ctx->o_len, 1);
-		write(ctx->out_file, out, ctx->o_len);
-	}
 	else
-		write(ctx->out_file, ctx->out_text, ctx->o_len);
-	write(ctx->out_file, "\n", 1);
-	free(ctx->in_text);
-	free(ctx);
+		des_decode_trim_padding(ctx);
 }
 
 /*
@@ -185,4 +165,12 @@ void		des_wrapper(void *input)
 	}
 	des_final(ctx, in_text, keyschedule, ctx->i_len);
 	des_wrapper_print(ctx);
+	free(ctx->key);
+	free(ctx->salt);
+	free(ctx->in_text);
+	free(ctx->out_text);
+	if (ctx->password)
+		free(ctx->password);
+	if (ctx->salt)
+		free(ctx->salt);
 }

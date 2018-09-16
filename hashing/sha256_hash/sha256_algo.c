@@ -6,14 +6,14 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/22 12:41:53 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/14 14:20:21 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/15 15:33:25 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/ft_ssl.h"
 #include "../../includes/sha256.h"
 
-static const uint32_t g_K[64] =
+static const uint32_t g_k[64] =
 {
 	0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5,
 	0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
@@ -89,7 +89,7 @@ void	sha256_round(int i, uint32_t *message_schedule, uint32_t *vars)
 	tmp[0] = vars[H]
 		+ EP1(vars[E])
 		+ CH(vars[E], vars[F], vars[G])
-		+ g_K[i]
+		+ g_k[i]
 		+ W[i];
 	tmp[1] = EP0(vars[A]) + MAJ(vars[A], vars[B], vars[C]);
 	vars[H] = vars[G];

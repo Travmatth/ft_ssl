@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/13 11:06:22 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/12 18:26:36 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/15 22:18:25 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,13 @@
 # define SET_ENCRYPT(v) (BITSET(v, 1))
 # define SET_INPUT(v) (BITSET(v, 2))
 # define SET_A(v) (BITSET(v, 3))
+# define SET_K(v) (BITSET(v, 4))
 
 # define GET_DECRYPT(v) (BITTEST(v, 0))
 # define GET_ENCRYPT(v) (BITTEST(v, 1))
 # define GET_INPUT(v) (BITTEST(v, 2))
 # define GET_A(v) (BITTEST(v, 3))
+# define GET_K(v) (BITTEST(v, 4))
 
 # define ROT_28B_L(x, y) ((((x | (x >> 28)) << y) >> 36) << 36)
 
@@ -39,6 +41,7 @@ typedef struct		s_desctx
 	size_t			s_len;
 	size_t			i_len;
 	size_t			o_len;
+	uint8_t			p_len;
 	size_t			pass_len;
 	void			(*pre_permute_chaining)(struct s_desctx *ctx
 											, uint64_t *block
@@ -52,6 +55,7 @@ typedef struct		s_desctx
 	unsigned char	flags[BITNSLOTS(4)];
 }					t_desctx;
 
+void				des_wrapper_print(t_desctx *ctx);
 void				configure_des_params(t_desctx *ctx);
 uint8_t				*create_des_key(t_desctx *ctx);
 uint64_t			permute_block(uint8_t *map, uint64_t block, size_t limit);

@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/22 12:41:53 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/14 14:19:33 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/15 15:34:06 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,9 @@ void	sha256_ssl_wrapper(void *input)
 	{
 		digest = (t_digest*)&((char*)state->digests->buf)[i];
 		if (digest->type != NO_INPUT)
-			digest->hash_value = sha256_full((uint8_t*)digest->pre_image, LEN(digest->pre_image, 0));
+			digest->hash_value = sha256_full(
+				(uint8_t*)digest->pre_image
+				, LEN(digest->pre_image, 0));
 		i += sizeof(t_digest);
 	}
 	print_hash_state("SHA256", state);

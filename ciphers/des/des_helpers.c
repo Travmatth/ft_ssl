@@ -6,13 +6,13 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/02 12:56:53 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/14 19:17:06 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/15 22:27:33 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/ft_ssl.h"
 
-unsigned char		*prompt_for_password(void)
+uint8_t	*prompt_for_password(void)
 {
 	char	*password;
 	char	*verfication;
@@ -25,53 +25,55 @@ unsigned char		*prompt_for_password(void)
 		ft_ssl_err("error: passwords do not match");
 }
 
-uint8_t				*create_des_key(t_desctx *ctx)
+void	create_des_key(t_desctx *ctx)
 {
-	// int			fd;
-	uint8_t		*key;
 	uint8_t		result[64];
-	// uint64_t	buf[2];
+	uint8_t		key[64];
+	t_scrypt	opts;
 
-	// TESTING SHIM
-	// if (!ctx->password)
-	// 	ctx->password = prompt_for_password();
-	// if (ctx->salt[0] == 0 && ctx->salt[1] == 0)
-	// {
-	// 	if (!(fd = open("/dev/random", O_RDONLY)))
-	// 		ft_ssl_err("error: cannot open /dev/random");
-	// 	if (!read(fd, buf, sizeof(uint64_t) * 2))
-	// 		ft_ssl_err("error occurred while reading /dev/random");
-	// 	ft_memcpy(ctx->salt, (void*)buf, sizeof(uint64_t));
-	// }
-	// TESTING SHIM
-	// scrypt(ctx->password, ctx->i_len, ctx->salt, ctx->s_len, 16, 1, 1, result, 64);
-	scrypt((unsigned char*)"", 0, (unsigned char*)"", 0, 16, 1, 1, result, 64);
-	// TESTING SHIM
-	if (!(key = ft_memalloc(ctx->k_len)))
-		ft_ssl_err("error");
-	ft_memcpy((void*)&key, (void*)result, sizeof(uint64_t));
-	return (key);
+	ft_bzero(&opts, sizeof(t_scrypt));
+	if (!(ctx->password))
+		ctx->password = prompt_for_password();
+	// scrypt(ctx, 16, 1, 1, result, 64);
+	scrypt(ctx, opts);
+	key = from_hex_hash(key, result, 64);
+	write(ctx->out_file, key, ctx->k_len);
 }
 
-void				configure_des_params(t_desctx *ctx)
+void			configure_des_params(t_desctx *ctx)
 {
 	size_t			o_len;
 	unsigned char	*decoded;
+	uint8_t			*orig;
 
 	o_len = ctx->i_len + 8;
 	if (!(ctx->out_text = (uint8_t*)ft_strnew(o_len)))
 		ft_ssl_err("error");
-	// TESTING SHIM
-	create_des_key(ctx);
-	// TESTING SHIM
-	if (!ctx->key)
-	{
-		ctx->k_len = 8;
-		ctx->key = create_des_key(ctx);
-	}
 	if (GET_DECRYPT(ctx->flags) && GET_A(ctx->flags))
 	{
+		orig = ctx->in_text;
 		decoded = b64_full((unsigned char*)ctx->in_text, &ctx->i_len, 0);
+		free(orig);
 		ctx->in_text = (uint8_t*)decoded;
 	}
+}
+
+/*
+** des_wrapper_print manages the decoding of the given out_text
+** as well as the formmatting of the output
+*/
+
+void			des_wrapper_print(t_desctx *ctx)
+{
+	unsigned char	*out;
+
+	if (GET_A(ctx->flags) && GET_ENCRYPT(ctx->flags))
+	{
+		out = b64_full((unsigned char*)ctx->out_text, &ctx->o_len, 1);
+		write(ctx->out_file, out, ctx->o_len);
+		free(out);
+	}
+	else
+		write(ctx->out_file, ctx->out_text, ctx->o_len);
+	write(ctx->out_file, "\n", 1);
 }

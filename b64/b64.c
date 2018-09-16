@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/09 20:21:29 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/12 20:12:45 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/15 19:59:27 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ void			b64_init(t_base64 *ctx
 	{
 		b = (t_buf*)ft_strfoldl(b64_normalize, in_len, (char*)in);
 		ctx->in = (unsigned char*)b->buf;
+		free(b);
 		ctx->in_len = LEN((char*)ctx->in, 0);
 		len = LEN_FROM64(ctx->in_len);
 	}
@@ -71,23 +72,22 @@ void			b64_final(t_base64 *ctx
 
 unsigned char	*b64_full(unsigned char *in, size_t *len, int encoding)
 {
-	t_base64		*ctx;
+	t_base64		ctx;
 	size_t			inc;
 	unsigned char	*out;
 
-	if (!(ctx = (t_base64*)ft_memalloc(sizeof(t_base64))))
-		ft_ssl_err("error");
-	b64_init(ctx, in, *len, encoding);
+	ft_bzero(&ctx, sizeof(t_base64));
+	b64_init(&ctx, in, *len, encoding);
 	inc = encoding ? 3 : 4;
-	out = ctx->out;
-	while (ctx->in_len >= inc)
+	out = ctx.out;
+	while (ctx.in_len >= inc)
 	{
-		b64_update(ctx, ctx->in, ctx->out + ctx->out_len, encoding);
-		ctx->in += inc;
-		ctx->in_len -= inc;
+		b64_update(&ctx, ctx.in, ctx.out + ctx.out_len, encoding);
+		ctx.in += inc;
+		ctx.in_len -= inc;
 	}
-	b64_final(ctx, ctx->in, ctx->out + ctx->out_len, encoding);
-	*len = ctx->out_len;
+	b64_final(&ctx, ctx.in, ctx.out + ctx.out_len, encoding);
+	*len = ctx.out_len;
 	return (out);
 }
 
@@ -95,10 +95,14 @@ void			b64_wrapper(void *input)
 {
 	t_b64			*ctx;
 	unsigned char	*out;
+	unsigned char	*orig;
 
 	ctx = (t_b64*)input;
 	if (!ctx->in)
 		ctx->in = ft_memalloc(ctx->in_len);
+	orig = ctx->in;
 	out = b64_full(ctx->in, &ctx->in_len, GET_E(ctx->mode));
 	write(ctx->fd, out, ctx->in_len);
+	write(ctx->fd, "\n", 1);
+	free(orig);
 }
