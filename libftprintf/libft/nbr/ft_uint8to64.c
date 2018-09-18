@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/03 09:48:56 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/03 09:55:10 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/17 18:42:41 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ uint64_t	ft_uint8to64(uint8_t *block)
 	i = 0;
 	while (i < 8)
 	{
-		new |= ((uint64_t)block[i]) << (8 * (8  - (i + 1)));
+		new |= ((uint64_t)block[i]) << (8 * (8 - (i + 1)));
 		i += 1;
 	}
 	return (new);

@@ -16,7 +16,7 @@ MD5 := md5 md5_hashing
 DES := des_algo des_helpers des_modes des des_parsing
 SALSA := salsa
 SHA256 := sha256 sha256_algo
-KEYGEN := pbkdf2 scrypt
+KEYGEN := pbkdf2 scrypt scrypt_utils
 BASE64 := b64_parsing b64 b64_algo
 CIPHERS := $(addprefix des/, $(DES)) \
 	$(addprefix salsa/, $(SALSA))

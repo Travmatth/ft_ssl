@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/13 11:01:23 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/15 22:26:52 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/17 19:32:47 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,17 @@
 
 int		parse_param(char *opt, uint8_t **param, char **argv, int *i)
 {
+	size_t	len;
+
 	if (!ft_strequ(opt, argv[*i]))
 		return (0);
 	if (!(*param = (uint8_t*)ft_strdup(argv[*i + 1])))
 		ft_ssl_err("error");
 	*i += 1;
-	return (LEN((char*)*param, 0));
+	len = LEN((char*)*param, 0);
+	if (!len)
+		ft_ssl_err("error");
+	return (len);
 }
 
 int		parse_des_io(t_desctx *ctx, char **argv, int *i)
@@ -94,8 +99,6 @@ int		parse_des_params(t_desctx *ctx, char **argv, int *i)
 		argv[*i][1] == 'd' ? SET_DECRYPT(ctx->flags) : SET_ENCRYPT(ctx->flags);
 		return (1);
 	}
-	if (ft_strequ("-p", argv[*i]))
-		SET_K(ctx->flags);
 	return (0);
 }
 
@@ -121,7 +124,7 @@ void	*parse_des_opts(int argc, char **argv)
 	}
 	if (!ctx.out_file)
 		ctx.out_file = STDOUT;
-	if (GET_K(ctx.flags))
+	if (!ctx.key)
 		create_des_key(&ctx);
 	if (!GET_DECRYPT(ctx.flags) && !GET_ENCRYPT(ctx.flags))
 		SET_ENCRYPT(ctx.flags);

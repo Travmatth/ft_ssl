@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/23 16:15:17 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/12 19:27:38 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/17 18:57:02 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,7 @@ char		*ft_str_from_fd(int fd)
 			len = LEN(string, 0);
 			if (!(tmp = ft_strnew(len + bytes)))
 				return (NULL);
-			ft_memcpy(tmp, string, len);
-			ft_memcpy(tmp + len, buf, bytes);
+			ft_memcpy((char*)ft_memcpy(tmp, string, len) + len, buf, bytes);
 			free(string);
 			string = tmp;
 		}

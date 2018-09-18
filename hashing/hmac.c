@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/16 19:20:35 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/14 21:54:47 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/17 10:56:57 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,36 +29,34 @@ void	xor_hmac(t_hmac *ctx, uint32_t *key, uint32_t pad)
 	ft_memcpy(key, ctx->sha256.state, SHA256_DIGEST_LEN);
 }
 
+void	compress_key(t_hmac *ctx, uint8_t *key, size_t len)
+{
+	sha256_init(&ctx->sha256);
+	sha256_update(&ctx->sha256, key, len);
+	sha256_final(&ctx->sha256, ctx->sha256.buf);
+	ft_memset(ctx->sha256.buf + SHA256_DIGEST_LEN, 0, g_diff);
+}
+
 void	hmac_sha256_init(t_hmac *ctx, uint8_t *key, size_t len)
 {
+	int		i;
+
 	if (len <= SHA256_BLOCK_LEN)
 	{
 		ft_memcpy(ctx->sha256.buf, key, len);
 		ft_memset(ctx->sha256.buf + len, 0, SHA256_BLOCK_LEN - len);
 	}
 	else
-	{
-		sha256_init(&ctx->sha256);
-		sha256_update(&ctx->sha256, key, len);
-		sha256_final(&ctx->sha256, ctx->sha256.buf);
-		ft_memset(ctx->sha256.buf + SHA256_DIGEST_LEN, 0, g_diff);
-	}
-	uint32_t	i;
-	i = 0;
-	while (i < SHA256_BLOCK_LEN)
-	{
+		compress_key(ctx, key, len);
+	i = -1;
+	while (++i < SHA256_BLOCK_LEN)
 		ctx->sha256.buf[i] = ctx->sha256.buf[i] ^ OUTER_PAD;
-		i += 1;
-	}
 	sha256_init(&ctx->sha256);
 	sha256_update(&ctx->sha256, ctx->sha256.buf, SHA256_BLOCK_LEN);
 	ft_memcpy(ctx->outer, ctx->sha256.state, SHA256_DIGEST_LEN);
-	i = 0;
-	while (i < SHA256_BLOCK_LEN)
-	{
+	i = -1;
+	while (++i < SHA256_BLOCK_LEN)
 		ctx->sha256.buf[i] = (ctx->sha256.buf[i] ^ OUTER_PAD) ^ INNER_PAD;
-		i += 1;
-	}
 	sha256_init(&ctx->sha256);
 	sha256_update(&ctx->sha256, ctx->sha256.buf, SHA256_BLOCK_LEN);
 	ft_memcpy(ctx->inner, ctx->sha256.state, SHA256_DIGEST_LEN);

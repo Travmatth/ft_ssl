@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/13 11:01:21 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/15 20:33:43 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/17 18:32:37 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,7 +154,7 @@ void		des_wrapper(void *input)
 	uint64_t	keyschedule[16];
 
 	ctx = (t_desctx*)input;
-	configure_des_params(ctx);
+	configure_des_params(ctx, "des");
 	des_init(ctx, keyschedule);
 	in_text = ctx->in_text;
 	while (ctx->i_len >= 8)

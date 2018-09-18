@@ -6,41 +6,74 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/02 12:56:53 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/15 22:27:33 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/17 19:09:34 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/ft_ssl.h"
 
-uint8_t	*prompt_for_password(void)
+void	configure_key_params(t_desctx *ctx, size_t len)
 {
-	char	*password;
-	char	*verfication;
+	int		fd;
+	char	buf[96];
 
-	password = getpass("enter des encryption password:");
-	verfication = getpass("Verifying - enter des encryption password:");
-	if (ft_strequ(password, verfication))
-		return ((unsigned char*)password);
-	else
-		ft_ssl_err("error: passwords do not match");
+	if (!(ctx->password))
+	{
+		ctx->password = (uint8_t*)getpass("enter des encryption password: ");
+		if (!ft_strequ((char*)ctx->password
+			, getpass("Verifying - enter des encryption password: ")))
+			ft_ssl_err("error: passwords do not match");
+	}
+	if (!(ctx->salt))
+	{
+		if (!(fd = open("/dev/random", O_RDONLY)))
+			ft_ssl_err("error");
+		if (read(fd, buf, len) == (ssize_t)len)
+		{
+			ctx->salt = (uint8_t*)ft_strndup(buf, len);
+			ctx->s_len = len;
+		}
+		else
+			ft_ssl_err("error");
+	}
 }
 
 void	create_des_key(t_desctx *ctx)
 {
-	uint8_t		result[64];
-	uint8_t		key[64];
+	char		salt[16];
+	char		key[16];
 	t_scrypt	opts;
 
 	ft_bzero(&opts, sizeof(t_scrypt));
-	if (!(ctx->password))
-		ctx->password = prompt_for_password();
-	// scrypt(ctx, 16, 1, 1, result, 64);
-	scrypt(ctx, opts);
-	key = from_hex_hash(key, result, 64);
-	write(ctx->out_file, key, ctx->k_len);
+	opts.block_size = 1;
+	opts.cost_param = 16;
+	opts.parallel_param = 1;
+	configure_key_params(ctx, 16);
+	scrypt(ctx, &opts);
+	from_hex_hash(key, ctx->key, 16);
+	from_hex_hash(salt, ctx->salt, 164);
+	ft_printf("salt=%s\nkey=%s\n", salt, key);
 }
 
-void			configure_des_params(t_desctx *ctx)
+void	adjust_key(t_desctx *ctx, const char *mode)
+{
+	uint8_t			*orig;
+
+	if (ft_strequ("des", mode))
+	{
+		orig = ctx->key;
+		if (ctx->k_len > 16)
+			ctx->key = (uint8_t*)ft_strndup((char*)orig, 16);
+		else if (ctx->k_len < 16)
+			ctx->key = (uint8_t*)ft_memcpy(ft_memalloc(16), orig, ctx->k_len);
+		else
+			return ;
+		ctx->k_len = 16;
+		free(orig);
+	}
+}
+
+void	configure_des_params(t_desctx *ctx, const char *mode)
 {
 	size_t			o_len;
 	unsigned char	*decoded;
@@ -56,6 +89,7 @@ void			configure_des_params(t_desctx *ctx)
 		free(orig);
 		ctx->in_text = (uint8_t*)decoded;
 	}
+	adjust_key(ctx, mode);
 }
 
 /*
@@ -63,7 +97,7 @@ void			configure_des_params(t_desctx *ctx)
 ** as well as the formmatting of the output
 */
 
-void			des_wrapper_print(t_desctx *ctx)
+void	des_wrapper_print(t_desctx *ctx)
 {
 	unsigned char	*out;
 

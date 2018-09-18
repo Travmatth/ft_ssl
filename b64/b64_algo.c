@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/09 20:21:40 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/12 16:01:06 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/17 18:35:24 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	*b64_normalize(void *final, char elem, size_t i, int *stop)
 	return (final);
 }
 
-void	lookup_b64_chars(unsigned char *tmp)
+void	lookup_b64(unsigned char *tmp)
 {
 	int		i;
 	int		j;
@@ -34,7 +34,7 @@ void	lookup_b64_chars(unsigned char *tmp)
 		j = 0;
 		while (j < 64)
 		{
-			if (tmp[i] == B64_CHARS[j++])
+			if (tmp[i] == B64[j++])
 			{
 				tmp[i] = --j;
 				break ;
@@ -57,7 +57,7 @@ void	b64_encode(t_base64 *ctx, unsigned char *in, unsigned char *out)
 	buf[3] = tmp[2] & 0x3f;
 	i = -1;
 	while (++i < 4)
-		out[i] = B64_CHARS[buf[i]];
+		out[i] = B64[buf[i]];
 	ctx->out_len += 4;
 }
 
@@ -77,7 +77,7 @@ void	b64_decode(t_base64 *ctx, unsigned char *in, unsigned char *out)
 			ctx->out_len -= 1;
 		}
 	}
-	lookup_b64_chars(tmp);
+	lookup_b64(tmp);
 	buf[0] = (tmp[0] << 2) + ((tmp[1] & 0x30) >> 4);
 	buf[1] = ((tmp[1] & 0xf) << 4) + ((tmp[2] & 0x3c) >> 2);
 	buf[2] = ((tmp[2] & 0x3) << 6) + tmp[3];

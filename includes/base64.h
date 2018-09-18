@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/08 21:10:12 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/12 10:15:25 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/17 11:03:21 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@
 ** table to look up base64 equivalent chars
 */
 
-# define B64_CHARS "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+# define B64 "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
 
 typedef struct			s_b64
 {
@@ -56,13 +56,29 @@ typedef struct			s_base64
 	size_t				out_len;
 }						t_base64;
 
-void			*b64_normalize(void *final, char elem, size_t i, int *stop);
-void			b64_encode(t_base64 *ctx, unsigned char *in, unsigned char *out);
-void			b64_decode(t_base64 *ctx, unsigned char *in, unsigned char *out);
-void			*parse_b64_opts(int argc, char **argv);
-void			b64_init(t_base64 *ctx, unsigned char *in, size_t in_len, int encoding);
-void			b64_update(t_base64 *ctx, unsigned char *in, unsigned char *out, int encoding);
-void			b64_final(t_base64 *ctx, unsigned char *in, unsigned char *out, int encoding);
-unsigned char	*b64_full(unsigned char *in, size_t *len, int encoding);
-void			b64_wrapper(void *input);
+void					*b64_normalize(void *final
+									, char elem
+									, size_t i
+									, int *stop);
+void					b64_encode(t_base64 *ctx
+								, unsigned char *in
+								, unsigned char *out);
+void					b64_decode(t_base64 *ctx
+								, unsigned char *in
+								, unsigned char *out);
+void					*parse_b64_opts(int argc, char **argv);
+void					b64_init(t_base64 *ctx
+								, unsigned char *in
+								, size_t in_len
+								, int encoding);
+void					b64_update(t_base64 *ctx
+								, unsigned char *in
+								, unsigned char *out
+								, int encoding);
+void					b64_final(t_base64 *ctx
+								, unsigned char *in
+								, unsigned char *out
+								, int encoding);
+unsigned char			*b64_full(unsigned char *in, size_t *len, int encoding);
+void					b64_wrapper(void *input);
 #endif

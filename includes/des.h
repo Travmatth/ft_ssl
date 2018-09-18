@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/13 11:06:22 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/15 22:18:25 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/17 18:32:21 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,8 +56,8 @@ typedef struct		s_desctx
 }					t_desctx;
 
 void				des_wrapper_print(t_desctx *ctx);
-void				configure_des_params(t_desctx *ctx);
-uint8_t				*create_des_key(t_desctx *ctx);
+void				configure_des_params(t_desctx *ctx, const char *mode);
+void				create_des_key(t_desctx *ctx);
 uint64_t			permute_block(uint8_t *map, uint64_t block, size_t limit);
 uint64_t			feistel_cipher(uint64_t	block, uint64_t key);
 uint64_t			des_permute(uint64_t block

@@ -6,16 +6,16 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/21 19:04:44 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/14 19:22:03 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/17 11:05:16 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SHA256_H
 # define SHA256_H
 
-#define SHA256_BLOCK_LEN  64ul
-#define SHA256_DIGEST_LEN 32ul
-#define SHA256_DIGEST_INT 8
+# define SHA256_BLOCK_LEN 64
+# define SHA256_DIGEST_LEN 32
+# define SHA256_DIGEST_INT 8
 
 # define CH(x,y,z) (((x) & (y)) ^ (~(x) & (z)))
 # define MAJ(x,y,z) (((x) & (y)) ^ ((x) & (z)) ^ ((y) & (z)))

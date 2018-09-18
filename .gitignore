@@ -2,4 +2,4 @@
 md5/**/*.o
 core/**/*.o
 *.o
-.nfs*
+.nfs*dec_des.txt enc_des.txt
