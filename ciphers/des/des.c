@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/13 11:01:21 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/18 19:59:12 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/19 12:29:59 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ uint8_t g_key_perm[64] =
 /*
 ** des_init processes des params to initialize the cipher's state
 ** generates 16 element key schedule from given uint8_t* key
-** original transformations
 */
 
 void		des_init(t_desctx *ctx, uint64_t keyschedule[16])
@@ -95,6 +94,14 @@ void		des_update(t_desctx *ctx
 	ft_uint64to8(permuted_block, ctx->out_text + ctx->o_len);
 	ctx->o_len += 8;
 }
+
+/*
+** des_decode_trim_padding removes the padding of deciphered plaintexts
+** des is padded in conformance with pkcs#7, meaning that N number of
+** bytes (each of value N) are added onto the end of a given plaintext,
+** where N >=1 & < <= 8
+** ex: if len(plaintext) % 7 == 0, byte "\x01" is added as padding
+*/
 
 void		des_decode_trim_padding(t_desctx *ctx)
 {
@@ -167,7 +174,8 @@ void		des_wrapper(void *input)
 	des_wrapper_print(ctx);
 	free(ctx->key);
 	free(ctx->in_text);
-	free(ctx->out_text);
+	if (!GET_A(ctx->flags) && !GET_ENCRYPT(ctx->flags))
+		free(ctx->out_text);
 	if (ctx->password)
 		free(ctx->password);
 	if (ctx->salt)

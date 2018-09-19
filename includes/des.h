@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/13 11:06:22 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/18 18:21:09 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/19 11:04:06 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,6 @@ uint64_t			feistel_cipher(uint64_t	block, uint64_t key);
 uint64_t			des_permute(uint64_t block
 							, uint64_t keyschedule[16]
 							, int encipher);
-void				key_operation_mode(int decrypt, uint64_t keyschedule[16]);
 void				des_cbc_pre_permute_hook(t_desctx *ctx
 											, uint64_t *block
 											, uint64_t *permuted_block

@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/13 11:01:23 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/18 19:22:32 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/19 12:33:43 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ int		parse_param(char *opt, uint8_t **param, char **argv, int *i)
 
 	if (!ft_strequ(opt, argv[*i]))
 		return (0);
+	if (!argv[*i + 1])
+		ft_ssl_usage();
 	if (!(*param = (uint8_t*)ft_strdup(argv[*i + 1])))
 		ft_ssl_err("error");
 	*i += 1;
@@ -30,6 +32,10 @@ int		parse_param(char *opt, uint8_t **param, char **argv, int *i)
 		ft_ssl_err("error");
 	return (len);
 }
+
+/*
+** parse des inputs into struct
+*/
 
 int		parse_des_io(t_desctx *ctx, char **argv, int *i)
 {
@@ -56,6 +62,10 @@ int		parse_des_io(t_desctx *ctx, char **argv, int *i)
 	return (0);
 }
 
+/*
+** parse des inputs into struct
+*/
+
 int		parse_des_key_params(t_desctx *ctx, char **argv, int *i)
 {
 	if (ft_strequ("-v", argv[*i]))
@@ -81,6 +91,10 @@ int		parse_des_key_params(t_desctx *ctx, char **argv, int *i)
 		return (1);
 	return (0);
 }
+
+/*
+** parse des inputs into struct
+*/
 
 int		parse_des_params(t_desctx *ctx, char **argv, int *i)
 {
@@ -123,7 +137,7 @@ void	*parse_des_opts(int argc, char **argv)
 			|| parse_des_key_params(&ctx, argv, &i))
 			continue ;
 		else
-			ft_ssl_err("error unknown command");
+			ft_ssl_cmd_err(argv[i]);
 	}
 	verify_des_params(&ctx);
 	return (ft_memcpy(ft_memalloc(sizeof(t_desctx)), &ctx, sizeof(t_desctx)));

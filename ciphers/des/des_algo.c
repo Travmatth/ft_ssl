@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/02 12:55:44 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/18 18:33:34 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/19 12:24:12 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,6 +110,10 @@ static uint8_t	g_des_final_perm[64] =
 	33, 1, 41, 9, 49, 17, 57, 25
 };
 
+/*
+** permute_block transforms a given 64 bit block according to the map specified
+*/
+
 uint64_t		permute_block(uint8_t *map, uint64_t block, size_t limit)
 {
 	uint64_t	permuted;
@@ -159,6 +163,13 @@ uint64_t		feistel_cipher(uint64_t block, uint64_t key)
 	return (permute_block(g_des_pbox, permuted, 32));
 }
 
+/*
+** des_permute performs the pre and post permutations neccessary,
+** as well as the 16 rounds of processing needed to encipher or decipher
+** a given block of plain or ciphertext. En/Deciphering performed by the feistel
+** cipher as given above
+*/
+
 uint64_t		des_permute(uint64_t block
 							, uint64_t keyschedule[16]
 							, int encipher)
@@ -180,23 +191,6 @@ uint64_t		des_permute(uint64_t block
 	}
 	block = (block << 32) | (block >> 32);
 	return (permute_block(g_des_final_perm, block, 64));
-}
-
-void			key_operation_mode(int decrypt, uint64_t keyschedule[16])
-{
-	int			i;
-	uint64_t	tmp;
-
-	if (!decrypt)
-		return ;
-	i = 0;
-	while (i < 16)
-	{
-		tmp = keyschedule[i];
-		keyschedule[i] = keyschedule[15 - i];
-		keyschedule[15 - i] = tmp;
-		i += 1;
-	}
 }
 
 void			verify_des_params(t_desctx *ctx)

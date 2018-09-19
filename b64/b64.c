@@ -6,11 +6,17 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/09 20:21:29 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/18 20:04:43 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/19 12:30:21 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/ft_ssl.h"
+
+/*
+** b64_init calculates and allocates the needed space for the resulting string,
+** and, when decoding, normalizes the given input string, removing \n and other
+** problem characters
+*/
 
 void			b64_init(t_base64 *ctx
 						, unsigned char *in
@@ -36,6 +42,10 @@ void			b64_init(t_base64 *ctx
 		ft_ssl_err("error");
 }
 
+/*
+** b64_update performs one round of en/decoding to the given text
+*/
+
 void			b64_update(t_base64 *ctx
 						, unsigned char *in
 						, unsigned char *out
@@ -46,6 +56,11 @@ void			b64_update(t_base64 *ctx
 	else
 		b64_decode(ctx, in, out);
 }
+
+/*
+** b64_final finalizes the transformation process, alternatively adding padding
+** characters to the encoded output or performing the last round of decoding
+*/
 
 void			b64_final(t_base64 *ctx
 						, unsigned char *in
@@ -70,6 +85,11 @@ void			b64_final(t_base64 *ctx
 		b64_decode(ctx, tmp, out);
 }
 
+/*
+** b64_full enocdes and decodes base64 strings and sets the resulting
+** length in the *len variable. pass 1 for encoding, 0 for decoding
+*/
+
 unsigned char	*b64_full(unsigned char *in, size_t *len, int encoding)
 {
 	t_base64		ctx;
@@ -93,6 +113,10 @@ unsigned char	*b64_full(unsigned char *in, size_t *len, int encoding)
 	*len = ctx.out_len;
 	return (out);
 }
+
+/*
+** b64_wrapper performs the full process of encoding or decoding for ft_ssl
+*/
 
 void			b64_wrapper(void *input)
 {

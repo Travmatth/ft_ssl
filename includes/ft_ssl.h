@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/16 12:34:43 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/17 10:23:37 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/19 10:58:22 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,4 +63,6 @@ void			*read_from_file(t_hash_state *state
 void			ft_ssl_cmd_err(char *command);
 void			read_from_stdin(t_hash_state *state, t_digest *digest);
 void			ft_ssl_err(const char *message) __attribute__((noreturn));
+void			ft_ssl_usage(void) __attribute__((noreturn));
+void			ft_ssl_cmd_err(char *command) __attribute__((noreturn));
 #endif

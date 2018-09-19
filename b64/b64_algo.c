@@ -6,11 +6,15 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/09 20:21:40 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/18 18:45:44 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/19 11:37:18 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/ft_ssl.h"
+
+/*
+** b64_normalize removes non basee64 characters from an input string
+*/
 
 void	*b64_normalize(void *final, char elem, size_t i, int *stop)
 {
@@ -21,6 +25,10 @@ void	*b64_normalize(void *final, char elem, size_t i, int *stop)
 		final = (void*)ft_bufappend((t_buf*)final, (void*)&elem, sizeof(char));
 	return (final);
 }
+
+/*
+** lookup_b64 finds the corresponding ascii from a given base64 encoded byte
+*/
 
 void	lookup_b64(unsigned char *tmp)
 {
@@ -44,6 +52,12 @@ void	lookup_b64(unsigned char *tmp)
 	}
 }
 
+/*
+** b64_encode performs one round of encoding on the given base64 text,
+** spreading information from 3 decoded charactess and
+** translating them into 4 encoded characters
+*/
+
 void	b64_encode(t_base64 *ctx, unsigned char *in, unsigned char *out)
 {
 	int				i;
@@ -60,6 +74,12 @@ void	b64_encode(t_base64 *ctx, unsigned char *in, unsigned char *out)
 		out[i] = B64[buf[i]];
 	ctx->out_len += 4;
 }
+
+/*
+** b64_decode performs one round of decoding on the given base64 text,
+** collecting the information spread over 4 encoded charactess and
+** translating them back into 3 decoded characters
+*/
 
 void	b64_decode(t_base64 *ctx, unsigned char *in, unsigned char *out)
 {

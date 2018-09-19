@@ -6,16 +6,11 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/16 18:57:41 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/17 10:38:00 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/19 11:44:43 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/ft_ssl.h"
-
-/*
-** derive a key from the given password, salt, and iteration count
-** returns unsigned char string of key
-*/
 
 void	pbkdf2_rounds(t_scrypt *opts
 					, t_hmac *hmac
@@ -48,6 +43,11 @@ void	pbkdf2_rounds(t_scrypt *opts
 		}
 	}
 }
+
+/*
+** derive a key from the given password, salt, and iteration count
+** returns unsigned char string of key
+*/
 
 void	pbkdf2(t_scrypt *opts, unsigned int rounds)
 {

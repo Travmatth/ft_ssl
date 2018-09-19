@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/02 12:56:53 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/18 19:57:40 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/19 12:04:48 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,11 @@
 
 static char	*g_ask = "enter des encryption password: ";
 static char	*g_challenge = "Verifying - enter des encryption password: ";
+
+/*
+** configure_key_params performs necessary setup for the des operation
+** allocating variables needed and editing inputs
+*/
 
 void	configure_key_params(t_desctx *ctx, char *salt)
 {
@@ -43,6 +48,11 @@ void	configure_key_params(t_desctx *ctx, char *salt)
 	}
 }
 
+/*
+** create_des_key creates a key from a given password / salt
+** using scrypt as the pbkdf
+*/
+
 void	create_des_key(t_desctx *ctx)
 {
 	char		salt[65];
@@ -60,6 +70,10 @@ void	create_des_key(t_desctx *ctx)
 	ft_printf("salt=%s\nkey=%s\n", ctx->salt, key);
 }
 
+/*
+** adjust_key performs truncation on given key, if necessary
+*/
+
 void	adjust_key(t_desctx *ctx, const char *mode)
 {
 	uint8_t			*orig;
@@ -75,6 +89,11 @@ void	adjust_key(t_desctx *ctx, const char *mode)
 		free(orig);
 	}
 }
+
+/*
+** configure_des_params performs necessary setup for the des operation
+** allocating variables needed and editing inputs
+*/
 
 void	configure_des_params(t_desctx *ctx, const char *mode)
 {

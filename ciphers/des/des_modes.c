@@ -6,11 +6,16 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/02 12:52:40 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/18 17:58:39 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/19 11:42:21 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/ft_ssl.h"
+
+/*
+** process_init_vector obtains an initialization vector from the user, if
+** using des-cbc and none provided
+*/
 
 void		process_init_vector(t_desctx *ctx)
 {

@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/16 18:42:33 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/15 20:50:45 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/19 11:44:03 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,10 @@ void	salsa_pre(uint32_t in[16], uint32_t tmp[16])
 	tmp[14] = in[14];
 	tmp[15] = in[15];
 }
+
+/*
+** salsa is a stream cipher used by the scrypt pbkdf
+*/
 
 void	salsa_core(uint32_t in[16], uint32_t out[16], int rounds)
 {

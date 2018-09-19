@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/30 20:18:19 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/12 17:26:17 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/19 12:36:09 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	ft_ssl_cmd_err(char *command)
 {
 	char	*err;
 
-	err = "ft_ssl: Error: '%s' is an invalid command\n";
+	err = "Error: '%s' is an invalid command\n";
 	ft_putendl((err = ft_swap(err, "%s", command)));
 	free(err);
 	ft_putendl("Standard commands:");
@@ -51,9 +51,10 @@ void	ft_ssl_cmd_err(char *command)
 	ft_putendl("sha256");
 	ft_putendl("");
 	ft_putendl("Cipher commands:");
-	ft_ssl_err("des (defaults to des-ecb)");
-	ft_ssl_err("des-ecb");
-	ft_ssl_err("des-cbc");
+	ft_putendl("des (defaults to des-ecb)");
+	ft_putendl("des-ecb");
+	ft_putendl("des-cbc");
+	exit(1);
 }
 
 int		get_function(int *argc, char ***argv, t_f *f, t_p *p)
