@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/15 21:36:34 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/17 18:37:44 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/18 13:16:05 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,6 @@ void	to_big_endian(unsigned char *blocks, uint32_t *cost_tmp, uint32_t len)
 	uint32_t	i;
 	uint32_t	desired;
 
-	blocks -= len * 4;
 	i = 0;
 	while (i < len)
 	{

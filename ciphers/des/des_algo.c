@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/02 12:55:44 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/12 17:31:07 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/18 18:33:34 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -196,5 +196,22 @@ void			key_operation_mode(int decrypt, uint64_t keyschedule[16])
 		keyschedule[i] = keyschedule[15 - i];
 		keyschedule[15 - i] = tmp;
 		i += 1;
+	}
+}
+
+void			verify_des_params(t_desctx *ctx)
+{
+	if (!ctx->out_file)
+		ctx->out_file = STDOUT;
+	if (GET_NEED_V(ctx->flags) && !GET_V(ctx->flags))
+		process_init_vector(ctx);
+	if (!ctx->key)
+		create_des_key(ctx);
+	if (!GET_DECRYPT(ctx->flags) && !GET_ENCRYPT(ctx->flags))
+		SET_ENCRYPT(ctx->flags);
+	if (!GET_INPUT(ctx->flags))
+	{
+		ctx->in_text = (uint8_t*)ft_str_from_fd(STDIN);
+		ctx->i_len = LEN((char*)ctx->in_text, 0);
 	}
 }

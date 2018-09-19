@@ -6,11 +6,23 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/02 12:52:40 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/12 17:30:21 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/18 17:58:39 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/ft_ssl.h"
+
+void		process_init_vector(t_desctx *ctx)
+{
+	uint8_t	*iv;
+
+	iv = (uint8_t*)getpass("enter initialization vector (in hex)");
+	if (!ft_htouint64(iv, &ctx->init_vector))
+	{
+		ft_putendl("error: inavlid initizaliation vector");
+		process_init_vector(ctx);
+	}
+}
 
 /*
 ** In cbc mode, we xor the translated 64bit block with the iv

@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/15 19:22:59 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/17 18:39:05 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/18 16:18:49 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,14 +123,18 @@ void	configure_opts(t_scrypt *opts
 {
 	if (!i)
 	{
+		opts->password = ctx->password;
+		opts->p_len = ctx->p_len;
 		opts->salt = ctx->salt;
 		opts->s_len = ctx->s_len;
 		opts->key = blocks;
-		opts->k_len = 128 * opts->block_size * opts->parallel_param;
+		opts->k_len = opts->parallel_param * (opts->block_size << 7);
 		return ;
 	}
+	opts->password = ctx->password;
+	opts->p_len = ctx->p_len;
 	opts->salt = blocks;
-	opts->s_len = i * 128 * opts->block_size;
+	opts->s_len = opts->parallel_param * (opts->block_size << 7);
 	opts->key = ctx->key;
 	opts->k_len = ctx->k_len;
 }
@@ -153,10 +157,7 @@ void	scrypt(t_desctx *ctx, t_scrypt *opts)
 	configure_opts(opts, ctx, blocks, i);
 	pbkdf2(opts, 1);
 	while (i < opts->parallel_param)
-	{
-		scrypt_ro_mix(opts, block_tmp, cost_tmp
-					, &blocks[i++ * 128 * opts->block_size]);
-	}
+		scrypt_ro_mix(opts, block_tmp, cost_tmp, &blocks[i++ * rb]);
 	configure_opts(opts, ctx, blocks, i);
 	pbkdf2(opts, 1);
 	free(blocks);

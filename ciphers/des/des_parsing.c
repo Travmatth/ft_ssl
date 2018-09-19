@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/13 11:01:23 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/17 19:32:47 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/18 19:22:32 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,12 +35,7 @@ int		parse_des_io(t_desctx *ctx, char **argv, int *i)
 {
 	int		fd;
 
-	if (ft_strequ("-a", argv[*i]))
-	{
-		SET_A(ctx->flags);
-		return (1);
-	}
-	else if (ft_strequ("-i", argv[*i]))
+	if (ft_strequ("-i", argv[*i]))
 	{
 		if (!argv[*i + 1] || ERR((fd = open(argv[*i + 1], O_RDONLY))))
 			ft_ssl_err("error: cannot find file");
@@ -53,8 +48,9 @@ int		parse_des_io(t_desctx *ctx, char **argv, int *i)
 	else if (ft_strequ("-o", argv[*i]))
 	{
 		if (!argv[*i + 1]
-			|| ERR((ctx->out_file = open(argv[*i++ + 1], O_WRONLY))))
+			|| ERR((ctx->out_file = open(argv[*i + 1], O_WRONLY))))
 			ft_ssl_err("error");
+		*i += 1;
 		return (1);
 	}
 	return (0);
@@ -69,6 +65,12 @@ int		parse_des_key_params(t_desctx *ctx, char **argv, int *i)
 		if (!(ft_htouint64((uint8_t*)argv[*i + 1], &ctx->init_vector)))
 			ft_ssl_err("error: invalid init vector");
 		*i += 1;
+		SET_V(ctx->flags);
+		return (1);
+	}
+	else if (ft_strequ("-a", argv[*i]))
+	{
+		SET_A(ctx->flags);
 		return (1);
 	}
 	else if ((ctx->k_len = parse_param("-k", &ctx->key, argv, i)))
@@ -92,6 +94,7 @@ int		parse_des_params(t_desctx *ctx, char **argv, int *i)
 	{
 		ctx->pre_permute_chaining = des_cbc_pre_permute_hook;
 		ctx->post_permute_chaining = des_cbc_post_permute_hook;
+		SET_NEED_V(ctx->flags);
 		return (1);
 	}
 	else if (ft_strequ("-d", argv[*i]) || ft_strequ("-e", argv[*i]))
@@ -122,16 +125,6 @@ void	*parse_des_opts(int argc, char **argv)
 		else
 			ft_ssl_err("error unknown command");
 	}
-	if (!ctx.out_file)
-		ctx.out_file = STDOUT;
-	if (!ctx.key)
-		create_des_key(&ctx);
-	if (!GET_DECRYPT(ctx.flags) && !GET_ENCRYPT(ctx.flags))
-		SET_ENCRYPT(ctx.flags);
-	if (!GET_INPUT(ctx.flags))
-	{
-		ctx.in_text = (uint8_t*)ft_str_from_fd(STDIN);
-		ctx.i_len = LEN((char*)ctx.in_text, 0);
-	}
+	verify_des_params(&ctx);
 	return (ft_memcpy(ft_memalloc(sizeof(t_desctx)), &ctx, sizeof(t_desctx)));
 }

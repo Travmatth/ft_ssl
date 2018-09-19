@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/13 11:06:22 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/17 18:32:21 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/18 18:21:09 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,16 @@
 # define SET_INPUT(v) (BITSET(v, 2))
 # define SET_A(v) (BITSET(v, 3))
 # define SET_K(v) (BITSET(v, 4))
+# define SET_V(v) (BITSET(v, 5))
+# define SET_NEED_V(v) (BITSET(v, 6))
 
 # define GET_DECRYPT(v) (BITTEST(v, 0))
 # define GET_ENCRYPT(v) (BITTEST(v, 1))
 # define GET_INPUT(v) (BITTEST(v, 2))
 # define GET_A(v) (BITTEST(v, 3))
 # define GET_K(v) (BITTEST(v, 4))
+# define GET_V(v) (BITTEST(v, 5))
+# define GET_NEED_V(v) (BITTEST(v, 6))
 
 # define ROT_28B_L(x, y) ((((x | (x >> 28)) << y) >> 36) << 36)
 
@@ -52,9 +56,11 @@ typedef struct		s_desctx
 											, uint64_t *permuted_block
 											, uint64_t *iv);
 	int				out_file;
-	unsigned char	flags[BITNSLOTS(4)];
+	unsigned char	flags[BITNSLOTS(7)];
 }					t_desctx;
 
+void				verify_des_params(t_desctx *ctx);
+void				process_init_vector(t_desctx *ctx);
 void				des_wrapper_print(t_desctx *ctx);
 void				configure_des_params(t_desctx *ctx, const char *mode);
 void				create_des_key(t_desctx *ctx);

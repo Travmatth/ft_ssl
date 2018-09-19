@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/13 11:01:21 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/17 18:32:37 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/18 19:59:12 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,7 +166,6 @@ void		des_wrapper(void *input)
 	des_final(ctx, in_text, keyschedule, ctx->i_len);
 	des_wrapper_print(ctx);
 	free(ctx->key);
-	free(ctx->salt);
 	free(ctx->in_text);
 	free(ctx->out_text);
 	if (ctx->password)

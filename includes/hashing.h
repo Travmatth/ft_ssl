@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/08 12:51:28 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/14 19:28:57 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/18 17:28:50 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,9 @@ typedef struct	s_hmac
 # define INNER_PAD '\x36'
 # define OUTER_PAD '\x5c'
 
+char			*from_hex(char *output
+							, unsigned char *hash_value
+							, size_t len);
 char			*from_hex_hash(char *output
 							, unsigned char *hash_value
 							, size_t len);
