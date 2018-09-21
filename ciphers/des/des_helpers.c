@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/02 12:56:53 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/19 12:04:48 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/20 15:42:12 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,7 @@ void	adjust_key(t_desctx *ctx, const char *mode)
 			ctx->key = (uint8_t*)ft_memcpy(ft_memalloc(16), orig, ctx->k_len);
 		else
 			return ;
+		ft_memset(ctx->key + ctx->k_len, '0', 16 - ctx->k_len);
 		ctx->k_len = 16;
 		free(orig);
 	}
@@ -132,5 +133,4 @@ void	des_wrapper_print(t_desctx *ctx)
 	}
 	else
 		write(ctx->out_file, ctx->out_text, ctx->o_len);
-	write(ctx->out_file, "\n", 1);
 }

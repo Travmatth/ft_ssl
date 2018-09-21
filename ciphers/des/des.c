@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/13 11:01:21 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/19 12:29:59 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/20 16:41:17 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,7 @@ void		des_decode_trim_padding(t_desctx *ctx)
 	uint8_t	pad;
 	ssize_t	rem;
 
-	if ((pad = ctx->out_text[ctx->o_len - 1]) <= 8)
+	if (ctx->o_len && ((pad = ctx->out_text[ctx->o_len - 1]) <= 8))
 	{
 		rem = (ssize_t)pad;
 		while (pad)
