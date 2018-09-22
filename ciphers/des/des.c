@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/13 11:01:21 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/20 16:41:17 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/21 20:46:11 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,14 +49,14 @@ uint8_t g_key_perm[64] =
 ** generates 16 element key schedule from given uint8_t* key
 */
 
-void		des_init(t_desctx *ctx, uint64_t keyschedule[16])
+void		des_init(uint64_t keyschedule[16], uint8_t *hex_key)
 {
 	int			i;
 	uint64_t	key;
 	uint64_t	left[16];
 	uint64_t	right[16];
 
-	if (!ft_htouint64(ctx->key, &key))
+	if (!ft_htouint64(hex_key, &key))
 		ft_ssl_err("error: invalid key");
 	i = 0;
 	key = permute_block(g_des_init_key_perm, key, 56);
@@ -162,7 +162,7 @@ void		des_wrapper(void *input)
 
 	ctx = (t_desctx*)input;
 	configure_des_params(ctx, "des");
-	des_init(ctx, keyschedule);
+	des_init(keyschedule, ctx->key);
 	in_text = ctx->in_text;
 	while (ctx->i_len >= 8)
 	{

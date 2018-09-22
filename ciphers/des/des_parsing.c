@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/13 11:01:23 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/20 15:42:24 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/21 20:51:40 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ int		parse_param(char *opt, uint8_t **param, char **argv, int *i)
 int		parse_des_io(t_desctx *ctx, char **argv, int *i)
 {
 	int		fd;
+	FILE	*fp;
 
 	if (ft_strequ("-i", argv[*i]))
 	{
@@ -54,8 +55,9 @@ int		parse_des_io(t_desctx *ctx, char **argv, int *i)
 	else if (ft_strequ("-o", argv[*i]))
 	{
 		if (!argv[*i + 1]
-			|| ERR((ctx->out_file = open(argv[*i + 1], O_WRONLY))))
+			|| !(fp = fopen(argv[*i + 1], "rw")))
 			ft_ssl_err("error");
+		ctx->out_file = fileno(fp);
 		*i += 1;
 		return (1);
 	}
@@ -98,20 +100,9 @@ int		parse_des_key_params(t_desctx *ctx, char **argv, int *i)
 
 int		parse_des_params(t_desctx *ctx, char **argv, int *i)
 {
-	if (ft_strequ("des-ecb", argv[*i]) || ft_strequ("des", argv[*i]))
-	{
-		ctx->pre_permute_chaining = des_null_permute_hook;
-		ctx->post_permute_chaining = des_null_permute_hook;
+	if (parse_des_mode(ctx, argv, i))
 		return (1);
-	}
-	else if (ft_strequ("des-cbc", argv[*i]))
-	{
-		ctx->pre_permute_chaining = des_cbc_pre_permute_hook;
-		ctx->post_permute_chaining = des_cbc_post_permute_hook;
-		SET_NEED_V(ctx->flags);
-		return (1);
-	}
-	else if (ft_strequ("-d", argv[*i]) || ft_strequ("-e", argv[*i]))
+	if (ft_strequ("-d", argv[*i]) || ft_strequ("-e", argv[*i]))
 	{
 		argv[*i][1] == 'd' ? SET_DECRYPT(ctx->flags) : SET_ENCRYPT(ctx->flags);
 		return (1);

@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/08 21:12:21 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/15 16:03:38 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/21 20:54:14 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,8 @@
 
 static void	parse_b64_opts_handler(t_b64 *ctx, char **argv, int *i)
 {
-	int			fd;
+	int		fd;
+	FILE	*fp;
 
 	if ((ft_strequ("-d", argv[*i]) || ft_strequ("-D", argv[*i])))
 		SET_D(ctx->mode);
@@ -58,12 +59,10 @@ static void	parse_b64_opts_handler(t_b64 *ctx, char **argv, int *i)
 	else if (ft_strequ("-o", argv[*i]))
 	{
 		SET_O(ctx->mode);
-		if (!argv[*i + 1])
+		if (!argv[*i + 1]
+			|| !(fp = fopen(argv[*i++ + 1], "rw")))
 			ft_ssl_err("error");
-		if (!ERR((fd = open(argv[*i++ + 1], O_RDWR))))
-			ctx->fd = fd;
-		else
-			ft_ssl_err("error");
+		ctx->fd = fileno(fp);
 	}
 }
 
