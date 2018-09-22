@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/13 11:06:22 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/21 20:58:21 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/22 15:32:30 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,6 +133,30 @@ void				des_pcbc_pre_permute_hook(t_desctx *ctx
 										, uint64_t *permuted_block
 										, uint64_t *iv);
 void				des_pcbc_post_permute_hook(t_desctx *ctx
+										, uint64_t *block
+										, uint64_t *permuted_block
+										, uint64_t *iv);
+void				des_cfb_pre_permute_hook(t_desctx *ctx
+										, uint64_t *block
+										, uint64_t *permuted_block
+										, uint64_t *iv);
+void				des_cfb_post_permute_hook(t_desctx *ctx
+										, uint64_t *block
+										, uint64_t *permuted_block
+										, uint64_t *iv);
+void				des_ofb_pre_permute_hook(t_desctx *ctx
+										, uint64_t *block
+										, uint64_t *permuted_block
+										, uint64_t *iv);
+void				des_ofb_post_permute_hook(t_desctx *ctx
+										, uint64_t *block
+										, uint64_t *permuted_block
+										, uint64_t *iv);
+void				des_ctr_pre_permute_hook(t_desctx *ctx
+										, uint64_t *block
+										, uint64_t *permuted_block
+										, uint64_t *iv);
+void				des_ctr_post_permute_hook(t_desctx *ctx
 										, uint64_t *block
 										, uint64_t *permuted_block
 										, uint64_t *iv);

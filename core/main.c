@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/30 20:18:19 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/21 20:45:22 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/22 15:51:18 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,17 @@ t_ptrs g_ptrs[] =
 	{"des", &des_wrapper, &parse_des_opts},
 	{"des-ecb", &des_wrapper, &parse_des_opts},
 	{"des-cbc", &des_wrapper, &parse_des_opts},
+	{"des-pcbc", &des_wrapper, &parse_des_opts},
+	{"des-cfb", &des_wrapper, &parse_des_opts},
+	{"des-ofb", &des_wrapper, &parse_des_opts},
+	{"des-ctr", &des_wrapper, &parse_des_opts},
 	{"des3", &des3_wrapper, &parse_des_opts},
 	{"des3-ecb", &des3_wrapper, &parse_des_opts},
-	{"des3-cbc", &des3_wrapper, &parse_des_opts}
+	{"des3-cbc", &des3_wrapper, &parse_des_opts},
+	{"des3-pcbc", &des_wrapper, &parse_des_opts},
+	{"des3-cfb", &des_wrapper, &parse_des_opts},
+	{"des3-ofb", &des_wrapper, &parse_des_opts},
+	{"des3-ctr", &des_wrapper, &parse_des_opts}
 };
 
 void	ft_ssl_usage(void)
