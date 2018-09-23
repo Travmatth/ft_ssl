@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/13 11:06:22 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/22 19:30:23 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/22 19:44:50 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,20 @@
 # define GET_NEED_V(v) (BITTEST(v, 6))
 
 # define ROT_28B_L(x, y) ((((x | (x >> 28)) << y) >> 36) << 36)
+
+typedef struct		s_desopt
+{
+	char			*name;
+	void			(*pre_permute_chaining)(struct s_desctx *ctx
+											, uint64_t *block
+											, uint64_t *permuted_block
+											, uint64_t *iv);
+	void			(*post_permute_chaining)(struct s_desctx *ctx
+											, uint64_t *block
+											, uint64_t *permuted_block
+											, uint64_t *iv);
+	uint8_t			needs_v;
+}					t_desopt;
 
 typedef struct		s_desctx
 {
