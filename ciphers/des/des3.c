@@ -6,11 +6,16 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/21 19:35:30 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/21 20:46:24 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/22 19:26:51 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/ft_ssl.h"
+
+/*
+** des3_init processes des params to initialize the cipher's state
+** generates 16 element key schedule from given uint8_t* key
+*/
 
 void		des3_init(t_desctx *ctx, uint64_t **keyschedule, uint8_t *hex_key)
 {
@@ -34,6 +39,13 @@ void		des3_init(t_desctx *ctx, uint64_t **keyschedule, uint8_t *hex_key)
 	}
 }
 
+/*
+** des3_update performs one round of the des cipher on the given text
+** uses callback functions on des state struct to perform cipher-specific
+** chaining of the out_text blocks using the enciphered blocks
+** and initilization vectors
+*/
+
 void		des3_update(t_desctx *ctx
 					, uint8_t *in_text
 					, uint64_t *keyschedule[3])
@@ -53,6 +65,12 @@ void		des3_update(t_desctx *ctx
 	ft_uint64to8(permuted_block, ctx->out_text + ctx->o_len);
 	ctx->o_len += 8;
 }
+
+/*
+** des3_final finishes the des algorithm by
+** alternatively padding the final block of in_text when encrypting
+** or removing the padding of the in_text when decrypting
+*/
 
 void		des3_final(t_desctx *ctx
 					, uint8_t *in_text
@@ -94,6 +112,12 @@ void		free_des3(t_desctx *ctx, uint64_t *keyschedule[3])
 	free(keyschedule[0]);
 	free(keyschedule);
 }
+
+/*
+** des3_wrapper provides a opaque wrapper around the des3 cipher
+** for the ft_ssl program; accepts a struct containing the parsed
+** options and manages the ciphering and printing of the given text
+*/
 
 void		des3_wrapper(void *input)
 {

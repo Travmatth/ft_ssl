@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/13 11:06:22 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/22 15:32:30 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/22 19:30:23 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 
 # include "ft_ssl.h"
 
-# define SET_DECRYPT(v) (BITSET(v, 0))
-# define SET_ENCRYPT(v) (BITSET(v, 1))
+# define SET_D(v) (BITSET(v, 0))
+# define SET_E(v) (BITSET(v, 1))
 # define SET_INPUT(v) (BITSET(v, 2))
 # define SET_A(v) (BITSET(v, 3))
 # define SET_K(v) (BITSET(v, 4))
@@ -116,6 +116,10 @@ void				des3_wrapper(void *input);
 ** des modes
 */
 
+void				des_null_permute_hook(t_desctx *ctx
+										, uint64_t *block
+										, uint64_t *permuted_block
+										, uint64_t *iv);
 void				des_cbc_pre_permute_hook(t_desctx *ctx
 											, uint64_t *block
 											, uint64_t *permuted_block
@@ -124,10 +128,6 @@ void				des_cbc_post_permute_hook(t_desctx *ctx
 											, uint64_t *block
 											, uint64_t *permuted_block
 											, uint64_t *iv);
-void				des_null_permute_hook(t_desctx *ctx
-										, uint64_t *block
-										, uint64_t *permuted_block
-										, uint64_t *iv);
 void				des_pcbc_pre_permute_hook(t_desctx *ctx
 										, uint64_t *block
 										, uint64_t *permuted_block

@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/16 12:34:43 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/22 15:52:17 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/22 19:22:07 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ typedef struct	s_ptrs
 	t_p			p;
 }				t_ptrs;
 
+void			display_des_ciphers(void);
 void			*read_from_file(t_hash_state *state
 							, t_digest *digest, char **argv, int *i);
 void			ft_ssl_cmd_err(char *command);

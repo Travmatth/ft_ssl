@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/13 11:01:23 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/21 20:51:40 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/22 19:23:32 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,7 @@ int		parse_des_params(t_desctx *ctx, char **argv, int *i)
 		return (1);
 	if (ft_strequ("-d", argv[*i]) || ft_strequ("-e", argv[*i]))
 	{
-		argv[*i][1] == 'd' ? SET_DECRYPT(ctx->flags) : SET_ENCRYPT(ctx->flags);
+		argv[*i][1] == 'd' ? SET_D(ctx->flags) : SET_E(ctx->flags);
 		return (1);
 	}
 	return (0);

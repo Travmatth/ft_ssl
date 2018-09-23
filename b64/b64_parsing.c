@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/08 21:12:21 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/21 20:54:14 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/22 19:18:50 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,12 +45,12 @@ static void	parse_b64_opts_handler(t_b64 *ctx, char **argv, int *i)
 	FILE	*fp;
 
 	if ((ft_strequ("-d", argv[*i]) || ft_strequ("-D", argv[*i])))
-		SET_D(ctx->mode);
+		SB64_DECODE(ctx->mode);
 	else if (ft_strequ("-e", argv[*i]) || ft_strequ("-D", argv[*i]))
-		SET_E(ctx->mode);
+		SB64_ENCODE(ctx->mode);
 	else if (ft_strequ("-i", argv[*i]))
 	{
-		SET_I(ctx->mode);
+		SB64_IN(ctx->mode);
 		if (!argv[*i + 1] || ERR((fd = open(argv[*i++ + 1], O_RDONLY))))
 			ft_ssl_err("base64: no such file found");
 		ctx->in = (unsigned char*)ft_str_from_fd(fd);
@@ -58,7 +58,7 @@ static void	parse_b64_opts_handler(t_b64 *ctx, char **argv, int *i)
 	}
 	else if (ft_strequ("-o", argv[*i]))
 	{
-		SET_O(ctx->mode);
+		SB64_OUT(ctx->mode);
 		if (!argv[*i + 1]
 			|| !(fp = fopen(argv[*i++ + 1], "rw")))
 			ft_ssl_err("error");
@@ -81,13 +81,13 @@ void		*parse_b64_opts(int argc, char **argv)
 	ft_bzero(&ctx, sizeof(t_b64));
 	while (++i < argc)
 		parse_b64_opts_handler(&ctx, argv, &i);
-	if (!GET_I(ctx.mode))
+	if (!GB64_IN(ctx.mode))
 	{
 		ctx.in = (unsigned char*)ft_str_from_fd(STDIN);
 		ctx.in_len = LEN((char*)ctx.in, 0);
 	}
-	if (!GET_E(ctx.mode) && !GET_D(ctx.mode))
-		SET_E(ctx.mode);
+	if (!GB64_ENCODE(ctx.mode) && !GB64_DECODE(ctx.mode))
+		SB64_ENCODE(ctx.mode);
 	if (!ctx.fd)
 		ctx.fd = STDOUT;
 	if (!(new = ft_memalloc(sizeof(t_b64))))

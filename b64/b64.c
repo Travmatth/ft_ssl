@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/09 20:21:29 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/21 16:16:42 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/22 19:18:50 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,8 +128,8 @@ void			b64_wrapper(void *input)
 	if (!ctx->in)
 		ctx->in = ft_memalloc(ctx->in_len);
 	orig = ctx->in;
-	out = b64_full(ctx->in, &ctx->in_len, GET_E(ctx->mode));
+	out = b64_full(ctx->in, &ctx->in_len, GB64_ENCODE(ctx->mode));
 	write(ctx->fd, out, ctx->in_len);
-	if (GET_D(ctx->mode))
+	if (GB64_DECODE(ctx->mode))
 		free(orig);
 }

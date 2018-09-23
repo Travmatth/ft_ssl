@@ -6,11 +6,16 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/21 20:11:11 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/22 15:49:58 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/22 19:38:24 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/ft_ssl.h"
+
+/*
+** Parsing functionality needed to set des struct member permute hooks
+** to the functions necessary to support various block cipher chaining modes
+*/
 
 int		parse_des_extended(t_desctx *ctx, char **argv, int *i)
 {

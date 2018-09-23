@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/21 20:11:43 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/21 20:11:46 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/22 19:09:18 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,21 @@ void		process_init_vector(t_desctx *ctx)
 		ft_putendl("error: inavlid initizaliation vector");
 		process_init_vector(ctx);
 	}
+}
+
+/*
+** In ecb mode, no xor'ing of the block or iv occurs
+*/
+
+void		des_null_permute_hook(t_desctx *ctx
+									, uint64_t *block
+									, uint64_t *permuted_block
+									, uint64_t *iv)
+{
+	(void)ctx;
+	(void)block;
+	(void)permuted_block;
+	(void)iv;
 }
 
 /*
@@ -67,19 +82,4 @@ void		des_cbc_post_permute_hook(t_desctx *ctx
 	}
 	*permuted_block ^= ctx->init_vector;
 	ctx->init_vector = *block;
-}
-
-/*
-** In ecb mode, no xor'ing of the block or iv occurs
-*/
-
-void		des_null_permute_hook(t_desctx *ctx
-									, uint64_t *block
-									, uint64_t *permuted_block
-									, uint64_t *iv)
-{
-	(void)ctx;
-	(void)block;
-	(void)permuted_block;
-	(void)iv;
 }

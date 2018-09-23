@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/30 20:18:19 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/22 15:51:18 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/22 19:22:27 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,10 +61,7 @@ void	ft_ssl_cmd_err(char *command)
 	ft_putendl("md5");
 	ft_putendl("sha256");
 	ft_putendl("");
-	ft_putendl("Cipher commands:");
-	ft_putendl("des (defaults to des-ecb)");
-	ft_putendl("des-ecb");
-	ft_putendl("des-cbc");
+	display_des_ciphers();
 	exit(1);
 }
 

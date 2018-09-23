@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/08 21:10:12 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/17 11:03:21 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/22 19:18:50 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,15 @@
 
 # include "ft_ssl.h"
 
-# define SET_D(v) (BITSET(v, 0))
-# define SET_E(v) (BITSET(v, 1))
-# define SET_I(v) (BITSET(v, 2))
-# define SET_O(v) (BITSET(v, 3))
+# define SB64_DECODE(v) (BITSET(v, 0))
+# define SB64_ENCODE(v) (BITSET(v, 1))
+# define SB64_IN(v) (BITSET(v, 2))
+# define SB64_OUT(v) (BITSET(v, 3))
 
-# define GET_D(v) (BITTEST(v, 0))
-# define GET_E(v) (BITTEST(v, 1))
-# define GET_I(v) (BITTEST(v, 2))
-# define GET_O(v) (BITTEST(v, 3))
+# define GB64_DECODE(v) (BITTEST(v, 0))
+# define GB64_ENCODE(v) (BITTEST(v, 1))
+# define GB64_IN(v) (BITTEST(v, 2))
+# define GB64_OUT(v) (BITTEST(v, 3))
 
 # define IS_LOWER(x) (x >= 'a' && x <= 'z')
 # define IS_UPPER(x) (x >= 'A' && x <= 'Z')
