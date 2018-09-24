@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/02 12:55:44 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/22 19:14:02 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/23 18:37:44 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -202,7 +202,7 @@ void			verify_des_params(t_desctx *ctx)
 	if (!ctx->key)
 		create_des_key(ctx);
 	if (!GET_DECRYPT(ctx->flags) && !GET_ENCRYPT(ctx->flags))
-		SB64_ENCODENCRYPT(ctx->flags);
+		SET_ENCRYPT(ctx->flags);
 	if (!GET_INPUT(ctx->flags))
 	{
 		ctx->in_text = (uint8_t*)ft_str_from_fd(STDIN);

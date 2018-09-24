@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/21 20:11:43 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/22 19:09:18 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/23 18:38:54 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ void		des_cbc_pre_permute_hook(t_desctx *ctx
 {
 	(void)permuted_block;
 	(void)iv;
-	if (GET_E(ctx->flags))
+	if (GET_ENCRYPT(ctx->flags))
 	{
 		*block ^= ctx->init_vector;
 		return ;
@@ -75,7 +75,7 @@ void		des_cbc_post_permute_hook(t_desctx *ctx
 {
 	(void)permuted_block;
 	(void)iv;
-	if (GET_E(ctx->flags))
+	if (GET_ENCRYPT(ctx->flags))
 	{
 		ctx->init_vector = *permuted_block;
 		return ;

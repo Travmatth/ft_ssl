@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/21 20:18:43 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/22 15:31:09 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/23 18:39:24 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void		des_pcbc_pre_permute_hook(t_desctx *ctx
 									, uint64_t *iv)
 {
 	(void)permuted_block;
-	if (GET_E(ctx->flags))
+	if (GET_ENCRYPT(ctx->flags))
 	{
 		*iv = *block;
 		*block ^= ctx->init_vector;
@@ -38,7 +38,7 @@ void		des_pcbc_post_permute_hook(t_desctx *ctx
 									, uint64_t *iv)
 {
 	(void)block;
-	if (GET_E(ctx->flags))
+	if (GET_ENCRYPT(ctx->flags))
 	{
 		ctx->init_vector = *iv ^ *permuted_block;
 		return ;
@@ -61,7 +61,7 @@ void		des_cfb_pre_permute_hook(t_desctx *ctx
 	uint64_t	tmp;
 
 	(void)permuted_block;
-	if (GET_E(ctx->flags))
+	if (GET_ENCRYPT(ctx->flags))
 	{
 		tmp = *block;
 		*block = ctx->init_vector;
@@ -79,7 +79,7 @@ void		des_cfb_post_permute_hook(t_desctx *ctx
 									, uint64_t *iv)
 {
 	(void)block;
-	if (GET_E(ctx->flags))
+	if (GET_ENCRYPT(ctx->flags))
 	{
 		*permuted_block ^= *iv;
 		ctx->init_vector = *permuted_block;

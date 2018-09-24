@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/21 20:11:11 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/22 19:57:04 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/23 18:41:42 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,16 +37,16 @@ t_desopt	g_desopts[] =
 
 int		parse_des_mode(t_desctx *ctx, char **argv, int *i)
 {
-	size_t	i;
+	size_t	n;
 
-	i = 0;
-	while (i < 13)
+	n = 0;
+	while (n < 13)
 	{
-		if (ft_strequ(g_desopts[i].name, argv[*i]))
+		if (ft_strequ(g_desopts[n].name, argv[*i]))
 		{
-			ctx->pre_permute_chaining = g_desopts[i].pre_permute_chaining;
-			ctx->post_permute_chaining = g_desopts[i].post_permute_chaining;
-			if (g_desopts[i].needs_v)
+			ctx->pre_permute_chaining = g_desopts[n].pre_permute_chaining;
+			ctx->post_permute_chaining = g_desopts[n].post_permute_chaining;
+			if (g_desopts[n].needs_v)
 				SET_NEED_V(ctx->flags);
 			return (1);
 		}

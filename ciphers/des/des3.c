@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/21 19:35:30 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/22 19:26:51 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/23 18:42:02 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ void		des3_final(t_desctx *ctx
 	uint8_t	pad;
 	ssize_t	rem;
 
-	if (GET_E(ctx->flags))
+	if (GET_ENCRYPT(ctx->flags))
 	{
 		if ((rem = i_len % 8))
 		{
