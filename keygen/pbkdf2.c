@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/16 18:57:41 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/24 18:27:18 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/25 13:12:59 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,13 +59,7 @@ void	pbkdf2(t_scrypt *opts, unsigned int rounds)
 		+ ((opts->k_len % SHA256_DIGEST_LEN) ? 1 : 0);
 	tmp[1] = opts->k_len - (tmp[0] - 1) * SHA256_DIGEST_LEN;
 	tmp[2] = 1;
-	// TEST SHIM
-	ft_printf("opts password: %s\n", opts->password);
-	// TEST SHIM
 	hmac_sha256_init(&hmac, opts->password, opts->p_len);
-	// TEST SHIM
-	ft_printf("hmac inner: %lu\n", hmac.inner[0]);
-	// TEST SHIM
 	while (tmp[2] <= tmp[0])
 	{
 		pbkdf2_rounds(opts, &hmac, tmp, rounds);

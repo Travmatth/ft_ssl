@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/13 11:06:22 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/23 18:38:02 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/25 12:41:21 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,6 @@ typedef struct		s_desctx
 	size_t			i_len;
 	size_t			o_len;
 	uint8_t			p_len;
-	size_t			pass_len;
 	void			(*pre_permute_chaining)(struct s_desctx *ctx
 											, uint64_t *block
 											, uint64_t *permuted_block

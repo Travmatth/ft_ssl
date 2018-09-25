@@ -17,14 +17,14 @@
 		// "args": ["des-ecb", "-p", "password", "-s", "NaCl"],
 		// "args": ["des-ecb" "-e", "-k", "0101010101010101", "-a", "-i", "enc_des.txt", "-o", "dec_des.txt"],
 		// "args": ["des-cbc", "-e", "-p", "foo", "-a", "-i", "enc_des.txt", "-o", "dec_des.txt"],
-		"args": ["des-cbc", "-p", "foo", "-i", "test.txt", "-d", "-a", "-v", "0123456789abcdef", "-s", "0123456789abcdef", "-p", "foo"],
+		"args": ["des-ecb", "-p", "foo", "-i", "in.txt", "-s", "cec85116007e0a23"],
         "stopAtEntry": false,
         "cwd": "${workspaceRoot}",
         "preLaunchTask": "build",
 		"externalConsole": false,
 		"setupCommands": [
 			{
-				"text": "settings set target.input-path test/in_test"
+				"text": "settings set target.input-path in.txt"
 			}
 		],
         "linux": {

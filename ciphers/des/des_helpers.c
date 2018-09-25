@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/02 12:56:53 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/24 18:20:45 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/25 13:23:08 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,13 +65,7 @@ void	create_des_key(t_desctx *ctx)
 	opts.cost_param = 16;
 	opts.parallel_param = 1;
 	configure_key_params(ctx, salt);
-	// TEST SHIM
-	ft_printf("salt: %s\n pass: %s\n", ctx->salt, ctx->password);
-	// TEST SHIM
 	scrypt(ctx, &opts);
-	// TEST SHIM
-	ft_printf("key: %s\n", ctx->key);
-	// TEST SHIM
 	ctx->key = (uint8_t*)from_hex_hash(key, ctx->key, ctx->k_len);
 	ctx->k_len = LEN((char*)ctx->key, 0);
 	ft_printf("salt=%s\nkey=%s\n", ctx->salt, ctx->key);
@@ -145,6 +139,7 @@ void	des_wrapper_print(t_desctx *ctx)
 	{
 		out = b64_full((unsigned char*)ctx->out_text, &ctx->o_len, 1);
 		write(ctx->out_file, out, ctx->o_len);
+		write(ctx->out_file, "\n", 1);
 		free(out);
 	}
 	else
