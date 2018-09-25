@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/21 20:11:11 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/23 18:41:42 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/24 10:35:13 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ int		parse_des_mode(t_desctx *ctx, char **argv, int *i)
 				SET_NEED_V(ctx->flags);
 			return (1);
 		}
-		i += 1;
+		n += 1;
 	}
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/13 11:01:21 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/23 18:40:05 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/24 12:02:49 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,9 +143,16 @@ void		des_final(t_desctx *ctx
 		else
 			ft_czero(tmp, 8, 8);
 		des_update(ctx, tmp, keyschedule);
+		return ;
 	}
-	else
-		des_decode_trim_padding(ctx);
+	if ((rem = i_len % 8))
+	{
+		ft_memcpy((void*)tmp, in_text, rem * sizeof(uint8_t));
+		pad = (uint8_t)(8 - rem);
+		ft_bzero(tmp + rem * sizeof(uint8_t), pad);
+		des_update(ctx, tmp, keyschedule);
+	}
+	des_decode_trim_padding(ctx);
 }
 
 /*

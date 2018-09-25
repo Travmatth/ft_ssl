@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/15 19:22:59 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/19 11:47:25 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/24 18:23:02 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,6 +156,9 @@ void	scrypt(t_desctx *ctx, t_scrypt *opts)
 	cost_tmp = ft_memalloc(2 * rb);
 	configure_opts(opts, ctx, blocks, i);
 	pbkdf2(opts, 1);
+	// TEST SHIM
+	ft_printf("pbkdf2: %s\n", opts->key);
+	// TEST SHIM
 	while (i < opts->parallel_param)
 		scrypt_ro_mix(opts, block_tmp, cost_tmp, &blocks[i++ * rb]);
 	configure_opts(opts, ctx, blocks, i);

@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/16 19:20:35 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/17 10:56:57 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/24 18:31:42 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,9 @@ void	hmac_sha256_init(t_hmac *ctx, uint8_t *key, size_t len)
 		ctx->sha256.buf[i] = ctx->sha256.buf[i] ^ OUTER_PAD;
 	sha256_init(&ctx->sha256);
 	sha256_update(&ctx->sha256, ctx->sha256.buf, SHA256_BLOCK_LEN);
+	// TEST SHIM
+	ft_printf("sha256 initial state: %lu", ctx->sha256.state[0]);
+	// TEST SHIM
 	ft_memcpy(ctx->outer, ctx->sha256.state, SHA256_DIGEST_LEN);
 	i = -1;
 	while (++i < SHA256_BLOCK_LEN)
