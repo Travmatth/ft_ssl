@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/30 20:18:19 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/25 12:35:59 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/25 21:01:21 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,16 +21,10 @@ t_ptrs g_ptrs[] =
 	{"des-ecb", &des_wrapper, &parse_des_opts},
 	{"des-cbc", &des_wrapper, &parse_des_opts},
 	{"des-pcbc", &des_wrapper, &parse_des_opts},
-	{"des-cfb", &des_wrapper, &parse_des_opts},
-	{"des-ofb", &des_wrapper, &parse_des_opts},
-	{"des-ctr", &des_wrapper, &parse_des_opts},
 	{"des3", &des3_wrapper, &parse_des_opts},
 	{"des3-ecb", &des3_wrapper, &parse_des_opts},
 	{"des3-cbc", &des3_wrapper, &parse_des_opts},
 	{"des3-pcbc", &des_wrapper, &parse_des_opts},
-	{"des3-cfb", &des_wrapper, &parse_des_opts},
-	{"des3-ofb", &des_wrapper, &parse_des_opts},
-	{"des3-ctr", &des_wrapper, &parse_des_opts}
 };
 
 void	ft_ssl_usage(void)
@@ -74,7 +68,7 @@ int		get_function(int *argc, char ***argv, t_f *f, t_p *p)
 	*argv = &argv[0][1];
 	while (i < FT_SSL_FUNCS)
 	{
-		if (ft_strnequ(g_ptrs[i].cmd, argv[0][0], LEN(g_ptrs[i].cmd, 0)))
+		if (ft_strequ(g_ptrs[i].cmd, argv[0][0]))
 		{
 			if (!ft_strnequ(argv[0][0], "des", 3))
 			{

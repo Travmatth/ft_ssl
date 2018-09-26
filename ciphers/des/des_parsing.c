@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/13 11:01:23 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/25 13:46:00 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/25 19:18:03 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,9 +120,9 @@ void	*parse_des_opts(int argc, char **argv)
 	int			i;
 	t_desctx	ctx;
 
-	i = -1;
 	ft_bzero(&ctx, sizeof(t_desctx));
-	parse_des_mode(ctx, argv, i);
+	if (!parse_des_mode(&ctx, argv[(i = 0)]))
+		ft_ssl_cmd_err(argv[--i]);
 	while (++i < argc)
 	{
 		if (parse_des_params(&ctx, argv, &i) || parse_des_io(&ctx, argv, &i)

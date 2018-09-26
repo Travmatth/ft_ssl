@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/21 19:35:30 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/23 18:42:02 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/25 21:34:22 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void		des3_init(t_desctx *ctx, uint64_t **keyschedule, uint8_t *hex_key)
 	uint8_t	*subkeys[3];
 	int		encipher;
 
-	if (!(keyschedule = (uint64_t**)ft_memalloc(3 * sizeof(uint64_t))))
+	if (!(keyschedule = (uint64_t**)ft_memalloc(3 * sizeof(uint64_t*))))
 		ft_ssl_err("error");
 	i = 0;
 	encipher = GET_ENCRYPT(ctx->flags);
@@ -48,7 +48,7 @@ void		des3_init(t_desctx *ctx, uint64_t **keyschedule, uint8_t *hex_key)
 
 void		des3_update(t_desctx *ctx
 					, uint8_t *in_text
-					, uint64_t *keyschedule[3])
+					, uint64_t **keyschedule)
 {
 	uint64_t	block;
 	uint64_t	permuted_block;
@@ -123,7 +123,7 @@ void		des3_wrapper(void *input)
 {
 	t_desctx	*ctx;
 	uint8_t		*in_text;
-	uint64_t	*keyschedule[3];
+	uint64_t	**keyschedule;
 
 	ctx = (t_desctx*)input;
 	configure_des_params(ctx, "des3");

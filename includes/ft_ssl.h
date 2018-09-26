@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/16 12:34:43 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/22 19:22:07 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/25 20:16:05 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@
 # define FROM_STDIN 2
 # define NO_INPUT 3
 
-# define FT_SSL_FUNCS 17
+# define FT_SSL_FUNCS 11
 # define SHA2_256_DLEN 32
 
 # define FROM_BITS(x) (x / 8)
