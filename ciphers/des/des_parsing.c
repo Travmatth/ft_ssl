@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/13 11:01:23 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/26 22:18:25 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/27 15:26:42 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ int			parse_des_io(t_desctx *ctx, char **argv, int *i)
 ** parse des inputs into struct
 */
 
-int			parse_des_key_params(t_desctx *ctx, char **argv, int *i)
+int			parse_des_params(t_desctx *ctx, char **argv, int *i)
 {
 	if (ft_strequ("-v", argv[*i]))
 	{
@@ -152,7 +152,7 @@ void		*parse_des_opts(int argc, char **argv)
 		ft_ssl_cmd_err(argv[i]);
 	while (++i < argc)
 	{
-		if (parse_des_io(&ctx, argv, &i)|| parse_des_key_params(&ctx, argv, &i))
+		if (parse_des_io(&ctx, argv, &i) || parse_des_params(&ctx, argv, &i))
 			continue ;
 		else
 			ft_ssl_cmd_err(argv[i]);
