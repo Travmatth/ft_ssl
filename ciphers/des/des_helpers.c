@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/02 12:56:53 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/25 13:23:08 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/26 21:35:01 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,10 @@ static char	*g_challenge = "Verifying - enter des encryption password: ";
 void	configure_key_params(t_desctx *ctx, char *salt)
 {
 	int				fd;
-	unsigned char	buf[sizeof(uint64_t)];
+	unsigned char	buf[3 * sizeof(uint64_t)];
+	size_t			desired;
 
+	desired = (GET_TRIPLE(ctx->flags) ? 3 : 1) * sizeof(uint64_t);
 	if (!ctx->password && (ctx->password = (uint8_t*)getpass(g_ask)))
 		if (!ft_strequ((char*)ctx->password, getpass(g_challenge)))
 			ft_ssl_err("error: passwords do not match");
@@ -32,18 +34,16 @@ void	configure_key_params(t_desctx *ctx, char *salt)
 	{
 		if (ERR((fd = open("/dev/random", O_RDONLY))))
 			ft_ssl_err("error");
-		if (read(fd, buf, sizeof(uint64_t)))
-		{
-			ctx->salt = (uint8_t*)from_hex(salt, buf, sizeof(uint64_t));
-			ctx->s_len = LEN((char*)ctx->salt, 0);
-		}
+		if (read(fd, buf, desired))
+			ctx->salt = (uint8_t*)from_hex(salt, buf, desired);
 		else
 			ft_ssl_err("error");
+		ctx->s_len = LEN((char*)ctx->salt, 0);
 		close(fd);
 	}
 	if (!ctx->key)
 	{
-		ctx->k_len = sizeof(uint64_t);
+		ctx->k_len = desired;
 		if (!(ctx->key = ft_memalloc(ctx->k_len)))
 			ft_ssl_err("error");
 	}
@@ -115,6 +115,11 @@ void	configure_des_params(t_desctx *ctx, const char *mode)
 	o_len = ctx->i_len + 8;
 	if (!(ctx->out_text = (uint8_t*)ft_strnew(o_len)))
 		ft_ssl_err("error");
+	if (!ctx->in_text)
+	{
+		ctx->in_text = (uint8_t*)ft_memalloc(0);
+		ctx->i_len = 0;
+	}
 	if (GET_DECRYPT(ctx->flags) && GET_A(ctx->flags))
 	{
 		orig = ctx->in_text;
@@ -139,7 +144,6 @@ void	des_wrapper_print(t_desctx *ctx)
 	{
 		out = b64_full((unsigned char*)ctx->out_text, &ctx->o_len, 1);
 		write(ctx->out_file, out, ctx->o_len);
-		write(ctx->out_file, "\n", 1);
 		free(out);
 	}
 	else

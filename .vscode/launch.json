@@ -18,15 +18,17 @@
 		// "args": ["des-ecb" "-e", "-k", "0101010101010101", "-a", "-i", "enc_des.txt", "-o", "dec_des.txt"],
 		// "args": ["des-cbc", "-e", "-p", "foo", "-a", "-i", "enc_des.txt", "-o", "dec_des.txt"],
 		// "args": ["des-ecb", "-p", "foo", "-i", "in.txt", "-s", "cec85116007e0a23"],
-		"args": ["des3-cbc", "-k", "C0FFEE69DEADBEEF", "-v", "0123456789abcdef", "-i", "in.txt", "-d"],
+		// "args": ["des3-cbc", "-k", "C0FFEE69DEADBEEF", "-v", "0123456789abcdef", "-i", "s.txt", "-a"],
+		"args": ["des3", "-p", "foo", "-i", "s.txt", "-a", "-v", "0000000000000000"/*"-s", "24ea3d2f7d6d554f"*/],
         "stopAtEntry": false,
         "cwd": "${workspaceRoot}",
         "preLaunchTask": "build",
 		"externalConsole": false,
 		"setupCommands": [
-			{
-				"text": "settings set target.input-path in.txt"
-			}
+			// {
+				// used to pipe in.txt file through STDIN
+				// "text": "settings set target.input-path in.txt"
+			// }
 		],
         "linux": {
             "MIMode": "gdb",

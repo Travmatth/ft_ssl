@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/21 19:35:30 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/25 21:34:22 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/26 22:05:37 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,12 @@
 ** generates 16 element key schedule from given uint8_t* key
 */
 
-void		des3_init(t_desctx *ctx, uint64_t **keyschedule, uint8_t *hex_key)
+uint64_t	**des3_init(t_desctx *ctx, uint8_t *hex_key)
 {
-	size_t	i;
-	uint8_t	*subkeys[3];
-	int		encipher;
+	size_t		i;
+	uint8_t		*subkeys[3];
+	uint64_t	**keyschedule;
+	int			encipher;
 
 	if (!(keyschedule = (uint64_t**)ft_memalloc(3 * sizeof(uint64_t*))))
 		ft_ssl_err("error");
@@ -37,6 +38,7 @@ void		des3_init(t_desctx *ctx, uint64_t **keyschedule, uint8_t *hex_key)
 		des_init(keyschedule[i], subkeys[i]);
 		i += 1;
 	}
+	return (keyschedule);
 }
 
 /*
@@ -55,11 +57,11 @@ void		des3_update(t_desctx *ctx
 	uint64_t	iv;
 	int			encipher;
 
-	encipher = GET_ENCRYPT(ctx->flags);
+	encipher = (int)GET_ENCRYPT(ctx->flags);
 	block = ft_uint8to64(in_text);
 	ctx->pre_permute_chaining(ctx, &block, &permuted_block, &iv);
 	permuted_block = des_permute(block, keyschedule[0], encipher);
-	block = des_permute(block, keyschedule[1], !encipher);
+	block = des_permute(permuted_block, keyschedule[1], !encipher);
 	permuted_block = des_permute(block, keyschedule[2], encipher);
 	ctx->post_permute_chaining(ctx, &block, &permuted_block, &iv);
 	ft_uint64to8(permuted_block, ctx->out_text + ctx->o_len);
@@ -97,6 +99,10 @@ void		des3_final(t_desctx *ctx
 		des_decode_trim_padding(ctx);
 }
 
+/*
+** free memory allocated for des3
+*/
+
 void		free_des3(t_desctx *ctx, uint64_t *keyschedule[3])
 {
 	free(ctx->key);
@@ -108,8 +114,8 @@ void		free_des3(t_desctx *ctx, uint64_t *keyschedule[3])
 	if (ctx->salt)
 		free(ctx->salt);
 	free(keyschedule[0]);
-	free(keyschedule[0]);
-	free(keyschedule[0]);
+	free(keyschedule[1]);
+	free(keyschedule[2]);
 	free(keyschedule);
 }
 
@@ -127,7 +133,7 @@ void		des3_wrapper(void *input)
 
 	ctx = (t_desctx*)input;
 	configure_des_params(ctx, "des3");
-	des3_init(ctx, keyschedule, ctx->key);
+	keyschedule = des3_init(ctx, ctx->key);
 	in_text = ctx->in_text;
 	while (ctx->i_len >= 8)
 	{

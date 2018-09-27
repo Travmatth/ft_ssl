@@ -6,11 +6,41 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/09 20:21:40 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/19 11:37:18 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/26 15:50:21 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/ft_ssl.h"
+
+/*
+** b64_finalize adds a newline character every 64 chars
+** and one at the end, if necessary
+*/
+
+void	*b64_finalize(unsigned char *in, size_t *len)
+{
+	size_t			o_len;
+	size_t			c;
+	size_t			newlines;
+	unsigned char	*out;
+
+	o_len = *len + (*len / 64) + (*len % 64 ? 1 : 0);
+	newlines = *len / 64;
+	if (!(out = (unsigned char*)ft_memalloc(o_len)))
+		ft_ssl_err("error");
+	c = 0;
+	while (c < newlines)
+	{
+		ft_memcpy(out + c * 65, in + c * 64, 64);
+		out[(c + 1) * 64 + c] = '\n';
+		c += 1;
+	}
+	ft_memcpy(out + c * 65, in + c * 64, *len % 64);
+	free(in);
+	out[o_len - 1] = o_len % 65 ? '\n' : 0;
+	*len = o_len;
+	return (out);
+}
 
 /*
 ** b64_normalize removes non basee64 characters from an input string

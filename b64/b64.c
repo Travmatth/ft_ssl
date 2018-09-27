@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/09 20:21:29 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/25 20:19:52 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/26 21:48:00 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,8 @@ unsigned char	*b64_full(unsigned char *in, size_t *len, int encoding)
 		ctx.in_len -= inc;
 	}
 	b64_final(&ctx, ctx.in, ctx.out + ctx.out_len, encoding);
+	if (encoding)
+		out = b64_finalize(ctx.out, &ctx.out_len);
 	free(orig);
 	*len = ctx.out_len;
 	return (out);
@@ -130,7 +132,6 @@ void			b64_wrapper(void *input)
 	orig = ctx->in;
 	out = b64_full(ctx->in, &ctx->in_len, GB64_ENCODE(ctx->mode));
 	write(ctx->fd, out, ctx->in_len);
-	write(ctx->fd, "\n", 1);
 	if (GB64_DECODE(ctx->mode))
 		free(orig);
-}
+ }

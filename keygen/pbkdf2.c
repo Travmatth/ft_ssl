@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/16 18:57:41 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/25 13:12:59 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/26 17:43:52 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,11 +53,12 @@ void	pbkdf2(t_scrypt *opts, unsigned int rounds)
 {
 	size_t	tmp[6];
 	t_hmac	hmac;
+	size_t	k_len;
 
+	k_len = opts->k_len;
 	tmp[5] = SHA256_DIGEST_LEN;
-	tmp[0] = opts->k_len / SHA256_DIGEST_LEN
-		+ ((opts->k_len % SHA256_DIGEST_LEN) ? 1 : 0);
-	tmp[1] = opts->k_len - (tmp[0] - 1) * SHA256_DIGEST_LEN;
+	tmp[0] = k_len / SHA256_DIGEST_LEN + ((k_len % SHA256_DIGEST_LEN) ? 1 : 0);
+	tmp[1] = k_len - (tmp[0] - 1) * SHA256_DIGEST_LEN;
 	tmp[2] = 1;
 	hmac_sha256_init(&hmac, opts->password, opts->p_len);
 	while (tmp[2] <= tmp[0])
@@ -66,5 +67,5 @@ void	pbkdf2(t_scrypt *opts, unsigned int rounds)
 		opts->key += tmp[5];
 		tmp[2] += 1;
 	}
-	opts->key -= opts->k_len;
+	opts->key -= k_len;
 }

@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/08 21:10:12 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/22 19:18:50 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/26 14:55:13 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ typedef struct			s_base64
 	size_t				out_len;
 }						t_base64;
 
+void					*b64_finalize(unsigned char *in, size_t *len);
 void					*b64_normalize(void *final
 									, char elem
 									, size_t i

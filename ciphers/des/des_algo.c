@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/02 12:55:44 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/24 12:02:24 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/26 22:09:57 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,7 +143,7 @@ uint64_t		permute_block(uint8_t *map, uint64_t block, size_t limit)
 
 uint64_t		feistel_cipher(uint64_t block, uint64_t key)
 {
-	int			i;
+	int		i;
 	uint64_t	permuted;
 	uint8_t		inner;
 	uint8_t		outer;
@@ -192,6 +192,10 @@ uint64_t		des_permute(uint64_t block
 	block = (block << 32) | (block >> 32);
 	return (permute_block(g_des_final_perm, block, 64));
 }
+
+/*
+** verify_des_params make sure the des cipher is called with the correct inputs
+*/
 
 void			verify_des_params(t_desctx *ctx)
 {

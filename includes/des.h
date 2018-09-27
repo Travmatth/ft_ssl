@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/13 11:06:22 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/25 19:15:21 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/09/26 17:30:32 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 # define SET_K(v) (BITSET(v, 4))
 # define SET_V(v) (BITSET(v, 5))
 # define SET_NEED_V(v) (BITSET(v, 6))
+# define SET_TRIPLE(v) (BITSET(v, 7))
 
 # define GET_DECRYPT(v) (BITTEST(v, 0))
 # define GET_ENCRYPT(v) (BITTEST(v, 1))
@@ -30,6 +31,7 @@
 # define GET_K(v) (BITTEST(v, 4))
 # define GET_V(v) (BITTEST(v, 5))
 # define GET_NEED_V(v) (BITTEST(v, 6))
+# define GET_TRIPLE(v) (BITTEST(v, 7))
 
 # define ROT_28B_L(x, y) ((((x | (x >> 28)) << y) >> 36) << 36)
 
@@ -113,9 +115,7 @@ void				des_wrapper(void *input);
 ** des3 algo
 */
 
-void				des3_init(t_desctx *ctx
-							, uint64_t **keyschedule
-							, uint8_t *hex_key);
+uint64_t			**des3_init(t_desctx *ctx, uint8_t *hex_key);
 void				des3_update(t_desctx *ctx
 								, uint8_t *in_text
 								, uint64_t *keyschedule[3]);
