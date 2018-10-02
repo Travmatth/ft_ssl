@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/03 09:46:46 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/03 09:54:14 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/10/01 18:12:54 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ int			ft_htouint64(uint8_t *hex, uint64_t *val)
 	uint8_t		c;
 	uint8_t		i;
 
+	if (!(hex && val))
+		return (0);
 	i = 0;
 	*val = 0;
 	while (i < 16)

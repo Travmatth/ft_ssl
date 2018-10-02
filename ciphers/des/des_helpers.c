@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/02 12:56:53 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/26 21:35:01 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/10/02 11:02:41 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,4 +148,6 @@ void	des_wrapper_print(t_desctx *ctx)
 	}
 	else
 		write(ctx->out_file, ctx->out_text, ctx->o_len);
+	free(ctx->key);
+	free(ctx->in_text);
 }

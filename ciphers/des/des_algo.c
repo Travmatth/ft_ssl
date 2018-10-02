@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/02 12:55:44 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/27 15:25:10 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/10/02 11:08:53 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -202,14 +202,11 @@ void			verify_des_params(t_desctx *ctx)
 	if (!ctx->out_file)
 		ctx->out_file = STDOUT;
 	if (GET_NEED_V(ctx->flags) && !GET_V(ctx->flags))
-		process_init_vector(ctx);
+		ft_ssl_err("iv undefined");
 	if (!ctx->key)
 		create_des_key(ctx);
 	if (!GET_DECRYPT(ctx->flags) && !GET_ENCRYPT(ctx->flags))
 		SET_ENCRYPT(ctx->flags);
 	if (!GET_INPUT(ctx->flags))
-	{
-		ctx->in_text = (uint8_t*)ft_str_from_fd(STDIN);
-		ctx->i_len = LEN((char*)ctx->in_text, 0);
-	}
+		ctx->i_len = ft_str_from_fd(STDIN, (char**)&ctx->in_text);
 }

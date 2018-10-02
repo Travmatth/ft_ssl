@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/09 20:21:29 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/27 15:25:31 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/10/01 18:18:59 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ void			b64_final(t_base64 *ctx
 }
 
 /*
-** b64_full enocdes and decodes base64 strings and sets the resulting
+** b64_full encodes and decodes base64 strings and sets the resulting
 ** length in the *len variable. pass 1 for encoding, 0 for decoding
 */
 

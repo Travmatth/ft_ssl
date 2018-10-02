@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/08 21:12:21 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/24 12:01:49 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/10/02 10:57:23 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +53,7 @@ static void	parse_b64_opts_handler(t_b64 *ctx, char **argv, int *i)
 		SB64_IN(ctx->mode);
 		if (!argv[*i + 1] || ERR((fd = open(argv[*i++ + 1], O_RDONLY))))
 			ft_ssl_err("base64: no such file found");
-		ctx->in = (unsigned char*)ft_str_from_fd(fd);
-		ctx->in_len = LEN((char*)ctx->in, 0);
+		ctx->in_len = ft_str_from_fd(fd, (char**)&ctx->in);
 	}
 	else if (ft_strequ("-o", argv[*i]))
 	{
@@ -82,10 +81,7 @@ void		*parse_b64_opts(int argc, char **argv)
 	while (++i < argc)
 		parse_b64_opts_handler(&ctx, argv, &i);
 	if (!GB64_IN(ctx.mode))
-	{
-		ctx.in = (unsigned char*)ft_str_from_fd(STDIN);
-		ctx.in_len = LEN((char*)ctx.in, 0);
-	}
+		ctx.in_len = ft_str_from_fd(STDIN, (char**)&ctx.in);
 	if (!GB64_ENCODE(ctx.mode) && !GB64_DECODE(ctx.mode))
 		SB64_ENCODE(ctx.mode);
 	if (!ctx.fd)

@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/13 11:06:22 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/26 17:30:32 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/10/02 11:13:13 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,9 +78,9 @@ typedef struct		s_desctx
 ** des helpers
 */
 
+uint8_t				*pad_in(char *param);
 int					parse_des_mode(t_desctx *ctx, char *command);
 void				verify_des_params(t_desctx *ctx);
-void				process_init_vector(t_desctx *ctx);
 void				des_wrapper_print(t_desctx *ctx);
 void				configure_des_params(t_desctx *ctx, const char *mode);
 void				create_des_key(t_desctx *ctx);

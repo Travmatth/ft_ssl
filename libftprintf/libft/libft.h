@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/16 12:34:43 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/24 11:53:00 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/10/01 19:39:16 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,7 +149,7 @@ int						ft_fast_memcmp(const void *s1
 ** reads a given fd and returns a string with its contents
 */
 
-char					*ft_str_from_fd(int fd);
+size_t					ft_str_from_fd(int fd, char **str);
 size_t					ft_wstrlen(wchar_t *w_str);
 int						ft_wchrlen(wchar_t c);
 void					ft_str_to_unicode(wchar_t c, char *s);

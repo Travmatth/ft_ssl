@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/23 16:15:17 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/24 11:52:43 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/10/02 10:54:37 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,31 +16,37 @@
 ** reads a given fd and returns a string with its contents
 */
 
-char		*ft_str_from_fd(int fd)
+int		append_buf(char **str, char *buf, size_t bytes, size_t *total)
 {
-	size_t	len;
-	size_t	bytes;
-	char	*tmp;
-	char	*string;
-	char	buf[BUFF_SIZE];
+	char	*next;
 
-	bytes = 0;
-	string = NULL;
-	while ((bytes = read(fd, buf, BUFF_SIZE)) != 0)
+	if (!(next = (char*)ft_strnew(*total + bytes)))
+		return (-1);
+	ft_memcpy((void*)(next), (void*)*str, *total);
+	ft_memcpy((void*)(next + *total), (void*)buf, bytes);
+	*total += bytes;
+	free(*str);
+	*str = next;
+	return (bytes < BUFF_SIZE ? 1 : 0);
+}
+
+size_t	ft_str_from_fd(int fd, char **str)
+{
+	size_t	bytes;
+	size_t	total;
+	char	buf[BUFF_SIZE];
+	int		ret;
+
+	if (!fd)
+		return (0);
+	total = 0;
+	while ((bytes = read(fd, buf, BUFF_SIZE)))
 	{
-		if (string)
-		{
-			len = LEN(string, 0);
-			if (!(tmp = ft_strnew(len + bytes)))
-				return (NULL);
-			ft_memcpy((char*)ft_memcpy(tmp, string, len) + len, buf, bytes);
-			free(string);
-			string = tmp;
-		}
-		else
-			string = ft_strndup(buf, bytes);
-		if (bytes < BUFF_SIZE)
+		ret = append_buf(str, buf, bytes, &total);
+		if (ERR(ret))
+			return (0);
+		else if (ret)
 			break ;
 	}
-	return (string);
+	return (total);
 }

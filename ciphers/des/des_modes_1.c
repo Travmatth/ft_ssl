@@ -6,28 +6,11 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/21 20:11:43 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/23 18:38:54 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/10/02 11:13:02 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/ft_ssl.h"
-
-/*
-** process_init_vector obtains an initialization vector from the user, if
-** using des-cbc and none provided
-*/
-
-void		process_init_vector(t_desctx *ctx)
-{
-	uint8_t	*iv;
-
-	iv = (uint8_t*)getpass("enter initialization vector (in hex)");
-	if (!ft_htouint64(iv, &ctx->init_vector))
-	{
-		ft_putendl("error: inavlid initizaliation vector");
-		process_init_vector(ctx);
-	}
-}
 
 /*
 ** In ecb mode, no xor'ing of the block or iv occurs

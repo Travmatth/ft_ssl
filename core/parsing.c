@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/08 16:47:30 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/09/24 12:01:10 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/10/01 20:00:09 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void		read_from_stdin(t_hash_state *state, t_digest *digest)
 {
 	void	*tmp;
 
-	digest->pre_image = ft_str_from_fd(STDIN);
+	ft_str_from_fd(STDIN, &digest->pre_image);
 	digest->type = FROM_STDIN;
 	tmp = ft_memdup(state->digests->buf, state->digests->current);
 	state->digests = ft_bufaddspace(state->digests, sizeof(t_digest));
@@ -49,7 +49,7 @@ void		*read_from_file(t_hash_state *state
 		digest->type = NO_INPUT;
 		return (digest);
 	}
-	digest->pre_image = ft_str_from_fd(fd);
+	ft_str_from_fd(fd, &digest->pre_image);
 	close(fd);
 	digest->type = FROM_FILE;
 	return (digest);
