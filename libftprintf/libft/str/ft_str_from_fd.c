@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/23 16:15:17 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/10/02 10:54:37 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/10/16 17:39:38 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,6 @@ size_t	ft_str_from_fd(int fd, char **str)
 	char	buf[BUFF_SIZE];
 	int		ret;
 
-	if (!fd)
-		return (0);
 	total = 0;
 	while ((bytes = read(fd, buf, BUFF_SIZE)))
 	{

@@ -20,7 +20,10 @@
 		// "args": ["des-ecb", "-p", "foo", "-i", "in.txt", "-s", "cec85116007e0a23"],
 		// "args": ["des3-cbc", "-k", "C0FFEE69DEADBEEF", "-v", "0123456789abcdef", "-i", "s.txt", "-a"],
 		// "args": ["des3", "-p", "foo", "-i", "s.txt", "-a", "-v", "0000000000000000"/*"-s", "24ea3d2f7d6d554f"*/],
-		"args": ["des-ecb", "-k", "0123456789abcdef", "-i", "test_1", "-d"],
+		// "args": ["des-ecb", "-k", "0123456789abcdef", "-i", "test_1", "-d"],
+		// "args": ["des-ecb", "-k", "0123456789abcdef", "-i", "test_1", "-d"],
+		// "args": ["des3", "-p", "hi", "-i", "test.txt", "-v", "77696E6B66616365", "-d"],
+		"args": ["des3", "-v", "0123456789abcdef", "-k", "16f819e6d66392809c32ef39e57a6ac0432b010d06479d51", "-a", "-d", "-i", "out"],
         "stopAtEntry": false,
         "cwd": "${workspaceRoot}",
         "preLaunchTask": "build",
@@ -28,7 +31,7 @@
 		"setupCommands": [
 			// {
 				// used to pipe in.txt file through STDIN
-				// "text": "settings set target.input-path in.txt"
+				// "text": "settings set target.input-path test_in.txt"
 			// }
 		],
         "linux": {

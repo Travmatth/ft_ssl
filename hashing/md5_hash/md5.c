@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/30 20:13:01 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/08/10 11:45:42 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/10/16 17:26:11 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ unsigned char		*md5_transform(char *pre_image)
 			, sizeof(uint32_t) * 16);
 		md5_rounds(message, chaining_vars);
 		ft_uint32_to_chr((unsigned char*)message,
-			(uint32_t*)padded_pre_image + position, sizeof(uint32_t) * 16);
+			(uint32_t*)(padded_pre_image + position), sizeof(uint32_t) * 16);
 		position += FROM_BITS(512);
 	}
 	free(padded_pre_image);
