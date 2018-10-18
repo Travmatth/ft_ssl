@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/02 12:56:53 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/10/02 11:02:41 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/10/18 12:56:17 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,13 +138,10 @@ void	configure_des_params(t_desctx *ctx, const char *mode)
 
 void	des_wrapper_print(t_desctx *ctx)
 {
-	unsigned char	*out;
-
 	if (GET_A(ctx->flags) && GET_ENCRYPT(ctx->flags))
 	{
-		out = b64_full((unsigned char*)ctx->out_text, &ctx->o_len, 1);
-		write(ctx->out_file, out, ctx->o_len);
-		free(out);
+		ctx->out_text = b64_full((unsigned char*)ctx->out_text, &ctx->o_len, 1);
+		write(ctx->out_file, ctx->out_text, ctx->o_len);
 	}
 	else
 		write(ctx->out_file, ctx->out_text, ctx->o_len);

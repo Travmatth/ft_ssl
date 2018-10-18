@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/21 19:35:30 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/10/16 17:53:33 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/10/18 12:48:24 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,8 +105,7 @@ void		des3_final(t_desctx *ctx
 
 void		free_des3(t_desctx *ctx, uint64_t *keyschedule[3])
 {
-	if (!GET_A(ctx->flags) && !GET_ENCRYPT(ctx->flags))
-		free(ctx->out_text);
+	free(ctx->out_text);
 	if (ctx->password)
 		free(ctx->password);
 	if (ctx->salt)
@@ -115,6 +114,7 @@ void		free_des3(t_desctx *ctx, uint64_t *keyschedule[3])
 	free(keyschedule[1]);
 	free(keyschedule[2]);
 	free(keyschedule);
+	free(ctx);
 }
 
 /*

@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/13 11:01:21 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/10/02 11:12:20 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/10/18 12:49:56 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,10 +179,10 @@ void		des_wrapper(void *input)
 	}
 	des_final(ctx, in_text, keyschedule, ctx->i_len);
 	des_wrapper_print(ctx);
-	if (!GET_A(ctx->flags) && !GET_ENCRYPT(ctx->flags))
-		free(ctx->out_text);
+	free(ctx->out_text);
 	if (ctx->password)
 		free(ctx->password);
 	if (ctx->salt)
 		free(ctx->salt);
+	free(ctx);
 }
