@@ -6,7 +6,7 @@
 /*   By: tmatthew <tmatthew@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/21 20:18:43 by tmatthew          #+#    #+#             */
-/*   Updated: 2018/10/01 18:13:24 by tmatthew         ###   ########.fr       */
+/*   Updated: 2018/10/18 13:11:14 by tmatthew         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,8 @@ uint8_t		*pad_in(char *param)
 	len = LEN(param, 0);
 	out = (uint8_t*)ft_memalloc(16);
 	ft_memcpy((void*)out, (void*)param, len < 17 ? len : 16);
-	ft_bzero((void*)(out + (len < 17 ? len : 0)), len < 17 ? 16 - len : 0);
+	ft_memset((void*)(out + (len < 17 ? len : 0))
+		, '0', len < 17 ? 16 - len : 0);
 	return (out);
 }
 
