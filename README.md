@@ -25,8 +25,7 @@ echo "We can encrypt with DES3" | ./ft_ssl des3 -k "$DES_KEY" -a -o test.txt
 ```
 
 Disclaimers:
-This project was created for educational use only, and is not intended for use in secure commincations. This project does not protect against any side-channel attacks or employ methods of securely generating cryptographic messages, suchs as overwriting stack memory or key values in memory. Additionally, input size is implicitly limited to < 2gb.
-
+This project was created for educational use only, and is not intended for use in secure commincations. This project does not protect against any side-channel attacks or employ methods of securely generating cryptographic messages, suchs as overwriting stack memory or key values in memory. Additionally, input > 2gb will generate runtime error.
 
 REFERENCES:
 
