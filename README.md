@@ -66,7 +66,7 @@ A miniature implementation of openssl implementing several encryption and hashin
 
 ### Prerequisites
 
-No outside dependencies are required, outside of a C compiler.
+No outside dependencies are required, outside of a C compiler and Make.
 
 ### Installation
 
