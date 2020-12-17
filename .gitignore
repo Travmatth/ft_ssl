@@ -4,3 +4,7 @@ core/**/*.o
 *.o
 .nfs*dec_des.txt enc_des.txt
 *.nfs*ft_ssl
+ft_ssl
+out.txt
+out.yml
+test.txt
